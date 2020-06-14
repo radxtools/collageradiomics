@@ -84,12 +84,12 @@ def get_haralick_mt_feature(img, desired_haralick_feature, greylevels, haralick_
     return haralick_image
 
 class Collage:
-    def __init__(self, img_array, mask_min_x, mask_min_y, mask_max_x, mask_max_y, patch_window_width, patch_window_height, svd_radius, verbose_logging=False):
+    def __init__(self, img_array, mask_min_x, mask_min_y, patch_window_width, patch_window_height, svd_radius, verbose_logging=False):
         self.img_array = img_array
         self.mask_min_x = mask_min_x
         self.mask_min_y = mask_min_y
-        self.mask_max_x = mask_max_x
-        self.mask_max_y = mask_max_y
+        self.mask_max_x = mask_min_x + patch_window_width
+        self.mask_max_y = mask_min_y + patch_window_height
         self.patch_window_width = patch_window_width
         self.patch_window_height = patch_window_height
         self.svd_radius = svd_radius
