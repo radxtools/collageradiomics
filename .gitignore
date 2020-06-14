@@ -1,0 +1,9 @@
+.local
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+profile_default/
+ipython_config.py
+.cache/
+.jupyter/
+module/dist/*
+module/build/*

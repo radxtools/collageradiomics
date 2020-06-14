@@ -1,0 +1,8 @@
+README.md
+collageradiomics.py
+setup.py
+collageradiomics.egg-info/PKG-INFO
+collageradiomics.egg-info/SOURCES.txt
+collageradiomics.egg-info/dependency_links.txt
+collageradiomics.egg-info/requires.txt
+collageradiomics.egg-info/top_level.txt
