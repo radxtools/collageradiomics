@@ -32,11 +32,6 @@ Open `Juptyer/CoLlage.ipynb` to begin working.
 
 ## Docker Ubuntu 20.04 Pip Module
 
-### Linux:
-```
-docker run -it -p 8888:8888 nathanhillyer/collageradiomics-examples
-```
-### Windows/Powershell:
 ```
 docker run -it -p 8888:8888 nathanhillyer/collageradiomics-pip
 ```
