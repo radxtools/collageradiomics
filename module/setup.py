@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="collageradiomics",
-    version="0.0.1a15",
+    version="0.0.1a22",
     author="Toth Technology",
     author_email="toth-tech@hillyer.me",
     description="CoLliage Implementation",
@@ -24,7 +24,7 @@ setuptools.setup(
         'scikit-learn',
         'scikit-build',
         'mahotas',
-        'scipy',
+        'scipy'
     ],
     python_requires='>=3.7',
 )
