@@ -216,7 +216,7 @@ class Collage:
 
         haralick_features = np.empty((patch_window_height, patch_window_width, 13))
 
-        for feature in range(1):
+        for feature in range(13):
             if self.verbose_logging:
                 print(f'Calculating feature {feature+1}:')
             haralick_features[:,:,feature] = self.get_haralick_mt_feature(dominant_angles_shaped, feature, greylevels, haralick_window_size, symmetric=False, mean=True)
