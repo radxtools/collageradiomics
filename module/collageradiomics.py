@@ -62,12 +62,22 @@ def bbox1(img):
     bbox = np.min(a[0]), np.max(a[0]), np.min(a[1]), np.max(a[1])
     return bbox
 
+def scale_array_for_image(array_to_scale):
+    flat_array = array_to_scale.flatten()
+    minimum = float(min(flat_array))
+    maximum = float(max(flat_array))
+    array_range = maximum - minimum
+    array_to_scale = array_to_scale - minimum
+    array_to_scale /= array_range
+    array_to_scale *= 255
+    return array_to_scale
+
 class Collage:
     def __init__(self, img_array, mask_array, svd_radius, verbose_logging=False):
         self.img_array = img_array
         if len(mask_array.shape) > 2:
             mask_array = mask_array[:,:,0]
-        trimmed_mask_array = (mask_array == 255).astype(int)
+        trimmed_mask_array = (mask_array == 255).astype('float64')
         non_zero_indices = np.argwhere(trimmed_mask_array)
         (min_y, min_x), (max_y, max_x) = non_zero_indices.min(0), non_zero_indices.max(0) + 1 
         self.mask_min_x = min_x
@@ -182,10 +192,11 @@ class Collage:
             print(f'Center x: {center_x_range}, Center y: {center_y_range}')
         for current_svd_center_x in center_x_range:
             for current_svd_center_y in center_y_range:
-                current_dominant_angle = svd_dominant_angle(
-                    current_svd_center_x, current_svd_center_y,
-                    dx_windows, dy_windows)
-                dominant_angles_array[current_svd_center_y, current_svd_center_x] = current_dominant_angle
+                if self.mask_array[current_svd_center_y][current_svd_center_x] != 0:
+                    current_dominant_angle = svd_dominant_angle(
+                        current_svd_center_x, current_svd_center_y,
+                        dx_windows, dy_windows)
+                    dominant_angles_array[current_svd_center_y, current_svd_center_x] = current_dominant_angle
                 if (random.randint(0,500)==0):
                     if self.verbose_logging:
                         print(f'x={current_svd_center_x}, y={current_svd_center_y}')
@@ -215,14 +226,65 @@ class Collage:
         haralick_window_size = svd_radius * 2 + 1
 
         haralick_features = np.empty((patch_window_height, patch_window_width, 13))
+        full_images = []
+        full_masked_images = []
 
-        for feature in range(13):
+        for feature in range(1):
             if self.verbose_logging:
                 print(f'Calculating feature {feature+1}:')
             haralick_features[:,:,feature] = self.get_haralick_mt_feature(dominant_angles_shaped, feature, greylevels, haralick_window_size, symmetric=False, mean=True)
+            
+            single_feature = scale_array_for_image(haralick_features[:,:,feature].astype('float64'))
+            
+            # This is the patch overlayed on top of the whole image.
+            full_image = img_array
+            full_image = scale_array_for_image(full_image)
+            full_image[mask_min_y:mask_max_y, mask_min_x:mask_max_x] = single_feature
+            full_images.append(full_image)
+
+            # This is an array the same shape as the image but with zeros for the non-patch values.
+            full_masked_image = np.zeros(img_array.shape)
+            full_masked_image[mask_min_y:mask_max_y, mask_min_x:mask_max_x] = single_feature
+            full_masked_images.append(full_masked_image)
+
             if self.verbose_logging:
                 print(f'Calculated feature {feature+1}.')
 
         self.haralick_features = haralick_features
+        self.full_images = full_images
+        self.full_masked_images = full_masked_images
 
-        return haralick_features
+        return full_masked_images
+
+import SimpleITK as sitk
+# Read image.
+img_s = sitk.ReadImage('../sample_data/ImageSlice.png')
+img_array = sitk.GetArrayFromImage(img_s)
+# Create window.
+svd_radius = 5
+patch_window_width = 30
+patch_window_height = 30
+mask_min_x = 252
+mask_min_y = 193
+mask_max_x = mask_min_x + patch_window_width
+mask_max_y = mask_min_y + patch_window_height
+# Use static initializer for rectangular option.
+collage = Collage.from_rectangle(img_array, mask_min_x, mask_min_y, patch_window_width, patch_window_height, svd_radius, verbose_logging=True)
+# Run CoLlage Algorithm and return feature.
+haralick_features = collage.execute()
+
+# Show preview of larger version of image.
+# aspect = img_array.shape[1] / img_array.shape[0]
+# figsize = 15 / aspect
+# plt.figure(figsize = (figsize * aspect, figsize))
+# figure = plt.imshow(collage.full_masked_images[0], cmap = plt.cm.jet)
+# figure.axes.get_xaxis().set_visible(False)
+# figure.axes.get_yaxis().set_visible(False)
+# plt.title('Haralick 1 Preview')
+# plt.show()
+
+extent = 0, img_array.shape[1], 0, img_array.shape[0]
+fig = plt.figure()
+im1 = plt.imshow(img_array, cmap=plt.cm.gray, interpolation='nearest')
+im2 = plt.imshow(collage.haralick_features[0], cmap=plt.cm.viridis, alpha=.9, interpolation='none')
+plt.show()
