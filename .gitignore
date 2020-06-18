@@ -7,5 +7,5 @@ ipython_config.py
 .jupyter/
 module/dist/*
 module/build/*
-output_data/*.png
+output_data/
 .bash_history

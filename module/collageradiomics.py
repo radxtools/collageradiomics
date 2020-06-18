@@ -72,8 +72,40 @@ def scale_array_for_image(array_to_scale):
     array_to_scale *= 255
     return array_to_scale
 
+from enum import Enum
+class HaralickFeature(Enum):
+    AngularSecondMoment = 0
+    Contrast = 1
+    Correlation = 2
+    SumOfSquareVariance = 3
+    SumAverage = 4
+    SumVariance = 5
+    SumEntropy = 6
+    Entropy = 7
+    DifferenceVariance = 8
+    DifferenceEntropy = 9
+    InformationMeasureOfCorrelation1 = 10
+    InformationMeasureOfCorrelation2 = 11
+    MaximalCorrelationCoefficient = 12
+    All = 13
+
+class InformationMeasureOfCorrelation1Interpretation(Enum):
+    XMinusYVariance = 0
+    ProbabilityXMinusYVariance = 1
+
 class Collage:
-    def __init__(self, img_array, mask_array, svd_radius, verbose_logging=False):
+    def __init__(self, 
+    img_array, 
+    mask_array, 
+    svd_radius=5, 
+    verbose_logging=False, 
+    haralick_feature_list=[HaralickFeature.All], 
+    log_sample_rate=500, 
+    cooccurence_angles=[0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4],
+    information_measure_correlation1_interpretation = InformationMeasureOfCorrelation1Interpretation.XMinusYVariance,
+    haralick_window_size=-1,
+    greylevels = 64,
+    ):
         self.img_array = img_array
         if len(mask_array.shape) > 2:
             mask_array = mask_array[:,:,0]
@@ -92,11 +124,48 @@ class Collage:
         self.verbose_logging = verbose_logging
         self.mask_array = scaled_mask_array
 
+        self.haralick_feature_list = haralick_feature_list
+        self.feature_count = len(haralick_feature_list)
+        self.log_sample_rate = log_sample_rate
+        self.cooccurence_angles = cooccurence_angles
+        self.information_measure_correlation1_interpretation = information_measure_correlation1_interpretation
+
+        if haralick_window_size == -1:
+            self.haralick_window_size = self.svd_radius * 2 + 1
+
+        self.greylevels = greylevels
+        self.haralick_features = []
+
     @classmethod
-    def from_rectangle(cls, img_array, mask_min_x, mask_min_y, patch_window_width, patch_window_height, svd_radius, verbose_logging=False):
+    def from_rectangle(cls, 
+    img_array, 
+    mask_min_x, 
+    mask_min_y, 
+    patch_window_width, 
+    patch_window_height, 
+    svd_radius, 
+    verbose_logging=False,
+    haralick_feature_list=[HaralickFeature.All], 
+    log_sample_rate=500, 
+    cooccurence_angles=[0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4],
+    information_measure_correlation1_interpretation = InformationMeasureOfCorrelation1Interpretation.XMinusYVariance,
+    haralick_window_size=-1,
+    greylevels = 64,
+    ):
         mask_array = np.zeros((img_array.shape[0], img_array.shape[1]))
         mask_array[mask_min_y:mask_min_y + patch_window_height, mask_min_x:mask_min_x + patch_window_width] = 255
-        return cls(img_array, mask_array, svd_radius, verbose_logging)
+        return cls(
+            img_array, 
+            mask_array, 
+            svd_radius, 
+            verbose_logging, 
+            haralick_feature_list, 
+            log_sample_rate, 
+            cooccurence_angles,
+            information_measure_correlation1_interpretation,
+            haralick_window_size,
+            greylevels
+            )
 
     def get_haralick_mt_value(self, img_array, center_x, center_y, window_size, greylevels, haralick_feature, symmetric, mean):
         # extract subpart of image (todo: pass in result from view_as_windows)
@@ -107,19 +176,17 @@ class Collage:
         cropped_img_array = img_array[min_y:max_y, min_x:max_x]
         
         # co-occurence matrix of all 8 directions and sum them
-        cmat = greycomatrix(cropped_img_array, [1], [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4], levels=greylevels)
-        cmat = np.sum(cmat, axis=3)
-        cmat = cmat[:,:,0]
+        cooccurence_matrix = greycomatrix(cropped_img_array, [1], self.cooccurence_angles, levels=greylevels)
+        cooccurence_matrix = np.sum(cooccurence_matrix, axis=3)
+        cooccurence_matrix = cooccurence_matrix[:,:,0]
         
         # extract haralick using mahotas library:
-        har_feature = mt.features.texture.haralick_features([cmat], return_mean=mean)
+        har_feature = mt.features.texture.haralick_features([cooccurence_matrix], return_mean=mean)
         
         # output:
         if mean:
             return har_feature[haralick_feature]
-        # direction is undefined -- do we need this?
-        direction = 0
-        return har_feature[direction, haralick_feature]
+        return har_feature[0, haralick_feature]
 
     def get_haralick_mt_feature(self, img, desired_haralick_feature, greylevels, haralick_window_size, symmetric=False, mean=False):
         haralick_image = np.zeros(img.shape)
@@ -192,12 +259,11 @@ class Collage:
             print(f'Center x: {center_x_range}, Center y: {center_y_range}')
         for current_svd_center_x in center_x_range:
             for current_svd_center_y in center_y_range:
-                if self.mask_array[current_svd_center_y][current_svd_center_x] != 0:
-                    current_dominant_angle = svd_dominant_angle(
-                        current_svd_center_x, current_svd_center_y,
-                        dx_windows, dy_windows)
-                    dominant_angles_array[current_svd_center_y, current_svd_center_x] = current_dominant_angle
-                if (random.randint(0,500)==0):
+                current_dominant_angle = svd_dominant_angle(
+                    current_svd_center_x, current_svd_center_y,
+                    dx_windows, dy_windows)
+                dominant_angles_array[current_svd_center_y, current_svd_center_x] = current_dominant_angle
+                if random.randint(0, self.log_sample_rate) == 0:
                     if self.verbose_logging:
                         print(f'x={current_svd_center_x}, y={current_svd_center_y}')
                         print(f'angle={current_dominant_angle}')
@@ -208,9 +274,9 @@ class Collage:
         self.dominant_angles_array = dominant_angles_array
 
         # Rescale the range of the pixels to have discrete grey level values
-        greylevels = 64
+        greylevels = self.greylevels
 
-        new_max = greylevels-1
+        new_max = greylevels - 1
         new_min = 0
 
         dominant_angles_max = dominant_angles_array.max()
@@ -222,17 +288,22 @@ class Collage:
         dominant_angles_shaped = dominant_angles_shaped.astype(int)
         self.dominant_angles_shaped =  dominant_angles_shaped
 
-        # Calculate haralick
-        haralick_window_size = svd_radius * 2 + 1
-
         haralick_features = np.empty((patch_window_height, patch_window_width, 13))
         full_images = []
         full_masked_images = []
 
-        for feature in range(13):
+        number_of_features =  len(self.haralick_feature_list)
+
+        haralick_feature_list = self.haralick_feature_list
+        if self.haralick_feature_list[0] == HaralickFeature.All:
+            number_of_features = 13
+        for feature in range(number_of_features):
+
+            if number_of_features != 13:
+                feature = self.haralick_feature_list.pop().value
             if self.verbose_logging:
                 print(f'Calculating feature {feature+1}:')
-            haralick_features[:,:,feature] = self.get_haralick_mt_feature(dominant_angles_shaped, feature, greylevels, haralick_window_size, symmetric=False, mean=True)
+            haralick_features[:,:,feature] = self.get_haralick_mt_feature(dominant_angles_shaped, feature, greylevels, self.haralick_window_size, symmetric=False, mean=True)
             
             single_feature = scale_array_for_image(haralick_features[:,:,feature].astype('float64'))
             
@@ -251,6 +322,7 @@ class Collage:
                 print(f'Calculated feature {feature+1}.')
 
         self.haralick_features = haralick_features
+        self.haralick_feature_list = haralick_feature_list
         self.full_images = full_images
         self.full_masked_images = full_masked_images
 

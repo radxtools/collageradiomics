@@ -1,15 +1,15 @@
 Metadata-Version: 2.1
 Name: collageradiomics
-Version: 0.0.1a26
+Version: 0.0.1a35
 Summary: CoLliage Implementation
-Home-page: https://github.com/Toth-Technology/rad-i
+Home-page: https://github.com/Toth-Technology/collageradiomics
 Author: Toth Technology
 Author-email: toth-tech@hillyer.me
 License: UNKNOWN
 Description: UNKNOWN
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
-Classifier: License :: OSI Approved :: MIT License
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
 Classifier: Operating System :: OS Independent
 Requires-Python: >=3.7
 Description-Content-Type: text/markdown
