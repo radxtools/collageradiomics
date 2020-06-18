@@ -7,4 +7,4 @@ ipython_config.py
 .jupyter/
 module/dist/*
 module/build/*
-output_data/*
+output_data/*.png
