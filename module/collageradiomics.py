@@ -229,7 +229,7 @@ class Collage:
         full_images = []
         full_masked_images = []
 
-        for feature in range(1):
+        for feature in range(13):
             if self.verbose_logging:
                 print(f'Calculating feature {feature+1}:')
             haralick_features[:,:,feature] = self.get_haralick_mt_feature(dominant_angles_shaped, feature, greylevels, haralick_window_size, symmetric=False, mean=True)
@@ -255,36 +255,3 @@ class Collage:
         self.full_masked_images = full_masked_images
 
         return full_masked_images
-
-import SimpleITK as sitk
-# Read image.
-img_s = sitk.ReadImage('../sample_data/ImageSlice.png')
-img_array = sitk.GetArrayFromImage(img_s)
-# Create window.
-svd_radius = 5
-patch_window_width = 30
-patch_window_height = 30
-mask_min_x = 252
-mask_min_y = 193
-mask_max_x = mask_min_x + patch_window_width
-mask_max_y = mask_min_y + patch_window_height
-# Use static initializer for rectangular option.
-collage = Collage.from_rectangle(img_array, mask_min_x, mask_min_y, patch_window_width, patch_window_height, svd_radius, verbose_logging=True)
-# Run CoLlage Algorithm and return feature.
-haralick_features = collage.execute()
-
-# Show preview of larger version of image.
-# aspect = img_array.shape[1] / img_array.shape[0]
-# figsize = 15 / aspect
-# plt.figure(figsize = (figsize * aspect, figsize))
-# figure = plt.imshow(collage.full_masked_images[0], cmap = plt.cm.jet)
-# figure.axes.get_xaxis().set_visible(False)
-# figure.axes.get_yaxis().set_visible(False)
-# plt.title('Haralick 1 Preview')
-# plt.show()
-
-extent = 0, img_array.shape[1], 0, img_array.shape[0]
-fig = plt.figure()
-im1 = plt.imshow(img_array, cmap=plt.cm.gray, interpolation='nearest')
-im2 = plt.imshow(collage.haralick_features[0], cmap=plt.cm.viridis, alpha=.9, interpolation='none')
-plt.show()
