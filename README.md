@@ -8,7 +8,7 @@ pip install collageradiomics
 ## Git
 
 ```
-git clone https://github.com/Toth-Technology/rad-i && cd rad-i
+git clone https://github.com/Toth-Technology/collageradiomics && cd collageradiomics
 ```
 
 ## Docker Ubuntu 20.04 Jupyter Examples
@@ -28,7 +28,7 @@ Open in browser:
 localhost:8888
 ```
 
-Open `Juptyer/CoLlage.ipynb` to begin working.
+Open `jupyter/examples` directory and explore the Jupyter notebooks.
 
 ## Docker Ubuntu 20.04 Pip Module
 
