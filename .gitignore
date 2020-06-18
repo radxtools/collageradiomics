@@ -8,3 +8,4 @@ ipython_config.py
 module/dist/*
 module/build/*
 output_data/*.png
+.bash_history
