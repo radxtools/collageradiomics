@@ -51,3 +51,5 @@ If you make use of this implementation, please cite the following paper:
 [1] Prasanna, P., Tiwari, P., & Madabhushi, A. (2016). Co-occurrence of Local Anisotropic Gradient Orientations (CoLlAGe): A new radiomics descriptor. Scientific Reports, 6:37241.
 
 Please report any issues or feature requests via the [Issues](https://github.com/ccipd/collageradiomics/issues) tab
+
+Additional information can be found on the [BrIC Lab](http://bric-lab.com) website.
