@@ -121,7 +121,18 @@ class CollageCollection:
             mask_index = 0
             if len(masks_array) >= x - 1:
                 mask_index = x
-            collage = Collage(images_array[x], masks_array[mask_index])
+            collage = Collage(
+                images_array[x], 
+                masks_array[mask_index],
+                svd_radius, 
+                verbose_logging, 
+                haralick_feature_list, 
+                log_sample_rate, 
+                cooccurence_angles,
+                information_measure_correlation1_interpretation,
+                haralick_window_size,
+                greylevels
+                )
             collages.append(collage)
         self.collages = collages
             
