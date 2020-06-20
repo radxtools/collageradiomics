@@ -20,7 +20,7 @@ Currently supports the following Haralick features:
 - InformationMeasureOfCorrelation2 
 - MaximalCorrelationCoefficient 
 
-## Idempotentcy
+## Idempotence
 collageradiomics includes parameter tuning information in the output. It contains the image(s) and mask(s), and the settings apllied upon them. This allows multiple fully reproducible runs without having to remember or find the original parameters.
 
 ## Documentation
