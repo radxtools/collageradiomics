@@ -9,3 +9,4 @@ module/dist/*
 module/build/*
 output_data/
 .bash_history
+.vscode/

@@ -2,7 +2,7 @@ FROM nathanhillyer/ubuntu-base
 ENV LANG C.UTF-8
 RUN PIP_INSTALL="python -m pip install --upgrade --no-cache-dir --retries 10 --timeout 60" && \
     $PIP_INSTALL \
-        collageradiomics==0.0.1a35 \
+        collageradiomics==0.0.1a36 \
         && \
     ldconfig && \
     apt-get clean && \

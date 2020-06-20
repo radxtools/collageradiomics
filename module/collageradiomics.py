@@ -93,6 +93,42 @@ class InformationMeasureOfCorrelation1Interpretation(Enum):
     XMinusYVariance = 0
     ProbabilityXMinusYVariance = 1
 
+class CollageCollection:
+    def __init__(self,
+    images_array, 
+    masks_array,
+    svd_radius=5, 
+    verbose_logging=False,
+    haralick_feature_list=[HaralickFeature.All], 
+    log_sample_rate=500, 
+    cooccurence_angles=[0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4],
+    information_measure_correlation1_interpretation = InformationMeasureOfCorrelation1Interpretation.XMinusYVariance,
+    haralick_window_size=-1,
+    greylevels = 64,
+    ):
+        self.images_array = images_array
+        self.masks_array =  masks_array
+        self.svd_radius = svd_radius
+        self.verbose_logging = verbose_logging
+        self.haralick_feature_list = haralick_feature_list
+        self.log_sample_rate = log_sample_rate
+        self.cooccurence_angles = cooccurence_angles
+        self.information_measure_correlation1_interpretation = information_measure_correlation1_interpretation
+        self.haralick_window_size = haralick_window_size
+        self.greylevels = greylevels
+        collages = []
+        for x in range(len(images_array)):
+            mask_index = 0
+            if len(masks_array) >= x - 1:
+                mask_index = x
+            collage = Collage(images_array[x], masks_array[mask_index])
+            collages.append(collage)
+        self.collages = collages
+            
+    def execute(self):
+        for collage in self.collages:
+            collage.execute()
+
 class Collage:
     def __init__(self, 
     img_array, 
@@ -143,7 +179,7 @@ class Collage:
     mask_min_y, 
     patch_window_width, 
     patch_window_height, 
-    svd_radius, 
+    svd_radius=5, 
     verbose_logging=False,
     haralick_feature_list=[HaralickFeature.All], 
     log_sample_rate=500, 
@@ -166,6 +202,33 @@ class Collage:
             haralick_window_size,
             greylevels
             )
+
+    @classmethod
+    def from_multiple_images(cls, 
+    images_array, 
+    masks_array,
+    svd_radius=5, 
+    verbose_logging=False,
+    haralick_feature_list=[HaralickFeature.All], 
+    log_sample_rate=500, 
+    cooccurence_angles=[0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4],
+    information_measure_correlation1_interpretation = InformationMeasureOfCorrelation1Interpretation.XMinusYVariance,
+    haralick_window_size=-1,
+    greylevels = 64,
+    ):
+        return CollageCollection(
+            images_array, 
+            masks_array, 
+            svd_radius, 
+            verbose_logging, 
+            haralick_feature_list, 
+            log_sample_rate, 
+            cooccurence_angles, 
+            information_measure_correlation1_interpretation, 
+            haralick_window_size, 
+            greylevels
+            )
+    
 
     def get_haralick_mt_value(self, img_array, center_x, center_y, window_size, greylevels, haralick_feature, symmetric, mean):
         # extract subpart of image (todo: pass in result from view_as_windows)
@@ -208,9 +271,6 @@ class Collage:
         img_array = self.img_array[:,:,0]
         if self.verbose_logging:
             print(f'IMAGE:\nwidth={img_array.shape[1]} height={img_array.shape[0]}')
-
-        # unused -- do we still need this?
-        # haralick_radius = svd_radius * 2 + 1
 
         cropped_array = img_array[mask_min_y:mask_min_y+patch_window_height, mask_min_x:mask_min_x+patch_window_width]
         if self.verbose_logging:
