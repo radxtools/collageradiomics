@@ -71,7 +71,7 @@ docker run -it -p 8888:8888 ccipd/collageradiomics-pip
 ```
 
 ## Usage
-collageradiomics can be implemented in Python through the collageradiomics module. It has a intuitive interface-- simple create a Collage object or use one of the factory methods and run the `execute()` function.
+collageradiomics can be implemented in Python through the collageradiomics module. It has a intuitive interface-- simply create a Collage object or use one of the factory methods and run the `execute()` function.
 
 ## Dependencies:
 We thank these generous developers that allowed us to build collageradiomics without reinventing the wheel:
