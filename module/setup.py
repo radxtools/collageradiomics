@@ -1,30 +1,43 @@
 import setuptools
 
-with open("README.md", "r") as fh:
+with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="collageradiomics",
-    version="0.0.1a37",
-    author="Toth Technology",
-    author_email="toth-tech@hillyer.me",
-    description="CoLliage Implementation",
+    name='collageradiomics',
+    version='0.0.1a38',
+    author='Toth Technology',
+    author_email='toth-tech@hillyer.me',
+    description='CoLliage Implementation',
     long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/Toth-Technology/collageradiomics",
-    py_modules=["collageradiomics"],
+    long_description_content_type='text/markdown',
+    url='https://github.com/ccipd/collageradiomics',
+    project_urls={
+        'Docker Examples': 'https://hub.docker.com/repository/docker/ccipd/collageradiomics-examples',
+        'Docker Module': 'https://hub.docker.com/repository/docker/ccipd/collageradiomics-pip',
+        'Github': 'https://github.com/ccipd/collageradiomics'
+    },
+    py_modules=['collageradiomics'],
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-        "Operating System :: OS Independent",
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Science/Research',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Operating System :: OS Independent',
+        'Operating System :: POSIX :: Linux',
+        'Operating System :: Microsoft :: Windows :: Windows 10',
+        'Operating System :: MacOS',
+        'Programming Language :: Python :: 3',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
     ],
     install_requires=[
-        'matplotlib',
-        'numpy',
-        'scikit-learn',
-        'scikit-build',
-        'mahotas',
-        'scipy'
+        'matplotlib==3.2.2',
+        'numpy==1.19.0',
+        'scikit-learn==0.23.1',
+        'scikit-build==0.11.1',
+        'mahotas==1.4.10',
+        'scipy==1.5.0'
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.6',
+    keywords='radiomics cancerimaging medicalresearch computationalimaging',
 )
