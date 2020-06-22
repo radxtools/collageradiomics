@@ -10,3 +10,4 @@ module/build/*
 output_data/
 .bash_history
 .vscode/
+module/collageradiomics.egg-info/*

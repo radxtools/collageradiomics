@@ -1,6 +1,0 @@
-matplotlib
-numpy
-scikit-learn
-scikit-build
-mahotas
-scipy
