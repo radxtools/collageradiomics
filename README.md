@@ -117,12 +117,15 @@ PS C:\Users\user\collageradiomics>
   * If it's running you should see an icon:  
   ![Docker Initializing](https://i.imgur.com/lylVdSc.png)  
   ![Docker Icon](https://i.imgur.com/NzGJQaO.png)
-2. For _Windows_ users, you will have to give **Docker** access to your  user interface program, go to _Resources_ :arrow_right: _Shared Folders_ and add your cloned repository to the list of folders that **Docker** will have permission to share with the container.
-* Right click on the context menu near the clock:
-![Docker Context Menu](https://i.imgur.com/CSY0GzK.png)
-* After you click on _Dashboard_, a window will pop up. Click on the gear icon for _Settings_ and move to _Resources_ :arrow_right: _File Sharing_.
-![Docker Filesharing](https://i.imgur.com/JLiVp72.png)
-* Add your cloned repository folder here to this list.
+2. For _Windows_ users, you will have to give **Docker** access to your newly cloned folder:
+   1. Right click on the context menu near the clock: 
+   ![Docker Context Menu](https://i.imgur.com/CSY0GzK.png)
+   2. Select _Dashboard_:
+   ![Docker Dashboard](https://i.imgur.com/zIlGKvb.png)
+   3. After you click on _Dashboard_, a window will pop up. Click on the gear icon for _Settings_ and move to _Resources_ :arrow_right: _File Sharing_.
+   ![Docker Filesharing](https://i.imgur.com/JLiVp72.png)
+   4. Add your cloned repository folder:
+   ![Docker Add Repo](https://i.imgur.com/lb8RN1O.png)
 
 ### Examples
 This **Docker** image contains a running Jupyter notebook with the **CoLlAGe** module pre-installed. From the cloned repository directory, we will start up a **Docker** image which will run a live web server and host a **Jupyter** notebook at the URL http://localhost:8888 which contains examples of using the code.
