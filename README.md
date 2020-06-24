@@ -33,7 +33,7 @@ The best source of documentation is found the examples - instructions provided b
 These instructions will help set up the **CoLlAGe** core module and examples. They assume you are working out of a terminal such as **Powershell** on Windows or **Konsole** on Linux.
 
 ## Docker
-**Docker** is like a stand-alone operating system container that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding with **CoLlAGe**. We offer 2 **Docker** images: a basic core image for you to start coding with the **CoLlAGe** features (called `ccipd/collageradiomics-pip`) and an image that contains a running **Jupyter** notebook with **CoLlAGe** pre-installed and examples ready to run (called `ccipd/collageradiomics-examples`).
+**Docker** is like a stand-alone operating system container that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding with **CoLlAGe**. We offer 2 **Docker** images: a basic core image for you to start coding with the **CoLlAGe** features (called _[collageradiomics-pip](#collageradiomics-pip-docker-image)_) and an image that contains a running **Jupyter** notebook with **CoLlAGe** pre-installed and examples ready to run (called _[collageradiomics-examples](#collageradiomics-examples-docker-image)_).
 
 ### Docker Setup
 #### Linux
@@ -304,8 +304,8 @@ exit
 ## Pip
 To use this module in your existing **Python** development environment, you can install our **pip** module.
 
-1. Make sure **pip** is set up and installed on your appropriate operating system. [See instructions here](https://pip.pypa.io/en/stable/installing/).
-* _Ubuntu_:
+### Linux
+1. Install **pip**:
 ```console
 user@machine:~$ sudo apt -y install python3-pip
 Reading package lists... Done
@@ -326,8 +326,76 @@ Collecting collageradiomics
 Successfully installed collageradiomics-...
 user@machine:~$ 
 ```
-
 *(Note: For some operating systems, the command is simply `pip` instead of `pip3`.)*
+
+### Windows
+1. Install **Python** using [this link](https://www.python.org/downloads/windows/).
+2. Test that **Python** is properly installed in the Powershell:
+```console
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\Users\user> python --version
+Python 3.8.2
+PS C:\Users\user> python
+Python 3.8.2 (tags/v3.8.2:7b3ab59, Feb 25 2020, 23:03:10) [MSC v.1916 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> quit()
+PS C:\Users\user>
+```
+3. Install pip by downloading this [get-pip.py file](https://bootstrap.pypa.io/get-pip.py) and running the following command:
+```console
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\Users\user> python get-pip.py
+Collecting pip
+  Downloading pip-20.1.1-py2.py3-none-any.whl (1.5 MB)
+     |████████████████████████████████| 1.5 MB 3.2 MB/s
+Collecting wheel
+  Using cached wheel-0.34.2-py2.py3-none-any.whl (26 kB)
+Installing collected packages: pip, wheel
+  Attempting uninstall: pip
+    Found existing installation: pip 20.0.2
+    Uninstalling pip-20.0.2:
+      Successfully uninstalled pip-20.0.2
+Successfully installed pip-20.1.1 wheel-0.34.2
+PS C:\Users\user> pip -V
+pip 20.1.1 from c:\users\robto\appdata\local\programs\python\python38\lib\site-packages\pip (python 3.8)
+PS C:\Users\user>
+```
+4. Install our module
+```console
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\Users\user> pip install collageradiomics --upgrade
+```
+5. Verify its installation in **Python**:
+```console
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\Users\user> python
+>>> import collageradiomics
+Could not import submodules (exact error was: DLL load failed while importing _bbox: The specified module could not be found.).
+
+There are many reasons for this error the most common one is that you have
+either not built the packages or have built (using `python setup.py build`) or
+installed them (using `python setup.py install`) and then proceeded to test
+mahotas **without changing the current directory**.
+
+Try installing and then changing to another directory before importing mahotas.
+>>>
+```
 
 ## Python Usage
 collageradiomics can be implemented in **Python** through the `collageradiomics` pip module. It has a intuitive interface - simply create a `Collage` object or use one of the factory methods and run the `execute()` function.
