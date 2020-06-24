@@ -10,6 +10,7 @@
   - [Documentation](#documentation)
   - [Dependencies](#dependencies)
 - [Installation & Usage](#installation--usage)
+  - [Executive Summary for Experts](#executive-summary-for-experts)
   - [Docker](#docker)
     - [Docker Setup](#docker-setup)
     - [collageradiomics-examples Docker Image](#collageradiomics-examples-docker-image)
@@ -87,24 +88,30 @@ These instructions will help set up the **CoLlAGe** core module and examples. Th
 If you are already well-versed in **Docker** and **pip**, here is a quick list of commands for each operating system:
 
 ### Linux
-```console
-Core Docker:
-user@machine:~$ sudo docker pull ccipd/collageradiomics-pip:latest
-user@machine:~$ sudo docker run -it ccipd/collageradiomics-pip
+```shell
+sudo docker pull ccipd/collageradiomics-pip:latest
+sudo docker run -it ccipd/collageradiomics-pip
 
-Examples Docker:
-user@machine:~$ git clone https://github.com/ccipd/collageradiomics.git
-user@machine:~$ sudo docker pull ccipd/collageradiomics-examples:latest
-user@machine:~$ sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
+git clone https://github.com/ccipd/collageradiomics.git
+sudo docker pull ccipd/collageradiomics-examples:latest
+sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
 
-Pip:
-user@machine:~$ pip3 install collageradiomics
+pip3 install collageradiomics
 ```
 
 ### Windows
 ```console
+docker pull ccipd/collageradiomics-pip:latest
+docker run -it -v ${PWD}:/root ccipd/collageradiomics-pip
 
+git clone https://github.com/ccipd/collageradiomics.git
+docker pull ccipd/collageradiomics-examples:latest
+docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples
+
+pip install collageradiomics
 ```
+
+You may wish to jump righ tto some [**Python** examples](#python-examples)
 
 ## Docker
 **Docker** is like a stand-alone operating system container that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding with **CoLlAGe**. We offer 2 **Docker** images: a basic core image for you to start coding with the **CoLlAGe** features (called _[collageradiomics-pip](#collageradiomics-pip-docker-image)_) and an image that contains a running **Jupyter** notebook with **CoLlAGe** pre-installed and examples ready to run (called _[collageradiomics-examples](#collageradiomics-examples-docker-image)_).
