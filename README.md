@@ -93,16 +93,22 @@ root@12b12d2bff59:/#
 * _Windows_: There is a button in the docker graphical user interface to load a terminal from a given downloaded
 4. Test the python module by making sure the following command outputs `True` to the terminal:  
 ```console
-root@12b12d2bff59:/# python -c 'import numpy as np; import collageradiomics; print(not not len(collageradiomics.__name__) and not not len(collageradiomics.Collage.from_rectangle(np.random.rand(20,20,3), 10, 10, 10, 10).execute()));'
+root@12b12d2bff59:/# python -c 'import numpy as np; import collageradiomics; print(not not len(collageradiomics.__name__) and not not len(collageradiomics.Collage.from_rectangle(np.random.rand(20,20,3), 2, 2, 10, 10).execute()));'
 True
 root@12b12d2bff59:/# 
 ```
 * _Windows_: _(TODO)_
-5. Code in **Python**:
-* `python`
-* `>>> import collageradiomics`
-
-This should output (something).
+5. Starting coding with **CoLlAGe** in **Python**:
+```console
+root@12b12d2bff59:/# python
+Python 3.8.2 (default, Apr 27 2020, 15:53:34) 
+[GCC 9.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import collageradiomics
+>>> collageradiomics.__name__
+'collageradiomics'
+>>> 
+```
 
 ## Pip
 To use this module in your existing **Python** development environment, you can install our **pip** module.
