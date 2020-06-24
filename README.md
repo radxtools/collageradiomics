@@ -60,10 +60,11 @@ _Note: Using this method requires you to pull the code from our repository. If y
 * _Linux_:
 ```console
 user@machine:~/code/collageradiomics$ sudo docker pull ccipd/collageradiomics-examples:latest
-latest: Pulling from ccipd/collageradiomics-pip
-Digest: sha256:8fc7d61dbe6ad64eeff9c69cfaa788d90c61861bff8aaf8865ed1318c5666250
-Status: Image is up to date for ccipd/collageradiomics-pip:latest
-docker.io/ccipd/collageradiomics-pip:latest
+latest: Pulling from ccipd/collageradiomics-examples
+Digest: sha256:107a2804e76b156f40d571b8422f822a3712353645c86e5cc2275d2aea85c9be
+Status: Image is up to date for ccipd/collageradiomics-examples:latest
+docker.io/ccipd/collageradiomics-examples:latest
+user@machine:~/code/collageradiomics$ 
 ```
 * _Windows_: `docker pull ccipd/collageradiomics-examples:latest`
 2. Run the **Docker** image:
@@ -87,13 +88,37 @@ user@machine:~/code/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/
 ![Jupyter Run Cells](https://i.imgur.com/GaAaNAS.png)
 ![Jupyter Output](https://i.imgur.com/PapCcsg.png)
 7. Feel free to add your own cells and run them to get familiar with the **CoLlAGe** code.
+8. To exit the **Docker** image, press `Ctrl+C` twice:
+```console
+[I 07:05:36.271 NotebookApp] The Jupyter Notebook is running at:
+[I 07:05:36.271 NotebookApp] http://4f033d68769d:8888/
+[I 07:05:36.271 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+^C[I 07:05:37.628 NotebookApp] interrupted
+Serving notebooks from local directory: /root
+0 active kernels
+The Jupyter Notebook is running at:
+http://4f033d68769d:8888/
+Shutdown this notebook server (y/[n])? ^C[C 07:05:38.744 NotebookApp] received signal 2, stopping
+[I 07:05:38.745 NotebookApp] Shutting down 0 kernels
+user@machine:~/collageradiomics$ 
+```
 
 ### Core
-This is the most straightforward way to start playing with the code. And it does not require the `git` commands that the **Jupyter** examples require. This is simply a pre-built container
+This is the most straightforward way to start playing with the code. And it does not require the `git` commands that the **Jupyter** examples require. This is simply a pre-built container that lets you start trying out the module in **Python** immediately.
 
 1. Pull the latest **Docker** image:
-* _Linux_: `sudo docker pull ccipd/collageradiomics-pip:latest`
-* _Windows_: `docker pull ccipd/collageradiomics-pip:latest`
+* _Linux_:
+```console
+user@machine:~$ sudo docker pull ccipd/collageradiomics-pip:latest
+latest: Pulling from ccipd/collageradiomics-pip
+Digest: sha256:8fc7d61dbe6ad64eeff9c69cfaa788d90c61861bff8aaf8865ed1318c5666250
+Status: Image is up to date for ccipd/collageradiomics-pip:latest
+docker.io/ccipd/collageradiomics-pip:latest
+```
+* _Windows_:
+```console
+(powershell?)> docker pull ccipd/collageradiomics-pip:latest
+```
 2. Run the **Docker** image:
 * _Linux_:
 ```console
@@ -105,14 +130,14 @@ root@12b12d2bff59:/#
 (powershell?)> docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-pip
 ```
 3. If your terminal prompt changes to `root@[random_string]:/#` then you are working inside the **Docker** container environment.
-* _Windows_: There is a button in the docker graphical user interface to load a terminal from a given downloaded
+* _Windows_: There is a button in the **Docker** graphical user interface to load a terminal from a given pulled **Docker** image.
 4. Test the python module by making sure the following command outputs `True` to the terminal:  
 ```console
 root@12b12d2bff59:/# python -c 'import numpy as np; import collageradiomics; print(not not len(collageradiomics.__name__) and not not len(collageradiomics.Collage.from_rectangle(np.random.rand(20,20,3), 2, 2, 10, 10).execute()));'
 True
 root@12b12d2bff59:/# 
 ```
-5. Starting coding with **CoLlAGe** in **Python**:
+5. Starting coding with **CoLlAGe** in **Python** [(click here to jump to code examples)](#python-usage):
 ```console
 root@12b12d2bff59:/# python
 Python 3.8.2 (default, Apr 27 2020, 15:53:34) 
