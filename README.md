@@ -22,7 +22,7 @@
 - [Contact](#contact)
 
 # Science
-(_[Table of Contents](#table-of-contents)_)
+[Back to **Table of Contents**](#table-of-contents)
 
 ## Overview
 
