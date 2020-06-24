@@ -59,11 +59,12 @@ From the cloned repository directory, we will start up a **Docker** image which 
 * _Windows_: `docker pull ccipd/collageradiomics-examples:latest`
 2. Run the **Docker** image:
 * _Linux_: `sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples`
-* _Windows_:* `docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples`
+* _Windows_: `docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples`
 3. Open up a web browser to http://localhost:8888
 4. Navigate to the _Jupyter_ :arrow_right: _Examples_ directory.
 5. Click on one of the example `*.ipynb` files.
 6. Run all cells.
+7. Feel free to add your own cells and run them to get familiar with the **CoLlAGe** code.
 
 _TODO: Jupyter screenshot.__
 
@@ -72,17 +73,19 @@ _TODO: Jupyter screenshot.__
 * _Linux_: `sudo docker pull ccipd/collageradiomics-pip:latest`
 * _Windows_: `docker pull ccipd/collageradiomics-pip:latest`
 2. Run the **Docker** image:
-* _Linux_: `sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-pip`
-* _Windows_:* `docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-pip`
-3. Access the docker terminal. _TODO: How?_
-* _Linux_: _(TODO)_
+* _Linux_: `sudo docker run -it -v $PWD:/root ccipd/collageradiomics-pip`
+* _Windows_: `docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-pip`
+3. If your terminal prompt changes to `root@[random_string]:/#` then you are working inside the **Docker** container environment.
+* _Windows_: There is a button in the docker graphical user interface to load a terminal from a given downloaded
+4. Test the python module by making sure the following command outputs `True` to the terminal:  
+```
+python -c 'import numpy as np; import collageradiomics; print(not not len(collageradiomics.__name__));'
+```
+collageradiomics.Collage(np.empty((50,50)), np.empty((50,50))).execute()```
 * _Windows_: _(TODO)_
-4. Test **Python** import by running the following command.
-* ```python -c import command``
 5. Code in **Python**:
 * `python`
-* `>>> import`
-* `>>> print`
+* `>>> import collageradiomics`
 
 This should output (something).
 
