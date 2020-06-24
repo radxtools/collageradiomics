@@ -45,6 +45,16 @@ git is already the newest version (1:2.20.1-2ubuntu1.19.10.3).
 user@machine:~$ 
 ```
 * _Windows_: A quick online search will provide you with several packaged executables.
+```console
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\Users\user> git --version
+git version 2.26.2.windows.1
+PS C:\Users\user>
+```
 2. In a shell (e.g. **Powershell** on Windows or **Konsole** on Linux) clone the repository:  
 ```console
 user@machine:~$ git clone https://github.com/ccipd/collageradiomics.git
@@ -67,6 +77,9 @@ user@machine:~/collageradiomics$
 
 ### Setup
 1. [Click here](https://www.docker.com/get-started) to install **Docker** for your operating system.
+* Windows:  
+![Docker Initializing](https://i.imgur.com/lylVdSc.png)  
+![Docker Context Menu](https://i.imgur.com/CSY0GzK.png)
 2. For _Windows_ users, on the **Docker** graphical user interface program, go to _Resources_ :arrow_right: _Shared Folders_ and add your cloned repository to the list of folders that **Docker** will have permission to share with the container.
 
 ### Examples
