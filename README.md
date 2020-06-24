@@ -51,7 +51,7 @@ These instructions will help set up the **CoLlAGe** core module and examples. Th
 ### collageradiomics-examples Docker Image
 This **Docker** image contains a running Jupyter notebook with the **CoLlAGe** module pre-installed. From the cloned repository directory, we will start up a **Docker** image which will run a live web server and host a **Jupyter** notebook at the URL http://localhost:8888 which contains examples of using the code.
 
-_Note: Using this method requires you to pull the code from our repository. If you don't need the **Jupyter** examples and just want to start using **CoLlAGe** right away, you can skip this step and jump to the instructions for **Core** by [clicking here](#core)._
+_Note: Using this method requires you to pull the code from our repository. If you don't need the **Jupyter** examples and just want to start using **CoLlAGe** right away, you can skip this step and jump to the instructions for **Core** by [clicking here](#collageradiomics-pip-docker-image)._
 
 #### Linux
 _Note: This was tested on Ubuntu 19.10 and 20.04_
@@ -100,6 +100,8 @@ user@machine:~/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/root 
 [I 06:35:14.034 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
 ```
 
+You can now skip over the _Windows_ installation instructions and jump straight to the [Exploring The Examples](#exploring-the-examples) section.
+
 #### Windows
 1. Install **git**. A quick online search for _"git for Windows"_ will provide you with several options for installing the ```git``` command. If it's correctly installed, the following should output your current version of git:  
 ```console
@@ -113,7 +115,6 @@ git version 2.26.2.windows.1
 PS C:\Users\user>
 ```
 2. Clone the repository:  
-* _Windows_:
 ```console
 Windows PowerShell
 Copyright (C) Microsoft Corporation. All rights reserved.
@@ -148,10 +149,14 @@ d-----       2020-06-24      3:31                sample_data
 PS C:\Users\user\collageradiomics>
 ```
 3. Give **Docker** access to your cloned repository:
-   1. Right click on the context menu near the clock: ![Docker Context Menu](https://i.imgur.com/CSY0GzK.png)
-   2. Select _Dashboard_: ![Docker Dashboard](https://i.imgur.com/zIlGKvb.png)
-   3. After you click on _Dashboard_, a window will pop up. Click on the gear icon for _Settings_ and move to _Resources_ :arrow_right: _File Sharing_. ![Docker Filesharing](https://i.imgur.com/JLiVp72.png)
-   4. Add your cloned repository folder: ![Docker Add Repo](https://i.imgur.com/lb8RN1O.png)
+   1. Right click on the context menu near the clock:  
+   ![Docker Context Menu](https://i.imgur.com/CSY0GzK.png)
+   2. Select _Dashboard_:  
+   ![Docker Dashboard](https://i.imgur.com/zIlGKvb.png)
+   3. After you click on _Dashboard_, a window will pop up. Click on the gear icon for _Settings_ and move to _Resources_ :arrow_right: _File Sharing_.  
+   ![Docker Filesharing](https://i.imgur.com/JLiVp72.png)
+   4. Add your cloned repository folder:  
+   ![Docker Add Repo](https://i.imgur.com/lb8RN1O.png)
 4. Pull the latest **Docker** image:
 ```console
 Windows PowerShell
@@ -183,7 +188,6 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
 Try the new cross-platform PowerShell https://aka.ms/pscore6
 
-PS C:\Users\user> docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples^C
 PS C:\Users\user> cd collageradiomics
 PS C:\Users\user\collageradiomics> docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples
 [I 08:28:36.091 NotebookApp] Writing notebook server cookie secret to /tmp/notebook_cookie_secret
