@@ -1,9 +1,13 @@
 # Co-occurrence of Local Anisotropic Gradient Orientations (CoLlAGe)
 
-CoLlAGe captures subtle anisotropic differences in disease pathologies by measuring entropy of co-occurrences of voxel-level gradient orientations on imaging computed within a local neighborhood. CoLlAGe is based on the hypothesis that disruption in tissue microarchitecture can be quantified on imaging by measuring the disorder in voxel-wise gradient orientations. CoLlAGe involves assigning every image voxel a ‘disorder value’ associated with the co-occurrence matrix of gradient orientations computed around every voxel. Details on extraction of CoLlAGe features are included in [1]. After feature extraction, the subsequent distribution or different statistics such as mean, median, variance etc can be computed and used in conjunction with a machine learning classifier to distinguish similar appearing pathologies. The feasibility of CoLlAGe in distinguishing cancer from treatment confounders/benign conditions and characterizing molecular subtypes of cancers has been demonstrated in the context of multiple challenging clinical problems.
+CoLlAGe captures subtle anisotropic differences in disease pathologies by measuring entropy of co-occurrences of voxel-level gradient orientations on imaging computed within a local neighborhood.
+
+CoLlAGe is based on the hypothesis that disruption in tissue microarchitecture can be quantified on imaging by measuring the disorder in voxel-wise gradient orientations. CoLlAGe involves assigning every image voxel a ‘disorder value’ associated with the co-occurrence matrix of gradient orientations computed around every voxel.
+
+Details on extraction of CoLlAGe features are included in [1]. After feature extraction, the subsequent distribution or different statistics such as mean, median, variance etc can be computed and used in conjunction with a machine learning classifier to distinguish similar appearing pathologies. The feasibility of CoLlAGe in distinguishing cancer from treatment confounders/benign conditions and characterizing molecular subtypes of cancers has been demonstrated in the context of multiple challenging clinical problems.
 
 ## Feature Classes
-Currently supports the following Haralick features:
+Currently supports the following Haralick [2] features:
 
 - AngularSecondMoment
 - Contrast
@@ -49,11 +53,21 @@ We offer 2 docker images: a basic core image for you to start coding with the co
 2. For _Windows_ users, on the **Docker** GUI program, go to _Resources_ :arrow_right: _Shared Folders_ and add your cloned repository to the list of folders that **Docker** will share with the container.
 
 ### Core
-* Pull the latest
-* Windows powershell screenshot
-* Windows-specific screenshots
-* python import command
-
+1. Pull the latest image:
+* _Linux_: ```sudo docker pull ccipd/collageradiomics-pip:latest```
+* _Windows_: ```docker pull ccipd/collageradiomics-pip:latest```
+2. Run the **Docker** image:
+* _Linux_: ```sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-pip```
+* _Windows_:* ```docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-pip```
+3. Access the docker terminal. _TODO: How?__
+* _Linux_: _(TODO)_
+* _Windows_: _(TODO)_
+4. Test **Python** import:
+* ```python -c import command``
+5. Code in **Python**:
+* ```python```
+* ```import```
+* ``` print```
 
 ### Examples
 From the cloned directory, we will start up a **Docker** image which will run a live web server and host a Jupyter notebook at the URL http://localhost:8888 which contains examples of using the code.
@@ -67,41 +81,18 @@ From the cloned directory, we will start up a **Docker** image which will run a 
 3. Open up a web browser to http://localhost:8888
 4. Navigate to the _Jupyter_ :arrow_right: _Examples_ directory.
 5. Click on one of the example ```*.ipynb``` files.
+6. Run all cells.
 
 _TODO: Jupyter screenshot.__
 
-
 ## Pip
-### Setup
-* Set up pip on your appropriate operating system
+To use this module in your existing **Python** development environment, you can install our pip module.
 
-```
-pip3 install collageradiomics
-```
-*(Note: for some operating systems the command is simply ```pip```).*
+1. Make sure pip is set up and installed on your appropriate operating system. See instructions [here](https://pip.pypa.io/en/stable/installing/).
+2. Install our module:  
+```pip3 install collageradiomics```
 
-## Git
-
-```
-git clone https://github.com/ccipd/collageradiomics && cd collageradiomics
-```
-
-## Docker Ubuntu 20.04 Jupyter Examples
-
-
-#### Open in browser:
-```
-localhost:8888
-```
-
-Open `jupyter/examples` directory and explore the Jupyter notebooks.
-
-## Docker Ubuntu 20.04 Pip Module
-This is a Docker image with the collageradiomics module pre-installed:
-```
-docker pull radiomics/collageradiomics-pip:latest
-docker run -it -p 8888:8888 ccipd/collageradiomics-pip
-```
+*(Note: for some operating systems the command is simply ```pip``` instead of ```pip**3**```).*
 
 ## Usage
 collageradiomics can be implemented in Python through the collageradiomics module. It has a intuitive interface-- simply create a Collage object or use one of the factory methods and run the `execute()` function.
@@ -115,13 +106,19 @@ We thank these generous developers that allowed us to build collageradiomics wit
 - mahotas
 - scipy
 
+We will likely provide a stripped down core version of our pip module which only contains the minimal dependencies.
+
+We also are using ```==``` for version numbers of our dependencies as a design choice.
+
 # References and Citations
 
 <a href="http://bric-lab.com"><img align="right" height=100 src="https://static.wixstatic.com/media/a0e8e5_809a649f13254ff293405c7476004e20~mv2.png/v1/fill/w_248,h_240,al_c,usm_0.66_1.00_0.01/a0e8e5_809a649f13254ff293405c7476004e20~mv2.png"></a>
 
 If you make use of this implementation, please cite the following paper:
 
-[1] Prasanna, P., Tiwari, P., & Madabhushi, A. (2016). Co-occurrence of Local Anisotropic Gradient Orientations (CoLlAGe): A new radiomics descriptor. Scientific Reports, 6:37241.
+[1] Prasanna, P., Tiwari, P., & Madabhushi, A. (2016). "Co-occurrence of Local Anisotropic Gradient Orientations (CoLlAGe): A new radiomics descriptor. Scientific Reports", 6:37241.
+
+[2] R. M. Haralick, K. Shanmugam and I. Dinstein, "Textural Features for Image Classification," in IEEE Transactions on Systems, Man, and Cybernetics, vol. SMC-3, no. 6, pp. 610-621, Nov. 1973, [doi: 10.1109/TSMC.1973.4309314](https://doi.org/10.1109/TSMC.1973.4309314).
 
 Please report any issues or feature requests via the [Issues](https://github.com/ccipd/collageradiomics/issues) tab
 
