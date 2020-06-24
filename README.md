@@ -9,19 +9,19 @@ Details on extraction of **CoLlAGe** features are included in [\[1\]](#reference
 ## Feature Classes
 Currently supports the following Haralick [\[2\]](#references) features:
 
-1. `AngularSecondMoment`
-2. `Contrast`
-3. `Correlation`
-4. `SumOfSquareVariance`
-5. `SumAverage`
-6. `SumVariance`
-7. `SumEntropy`
-8. `Entropy`
-9. `DifferenceVariance`
-10. `DifferenceEntropy`
-11. `InformationMeasureOfCorrelation1`
-12. `InformationMeasureOfCorrelation2`
-13. `MaximalCorrelationCoefficient`
+1. _AngularSecondMoment_
+2. _Contrast_
+3. _Correlation_
+4. _SumOfSquareVariance_
+5. _SumAverage_
+6. _SumVariance_
+7. _SumEntropy_
+8. _Entropy_
+9. _DifferenceVariance_
+10. _DifferenceEntropy_
+11. _InformationMeasureOfCorrelation1_
+12. _InformationMeasureOfCorrelation2_
+13. _MaximalCorrelationCoefficient_
 
 ## Idempotence
 Our **CoLlAGe** module includes parameter tuning information in the output. It contains the image(s) and mask(s), and the settings applied upon them. This allows multiple fully reproducible runs without having to remember or find the original parameters.
@@ -81,11 +81,12 @@ user@machine:~/code/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/
 3. Open up a web browser to http://localhost:8888
 ![Jupyter Home](https://i.imgur.com/R8fd6mj.png)
 4. Navigate to the _Jupyter_ :arrow_right: _Examples_ directory.
+![Jupyter Examples](https://i.imgur.com/blShjBv.png)
 5. Click on one of the example `*.ipynb` files.
-6. Run all cells.
+6. Run _Cell_ :arrow_right: _Run all_.
+![Jupyter Run Cells](https://i.imgur.com/GaAaNAS.png)
+![Jupyter Output](https://i.imgur.com/PapCcsg.png)
 7. Feel free to add your own cells and run them to get familiar with the **CoLlAGe** code.
-
-_TODO: Jupyter screenshot.__
 
 ### Core
 This is the most straightforward way to start playing with the code. And it does not require the `git` commands that the **Jupyter** examples require. This is simply a pre-built container
