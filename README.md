@@ -21,6 +21,8 @@
 - [Contact](#contact)
 
 # Science
+(_[Table of Contents](#table-of-contents)_)
+
 ## Overview
 
 **CoLlAGe** captures subtle anisotropic differences in disease pathologies by measuring entropy of co-occurrences of voxel-level gradient orientations on imaging computed within a local neighborhood.
@@ -30,6 +32,8 @@
 Details on extraction of **CoLlAGe** features are included in [\[1\]](#references). After feature extraction, the subsequent distribution or different statistics such as mean, median, variance etc can be computed and used in conjunction with a machine learning classifier to distinguish similar appearing pathologies. The feasibility of CoLlAGe in distinguishing cancer from treatment confounders/benign conditions and characterizing molecular subtypes of cancers has been demonstrated in the context of multiple challenging clinical problems.
 
 ## Features
+(_[Table of Contents](#table-of-contents)_)
+
 Each of the 13 **CoLlAGe** correlate to one of the 13 Haralick texture features[\[2\]](#references):
 1. _AngularSecondMoment_
 2. _Contrast_
@@ -46,7 +50,6 @@ Each of the 13 **CoLlAGe** correlate to one of the 13 Haralick texture features[
 13. _MaximalCorrelationCoefficient_
 
 ## References
-
 <a href="http://bric-lab.com"><img align="right" height=100 src="https://static.wixstatic.com/media/a0e8e5_809a649f13254ff293405c7476004e20~mv2.png/v1/fill/w_248,h_240,al_c,usm_0.66_1.00_0.01/a0e8e5_809a649f13254ff293405c7476004e20~mv2.png"></a>
 
 If you make use of this implementation, please cite the following paper:
@@ -56,6 +59,7 @@ If you make use of this implementation, please cite the following paper:
 [2] R. M. Haralick, K. Shanmugam and I. Dinstein, "Textural Features for Image Classification," in IEEE Transactions on Systems, Man, and Cybernetics, vol. SMC-3, no. 6, pp. 610-621, Nov. 1973, [doi: 10.1109/TSMC.1973.4309314](https://doi.org/10.1109/TSMC.1973.4309314).
 
 # Code
+(_[Table of Contents](#table-of-contents)_)
 
 ## Idempotence
 Our **CoLlAGe** module includes parameter tuning information in the output. It contains the image(s) and mask(s), and the settings applied upon them. This allows multiple fully reproducible runs without having to remember or find the original parameters.
@@ -75,6 +79,7 @@ We thank these generous developers that allowed us to build collageradiomics wit
 _(Note: We are using ```==``` for version numbers of our dependencies as a design choice.)_
 
 # Installation & Usage
+(_[Table of Contents](#table-of-contents)_)
 
 These instructions will help set up the **CoLlAGe** core module and examples. They assume you are working out of a terminal such as **Powershell** on Windows or **Konsole** on Linux.
 
@@ -96,6 +101,8 @@ These instructions will help set up the **CoLlAGe** core module and examples. Th
 ![Docker Icon](https://i.imgur.com/NzGJQaO.png)
 
 ### collageradiomics-examples Docker Image
+(_[Table of Contents](#table-of-contents)_)
+
 This **Docker** image contains a running Jupyter notebook with the **CoLlAGe** module pre-installed. From the cloned repository directory, we will start up a **Docker** image which will run a live web server and host a **Jupyter** notebook at the URL http://localhost:8888 which contains examples of using the code.
 
 _Note: Using this method requires you to pull the code from our repository. If you don't need the **Jupyter** examples and just want to start using **CoLlAGe** right away, you can skip this step and jump to the instructions for **Core** by [clicking here](#collageradiomics-pip-docker-image)._
@@ -269,6 +276,8 @@ user@machine:~/collageradiomics$
 ```
 
 ### collageradiomics-pip Docker Image
+(_[Table of Contents](#table-of-contents)_)
+
 This is the most straightforward way to start playing with the code. And it does not require the `git` commands that the **Jupyter** examples require. This is simply a pre-built container that lets you start trying out the module in **Python** immediately.
 
 #### Linux
@@ -349,6 +358,8 @@ exit
 ```
 
 ## Pip
+(_[Table of Contents](#table-of-contents)_)
+
 To use this module in your existing **Python** development environment, you can install our **pip** module.
 
 ### Linux
@@ -445,6 +456,8 @@ Try installing and then changing to another directory before importing mahotas.
 ```
 
 ## Python Usage
+(_[Table of Contents](#table-of-contents)_)
+
 collageradiomics can be implemented in **Python** through the `collageradiomics` pip module. It has a intuitive interface - simply create a `Collage` object or use one of the factory methods and run the `execute()` function.
 
 ### Basic Example
