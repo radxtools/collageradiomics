@@ -27,11 +27,39 @@ collageradiomics includes parameter tuning information in the output. It contain
 The best source of documentation is found the examples-- instructions provided below.
 
 # Installation
+## Git
+Install the ```git``` based on your operating OS.
+
+In a shell (e.g. ```Powershell``` or ```Konsole```), clone the repository:
+
+```git clone https://github.com/ccipd/collageradiomics.git```
+
+## Docker
+### Overview
+Docker is like a stand-alone operating system that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding. We offer 2 docker images: a basic core image for you to start coding with the collage features, and an image that contains a running Jupyter notebook with collage pre-installed and examples ready to run.
+
+### Setup
+* How to setup docker on each OS
+* Windows Powershell
+* Linux sudo
+
+### Core
+* Windows powershell screenshot
+* Windows-specific screenshots
+* python import command
+
+### Examples
+* Docker run command
+* Jupyter screenshot
 
 ## Pip
+### Setup
+* Set up pip on your appropriate operating system
+
 ```
-pip install collageradiomics
+pip3 install collageradiomics
 ```
+*(Note: for some operating systems the command is simply ```pip```).*
 
 ## Git
 
