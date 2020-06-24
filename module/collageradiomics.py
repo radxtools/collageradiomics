@@ -13,6 +13,17 @@ from itertools import product
 from skimage.feature.texture import greycomatrix
 
 def svd_dominant_angle(x, y, dx_windows, dy_windows):
+    """Calculates the dominate angle at the coordinate within the windows
+
+    Args:
+        x ([int]): [x value of coordinate]
+        y ([int]): [y value of coordinate]
+        dx_windows ([numpy array]): [dx windows of x, y shape to run svd upon]
+        dy_windows ([numpy array]): [dy windows of x, y shape to run svd upon]
+
+    Returns:
+        [float]: [dominant angle at x, y]
+    """
     dx_patch = dx_windows[y, x]
     dy_patch = dy_windows[y, x]
     
@@ -27,15 +38,47 @@ def svd_dominant_angle(x, y, dx_windows, dy_windows):
     return dominant_angle
 
 def show_colored_image(figure, axis, image_data, colormap=plt.cm.jet):
+    """Helper method to show a colored image in matplotlib
+
+    Args:
+        figure ([matplotlib figure]): [figure upon which to display]
+        axis ([matplotlib axis]): [axis upon which to display]
+        image_data ([numpy array]): [image to display]
+        colormap ([matplotlib colormap], optional): [color map to convert for display]. Defaults to plt.cm.jet.
+    """
     image = axis.imshow(image_data, cmap=colormap)
     divider = make_axes_locatable(axis)
     colorbar_axis = divider.append_axes("right", size="5%", pad=0.05)
     figure.colorbar(image, cax=colorbar_axis)
 
 def create_highlighted_rectangle(x, y, w, h):
+    """Creates a matplotlib Rectangle object for a highlight effect
+
+    Args:
+        x ([int]): [x location to start rectangle]
+        y ([int]): [y location to start rectangle]
+        w ([int]): [width of rectangle]
+        h ([int]): [height of rectangle]
+
+    Returns:
+        [matplotlib Rectangle]: [Rectangle used to highlight within a plot]
+    """
     return Rectangle((x, y), w, h, linewidth=3, edgecolor='cyan', facecolor='none')
 
 def highlight_rectangle_on_image(image_data, min_x, min_y, w, h, colormap=plt.cm.gray):
+    """Highlights a rectangle on an image at the passed in coordinate.
+
+    Args:
+        image_data ([numpy array]): [image to highlight]
+        min_x ([type]): [x location to start highlight]
+        min_y ([type]): [y location to start highlight]
+        w ([type]): [width of highlight rectangle]
+        h ([type]): [height of highlight rectangle]
+        colormap ([matplotlib colormap], optional): [color map to convert for display]. Defaults to plt.cm.gray.
+
+    Returns:
+        [type]: [description]
+    """
     figure, axes = plt.subplots(1,2, figsize=(15,15))
 
     # Highlight window within image.
@@ -52,17 +95,41 @@ def highlight_rectangle_on_image(image_data, min_x, min_y, w, h, colormap=plt.cm
     return cropped_array
 
 def bounding_box(iterable):
+    """Creates a bounding box within an iterable
+
+    Args:
+        iterable ([iterable type]): [array/list/iterable type to grab a boundingbox]
+
+    Returns:
+        [numpy array]: [array representing region of bounding box]
+    """
     print(iterable.shape)
     min_x, min_y = np.min(iterable[0], axis=0)
     max_x, max_y = np.max(iterable[0], axis=0)
     return np.array([(min_x, min_y), (max_x, min_y), (max_x, max_y), (min_x, max_y)])
 
 def bbox1(img):
+    """Calculates bounding box where pixel values are 255
+
+    Args:
+        img ([numpy array]): [image to find bounding box]
+
+    Returns:
+        [tuple (x_min, x_max, y_min, y_max)]: [tuple representing bounding box minx, maxx, miny, maxy]
+    """
     a = np.where(img == 255)
     bbox = np.min(a[0]), np.max(a[0]), np.min(a[1]), np.max(a[1])
     return bbox
 
 def scale_array_for_image(array_to_scale):
+    """Scales an array from 0-255 integer values
+
+    Args:
+        array_to_scale ([numpy array]): [array to scale]
+
+    Returns:
+        [numpy array]: [array scaled from 0-255]
+    """
     flat_array = array_to_scale.flatten()
     minimum = float(min(flat_array))
     maximum = float(max(flat_array))
@@ -74,6 +141,11 @@ def scale_array_for_image(array_to_scale):
 
 from enum import Enum
 class HaralickFeature(Enum):
+    """Enumeration Helper For Haralick Features
+
+    Args:
+        Enum ([HaralickFeature]): [Enumeration Helper For Haralick Features]
+    """
     AngularSecondMoment = 0
     Contrast = 1
     Correlation = 2
@@ -89,11 +161,19 @@ class HaralickFeature(Enum):
     MaximalCorrelationCoefficient = 12
     All = 13
 
-class InformationMeasureOfCorrelation1Interpretation(Enum):
+class DifferenceVarianceInterpretation(Enum):
+    """ Feature 10 has two interpretations, as the variance of |x-y|
+        or as the variance of P(|x-y|).
+
+    Args:
+        Enum ([DifferenceVarianceInterpretation]): [Interpretations of Feature 10]
+    """
     XMinusYVariance = 0
     ProbabilityXMinusYVariance = 1
 
 class CollageCollection:
+    """Enables computation on multiple collage images at the same time.
+    """
     def __init__(self,
     images_array, 
     masks_array,
@@ -102,10 +182,24 @@ class CollageCollection:
     haralick_feature_list=[HaralickFeature.All], 
     log_sample_rate=500, 
     cooccurence_angles=[0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4],
-    information_measure_correlation1_interpretation = InformationMeasureOfCorrelation1Interpretation.XMinusYVariance,
+    difference_variance_interpretation = DifferenceVarianceInterpretation.XMinusYVariance,
     haralick_window_size=-1,
     greylevels = 64,
     ):
+        """Designated initializer for CollageCollection
+
+        Args:
+            images_array ([numpy array]): [array of images to run collage upon]
+            masks_array ([numpy array]): [array of masks to correspond with the images]
+            svd_radius (int, optional): [radius of svd]. Defaults to 5.
+            verbose_logging (bool, optional): [turning this on will log intermediate results]. Defaults to False.
+            haralick_feature_list (list, optional): [array of features to calculate]. Defaults to [HaralickFeature.All].
+            log_sample_rate (int, optional): [higher values will log more svd angles, this only works with verbose logging]. Defaults to 500.
+            cooccurence_angles (list, optional): [list of angles to use in the cooccurence matrix]. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
+            difference_variance_interpretation ([type], optional): [Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
+            haralick_window_size (int, optional): [size of rolling window for texture calculations]. Defaults to -1.
+            greylevels (int, optional): [number of bins to use for the grey levels]. Defaults to 64.
+        """
         self.images_array = images_array
         self.masks_array =  masks_array
         self.svd_radius = svd_radius
@@ -113,7 +207,7 @@ class CollageCollection:
         self.haralick_feature_list = haralick_feature_list
         self.log_sample_rate = log_sample_rate
         self.cooccurence_angles = cooccurence_angles
-        self.information_measure_correlation1_interpretation = information_measure_correlation1_interpretation
+        self.difference_variance_interpretation = difference_variance_interpretation
         self.haralick_window_size = haralick_window_size
         self.greylevels = greylevels
         collages = []
@@ -129,7 +223,7 @@ class CollageCollection:
                 haralick_feature_list, 
                 log_sample_rate, 
                 cooccurence_angles,
-                information_measure_correlation1_interpretation,
+                difference_variance_interpretation,
                 haralick_window_size,
                 greylevels
                 )
@@ -141,6 +235,8 @@ class CollageCollection:
             collage.execute()
 
 class Collage:
+    """Calculates the collageradiomics algorithm.
+    """
     def __init__(self, 
     img_array, 
     mask_array, 
@@ -149,10 +245,24 @@ class Collage:
     haralick_feature_list=[HaralickFeature.All], 
     log_sample_rate=500, 
     cooccurence_angles=[0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4],
-    information_measure_correlation1_interpretation = InformationMeasureOfCorrelation1Interpretation.XMinusYVariance,
+    difference_variance_interpretation = DifferenceVarianceInterpretation.XMinusYVariance,
     haralick_window_size=-1,
     greylevels = 64,
     ):
+        """Designated initializer for Collage
+
+        Args:
+            image_array ([numpy array]): [image to run collage upon]
+            mask_array ([numpy array]): [mask that correlates with the image]
+            svd_radius (int, optional): [radius of svd]. Defaults to 5.
+            verbose_logging (bool, optional): [turning this on will log intermediate results]. Defaults to False.
+            haralick_feature_list (list, optional): [array of features to calculate]. Defaults to [HaralickFeature.All].
+            log_sample_rate (int, optional): [higher values will log more svd angles, this only works with verbose logging]. Defaults to 500.
+            cooccurence_angles (list, optional): [list of angles to use in the cooccurence matrix]. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
+            difference_variance_interpretation ([type], optional): [Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
+            haralick_window_size (int, optional): [size of rolling window for texture calculations]. Defaults to -1.
+            greylevels (int, optional): [number of bins to use for the grey levels]. Defaults to 64.
+        """
         self.img_array = img_array
         if len(mask_array.shape) > 2:
             mask_array = mask_array[:,:,0]
@@ -175,7 +285,7 @@ class Collage:
         self.feature_count = len(haralick_feature_list)
         self.log_sample_rate = log_sample_rate
         self.cooccurence_angles = cooccurence_angles
-        self.information_measure_correlation1_interpretation = information_measure_correlation1_interpretation
+        self.difference_variance_interpretation = difference_variance_interpretation
 
         if haralick_window_size == -1:
             self.haralick_window_size = self.svd_radius * 2 + 1
@@ -195,10 +305,30 @@ class Collage:
     haralick_feature_list=[HaralickFeature.All], 
     log_sample_rate=500, 
     cooccurence_angles=[0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4],
-    information_measure_correlation1_interpretation = InformationMeasureOfCorrelation1Interpretation.XMinusYVariance,
+    difference_variance_interpretation = DifferenceVarianceInterpretation.XMinusYVariance,
     haralick_window_size=-1,
     greylevels = 64,
     ):
+        """Calculates collageradiomics within the mask coordinates
+
+        Args:
+            img_array ([type]): [image to run collage upon]
+            mask_min_x ([type]): [x location of window]
+            mask_min_y ([type]): [y location of window]
+            patch_window_width ([type]): [window width]
+            patch_window_height ([type]): [window height]
+            svd_radius (int, optional): [radius of svd]. Defaults to 5.
+            verbose_logging (bool, optional): [turning this on will log intermediate results]. Defaults to False.
+            haralick_feature_list (list, optional): [array of features to calculate]. Defaults to [HaralickFeature.All].
+            log_sample_rate (int, optional): [higher values will log more svd angles, this only works with verbose logging]. Defaults to 500.
+            cooccurence_angles (list, optional): [list of angles to use in the cooccurence matrix]. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
+            difference_variance_interpretation ([type], optional): [Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
+            haralick_window_size (int, optional): [size of rolling window for texture calculations]. Defaults to -1.
+            greylevels (int, optional): [number of bins to use for the grey levels]. Defaults to 64.
+
+        Returns:
+            [Collage]: [Collage object to run collage on a rectangular section of the image]
+        """
         mask_array = np.zeros((img_array.shape[0], img_array.shape[1]))
         mask_array[mask_min_y:mask_min_y + patch_window_height, mask_min_x:mask_min_x + patch_window_width] = 255
         return cls(
@@ -209,7 +339,7 @@ class Collage:
             haralick_feature_list, 
             log_sample_rate, 
             cooccurence_angles,
-            information_measure_correlation1_interpretation,
+            difference_variance_interpretation,
             haralick_window_size,
             greylevels
             )
@@ -223,10 +353,27 @@ class Collage:
     haralick_feature_list=[HaralickFeature.All], 
     log_sample_rate=500, 
     cooccurence_angles=[0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4],
-    information_measure_correlation1_interpretation = InformationMeasureOfCorrelation1Interpretation.XMinusYVariance,
+    difference_variance_interpretation = DifferenceVarianceInterpretation.XMinusYVariance,
     haralick_window_size=-1,
     greylevels = 64,
     ):
+        """Helper method to run collage on multiple images.
+
+        Args:
+            image_array ([numpy array]): [image to run collage upon]
+            mask_array ([numpy array]): [mask that correlates with the image]
+            svd_radius (int, optional): [radius of svd]. Defaults to 5.
+            verbose_logging (bool, optional): [turning this on will log intermediate results]. Defaults to False.
+            haralick_feature_list (list, optional): [array of features to calculate]. Defaults to [HaralickFeature.All].
+            log_sample_rate (int, optional): [higher values will log more svd angles, this only works with verbose logging]. Defaults to 500.
+            cooccurence_angles (list, optional): [list of angles to use in the cooccurence matrix]. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
+            difference_variance_interpretation ([type], optional): [Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
+            haralick_window_size (int, optional): [size of rolling window for texture calculations]. Defaults to -1.
+            greylevels (int, optional): [number of bins to use for the grey levels]. Defaults to 64.
+
+        Returns:
+            [CollageCollection]: [CollageCollection object that works similarly to Collage. Call execute() to run on all images]
+        """
         return CollageCollection(
             images_array, 
             masks_array, 
@@ -235,13 +382,28 @@ class Collage:
             haralick_feature_list, 
             log_sample_rate, 
             cooccurence_angles, 
-            information_measure_correlation1_interpretation, 
+            difference_variance_interpretation, 
             haralick_window_size, 
             greylevels
             )
     
 
     def get_haralick_mt_value(self, img_array, center_x, center_y, window_size, greylevels, haralick_feature, symmetric, mean):
+        """Gets the haralick texture value at the center of an x, y coordinate.
+
+        Args:
+            image_array ([numpy array]): [image to calculate texture]
+            center_x ([int]): [x center of coordinate]
+            center_y ([int]): [y center of coordinate]
+            window_size ([int]): [size of window to pull for calculation]
+            greylevels ([int]): [number of bins]
+            haralick_feature ([HaralickFeature]): [desired haralick feature]
+            symmetric ([bool]): [whether or not we should use the symmetrical cooccurence matrix]
+            mean ([bool]): [whether we return the mean of the feature or not]
+
+        Returns:
+            [float]: [number representing value of haralick texture at coordinate]
+        """
         # extract subpart of image (todo: pass in result from view_as_windows)
         min_x = int(max(0, center_x - window_size / 2 - 1))
         min_y = int(max(0, center_y - window_size / 2 - 1))
@@ -263,6 +425,19 @@ class Collage:
         return har_feature[0, haralick_feature]
 
     def get_haralick_mt_feature(self, img, desired_haralick_feature, greylevels, haralick_window_size, symmetric=False, mean=False):
+        """Gets haralick image within the mask
+
+        Args:
+            img ([numpy array]): [image to get feature from]
+            desired_haralick_feature ([Haralick Feature]): [which feature to calculate]
+            greylevels ([int]): [number of bins]
+            haralick_window_size ([int]): [size of window around pixels to calculate haralick value]
+            symmetric (bool, optional): [whether or not we should use the symmetrical cooccurence matrix]. Defaults to False.
+            mean (bool, optional): [whether we return the mean of the feature or not]. Defaults to False.
+
+        Returns:
+            [numpy array]: [image representing haralick texture]
+        """
         haralick_image = np.zeros(img.shape)
         h, w = img.shape
         for pos in product(range(w), range(h)):
@@ -272,6 +447,11 @@ class Collage:
         return haralick_image
 
     def execute(self):
+        """Begins haralick calculation.
+
+        Returns:
+            [numpy array]: [image at original size that only has the masked section filled in with collage calculations]
+        """
         mask_min_x = int(self.mask_min_x)
         mask_min_y = int(self.mask_min_y)
         mask_max_x = int(self.mask_max_x)

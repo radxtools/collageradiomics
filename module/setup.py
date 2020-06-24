@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='collageradiomics',
-    version='0.0.1a41',
+    version='0.0.1a42',
     author='Toth Technology',
     author_email='toth-tech@hillyer.me',
     description='CoLliage Implementation',
