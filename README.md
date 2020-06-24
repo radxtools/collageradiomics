@@ -32,9 +32,31 @@ The best source of documentation is found the examples - instructions provided b
 # Installation
 These instructions will help set up the **CoLlAGe** core module and examples. They assume you are working out of a terminal such as **Powershell** on Windows or **Konsole** on Linux.
 
-## Git
-1. Install the **git** software based on your OS:
-* _Ubuntu_:  
+## Docker
+**Docker** is like a stand-alone operating system container that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding with **CoLlAGe**. We offer 2 **Docker** images: a basic core image for you to start coding with the **CoLlAGe** features (called `ccipd/collageradiomics-pip`) and an image that contains a running **Jupyter** notebook with **CoLlAGe** pre-installed and examples ready to run (called `ccipd/collageradiomics-examples`).
+
+### Docker Setup
+#### Linux
+* [Click here](https://www.docker.com/get-started) and follow th einstructions to install **Docker**.
+* There are Ubuntu-specific instructions here: https://docs.docker.com/engine/install/ubuntu/
+
+#### Windows
+1. [Click here](https://www.docker.com/get-started) and follow the instructions to install **Docker**.
+2. Search for **Docker** in your start manu and run it:  
+![Docker Search](https://i.imgur.com/QrhfUj9.png)
+3. If it's running you should see an icon:  
+![Docker Initializing](https://i.imgur.com/lylVdSc.png)  
+![Docker Icon](https://i.imgur.com/NzGJQaO.png)
+
+### collageradiomics-examples Docker Image
+This **Docker** image contains a running Jupyter notebook with the **CoLlAGe** module pre-installed. From the cloned repository directory, we will start up a **Docker** image which will run a live web server and host a **Jupyter** notebook at the URL http://localhost:8888 which contains examples of using the code.
+
+_Note: Using this method requires you to pull the code from our repository. If you don't need the **Jupyter** examples and just want to start using **CoLlAGe** right away, you can skip this step and jump to the instructions for **Core** by [clicking here](#core)._
+
+#### Linux
+_Note: This was tested on Ubuntu 19.10 and 20.04_
+
+1. Install git:
 ```console
 user@machine:~$ sudo apt -y install git
 Reading package lists... Done
@@ -44,19 +66,7 @@ git is already the newest version (1:2.20.1-2ubuntu1.19.10.3).
 0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
 user@machine:~$ 
 ```
-* _Windows_: A quick online search for _"git for Windows"_ will provide you with several options for installing the ```git``` command. If it's correctly installed, the following should output your current version of git:  
-```console
-Windows PowerShell
-Copyright (C) Microsoft Corporation. All rights reserved.
-
-Try the new cross-platform PowerShell https://aka.ms/pscore6
-
-PS C:\Users\user> git --version
-git version 2.26.2.windows.1
-PS C:\Users\user>
-```
-2. In a shell (e.g. **Powershell** on Windows or **Konsole** on Linux) clone the repository:  
-* _Linux_:
+2. Clone the repository:
 ```console
 user@machine:~$ git clone https://github.com/ccipd/collageradiomics.git
 Cloning into 'collageradiomics'...
@@ -68,6 +78,41 @@ user@machine:~$ cd collageradiomics
 user@machine:~/collageradiomics$ ls -l
 
 ```
+3. Pull the latest **Docker** image:
+* _Linux_:
+```console
+user@machine:~/collageradiomics$ sudo docker pull ccipd/collageradiomics-examples:latest
+latest: Pulling from ccipd/collageradiomics-examples
+Digest: sha256:107a2804e76b156f40d571b8422f822a3712353645c86e5cc2275d2aea85c9be
+Status: Image is up to date for ccipd/collageradiomics-examples:latest
+docker.io/ccipd/collageradiomics-examples:latest
+user@machine:~/collageradiomics$ 
+```
+4. Run the **Docker** image:
+* _Linux_:
+```console
+user@machine:~/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
+[I 06:35:13.806 NotebookApp] Writing notebook server cookie secret to /tmp/notebook_cookie_secret
+[W 06:35:14.030 NotebookApp] All authentication is disabled.  Anyone who can connect to this server will be able to run code.
+[I 06:35:14.033 NotebookApp] Serving notebooks from local directory: /root
+[I 06:35:14.034 NotebookApp] The Jupyter Notebook is running at:
+[I 06:35:14.034 NotebookApp] http://d41cc76f5035:8888/
+[I 06:35:14.034 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+```
+
+#### Windows
+1. Install **git**. A quick online search for _"git for Windows"_ will provide you with several options for installing the ```git``` command. If it's correctly installed, the following should output your current version of git:  
+```console
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\Users\user> git --version
+git version 2.26.2.windows.1
+PS C:\Users\user>
+```
+2. Clone the repository:  
 * _Windows_:
 ```console
 Windows PowerShell
@@ -102,43 +147,12 @@ d-----       2020-06-24      3:31                sample_data
 
 PS C:\Users\user\collageradiomics>
 ```
-
-## Docker
-### Overview
-**Docker** is like a stand-alone operating system container that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding with **CoLlAGe**. We offer 2 **Docker** images: a basic core image for you to start coding with the **CoLlAGe** features (called `ccipd/collageradiomics-pip`) and an image that contains a running **Jupyter** notebook with **CoLlAGe** pre-installed and examples ready to run (called `ccipd/collageradiomics-examples`).
-
-### Setup
-
-1. [Click here](https://www.docker.com/get-started) to install **Docker** for your operating system.
-* _Ubuntu_: Follow the instructions here: https://docs.docker.com/engine/install/ubuntu/
-* _Windows_:  
-  * Install the program and search for **Docker** in your start manu and run it:  
-  ![Docker Search](https://i.imgur.com/QrhfUj9.png)
-  * If it's running you should see an icon:  
-  ![Docker Initializing](https://i.imgur.com/lylVdSc.png)  
-  ![Docker Icon](https://i.imgur.com/NzGJQaO.png)
-2. For _Windows_ users, you will have to give **Docker** access to your newly cloned folder:
+3. Give **Docker** access to your cloned repository:
    1. Right click on the context menu near the clock: ![Docker Context Menu](https://i.imgur.com/CSY0GzK.png)
    2. Select _Dashboard_: ![Docker Dashboard](https://i.imgur.com/zIlGKvb.png)
    3. After you click on _Dashboard_, a window will pop up. Click on the gear icon for _Settings_ and move to _Resources_ :arrow_right: _File Sharing_. ![Docker Filesharing](https://i.imgur.com/JLiVp72.png)
    4. Add your cloned repository folder: ![Docker Add Repo](https://i.imgur.com/lb8RN1O.png)
-
-### Examples
-This **Docker** image contains a running Jupyter notebook with the **CoLlAGe** module pre-installed. From the cloned repository directory, we will start up a **Docker** image which will run a live web server and host a **Jupyter** notebook at the URL http://localhost:8888 which contains examples of using the code.
-
-_Note: Using this method requires you to pull the code from our repository. If you don't need the **Jupyter** examples and just want to start using **CoLlAGe** right away, you can skip this step and jump to the instructions for **Core** by [clicking here](#core)._
-
-1. Pull the latest **Docker** image:
-* _Linux_:
-```console
-user@machine:~/collageradiomics$ sudo docker pull ccipd/collageradiomics-examples:latest
-latest: Pulling from ccipd/collageradiomics-examples
-Digest: sha256:107a2804e76b156f40d571b8422f822a3712353645c86e5cc2275d2aea85c9be
-Status: Image is up to date for ccipd/collageradiomics-examples:latest
-docker.io/ccipd/collageradiomics-examples:latest
-user@machine:~/collageradiomics$ 
-```
-* _Windows_:
+4. Pull the latest **Docker** image:
 ```console
 Windows PowerShell
 Copyright (C) Microsoft Corporation. All rights reserved.
@@ -162,31 +176,35 @@ Status: Image is up to date for ccipd/collageradiomics-examples:latest
 docker.io/ccipd/collageradiomics-examples:latest
 PS C:\Users\user\collageradiomics>
 ```
-2. Run the **Docker** image:
-* _Linux_:
+5. Run the **Docker** image:
 ```console
-user@machine:~/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
-[I 06:35:13.806 NotebookApp] Writing notebook server cookie secret to /tmp/notebook_cookie_secret
-[W 06:35:14.030 NotebookApp] All authentication is disabled.  Anyone who can connect to this server will be able to run code.
-[I 06:35:14.033 NotebookApp] Serving notebooks from local directory: /root
-[I 06:35:14.034 NotebookApp] The Jupyter Notebook is running at:
-[I 06:35:14.034 NotebookApp] http://d41cc76f5035:8888/
-[I 06:35:14.034 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\Users\user> docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples^C
+PS C:\Users\user> cd collageradiomics
+PS C:\Users\user\collageradiomics> docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples
+[I 08:28:36.091 NotebookApp] Writing notebook server cookie secret to /tmp/notebook_cookie_secret
+[W 08:28:36.576 NotebookApp] All authentication is disabled.  Anyone who can connect to this server will be able to run code.
+[I 08:28:36.585 NotebookApp] Serving notebooks from local directory: /root
+[I 08:28:36.585 NotebookApp] The Jupyter Notebook is running at:
+[I 08:28:36.585 NotebookApp] http://c5745f91dbee:8888/
+[I 08:28:36.585 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
 ```
-* _Windows_:
-```console
-docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples
-```
-3. Open up a web browser to http://localhost:8888  
+
+#### Exploring The Examples
+1. Open up a web browser to http://localhost:8888  
 ![Jupyter Home](https://i.imgur.com/0XQ8OlT.png)
-4. Navigate to the _Jupyter_ :arrow_right: _Examples_ directory.  
+2. Navigate to the _Jupyter_ :arrow_right: _Examples_ directory.  
 ![Jupyter Examples](https://i.imgur.com/NjdMlOr.png)
-5. Click on one of the example `*.ipynb` files.
-6. Run _Cell_ :arrow_right: _Run all_.  
+3. Click on one of the example `*.ipynb` files.
+4. Run _Cell_ :arrow_right: _Run all_.  
 ![Jupyter Run Cells](https://i.imgur.com/GaAaNAS.png)
 ![Jupyter Output](https://i.imgur.com/PapCcsg.png)
-7. Feel free to add your own cells and run them to get familiar with the **CoLlAGe** code.
-8. To stop the **Jupyter** notebook and exit the **Docker** image, press `Ctrl+C` twice:
+5. Feel free to add your own cells and run them to get familiar with the **CoLlAGe** code.
+6. To stop the **Jupyter** notebook and exit the **Docker** image, press `Ctrl+C` twice:
 ```console
 [I 07:05:36.271 NotebookApp] The Jupyter Notebook is running at:
 [I 07:05:36.271 NotebookApp] http://4f033d68769d:8888/
@@ -201,11 +219,11 @@ Shutdown this notebook server (y/[n])? ^C[C 07:05:38.744 NotebookApp] received s
 user@machine:~/collageradiomics$ 
 ```
 
-### Core
+### collageradiomics-pip Docker Image
 This is the most straightforward way to start playing with the code. And it does not require the `git` commands that the **Jupyter** examples require. This is simply a pre-built container that lets you start trying out the module in **Python** immediately.
 
+#### Linux
 1. Pull the latest **Docker** image:
-* _Linux_:
 ```console
 user@machine:~$ sudo docker pull ccipd/collageradiomics-pip:latest
 latest: Pulling from ccipd/collageradiomics-pip
@@ -214,29 +232,56 @@ Status: Image is up to date for ccipd/collageradiomics-pip:latest
 docker.io/ccipd/collageradiomics-pip:latest
 user@machine:~/collageradiomics$
 ```
-* _Windows_:
-```console
-docker pull ccipd/collageradiomics-pip:latest
-```
 2. Run the **Docker** image:
-* _Linux_:
 ```console
 user@machine:~/collageradiomics$ sudo docker run -it -v $PWD:/root ccipd/collageradiomics-pip
 root@12b12d2bff59:/# 
 ```
-* _Windows_:
+
+#### Windows
+1. Pull the latest **Docker** image:
 ```console
-docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-pip
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\Users\user> docker pull ccipd/collageradiomics-pip:latest
+latest: Pulling from ccipd/collageradiomics-pip
+d51af753c3d3: Already exists
+fc878cd0a91c: Already exists
+6154df8ff988: Already exists
+fee5db0ff82f: Already exists
+e4255cf4d4f9: Downloading [=================>                                 ]  62.34MB/178.6MB
+14a983cf96b6: Downloading [===========================>                       ]  55.72MB/102.9MB      
+14a983cf96b6: Pull complete
+Digest: sha256:8fc7d61dbe6ad64eeff9c69cfaa788d90c61861bff8aaf8865ed1318c5666250
+Status: Downloaded newer image for ccipd/collageradiomics-pip:latest
+docker.io/ccipd/collageradiomics-pip:latest
+PS C:\Users\user>
 ```
-3. If your terminal prompt changes to `root@[random_string]:/#` then you are working inside the **Docker** container environment.
-* _Windows_: There is a button in the **Docker** graphical user interface to load a terminal from a given pulled **Docker** image.
-4. Test the python module by making sure the following command outputs `True` to the terminal:  
+2. Run the **Docker** image:
+```console
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\Users\user> docker pull ccipd/collageradiomics-pip:latest
+PS C:\Users\user> docker run -it ccipd/collageradiomics-pip
+root@461c5017ce0e:/#
+```
+
+#### Inside The Container
+If your terminal prompt changes to `root@[random_string]:/#` then you are now working inside the standardized **Docker** sandbox container environment.
+
+1. Test the python module by making sure the following command outputs `True` to the terminal:  
 ```console
 root@12b12d2bff59:/# python -c 'import numpy as np; import collageradiomics; print(not not len(collageradiomics.__name__) and not not len(collageradiomics.Collage.from_rectangle(np.random.rand(20,20,3), 2, 2, 10, 10).execute()));'
 True
 root@12b12d2bff59:/# 
 ```
-5. Starting coding with **CoLlAGe** in **Python** [(click here to jump to code examples)](#python-usage):
+2. Starting coding with **CoLlAGe** in **Python** [(click here to jump to code examples)](#python-usage):
 ```console
 root@12b12d2bff59:/# python
 Python 3.8.2 (default, Apr 27 2020, 15:53:34) 
@@ -247,12 +292,11 @@ Type "help", "copyright", "credits" or "license" for more information.
 'collageradiomics'
 >>> 
 ```
-6. Exit the **Docker** container:
+3. Exit the **Docker** container:
 ```console
 >>> quit()
 root@12b12d2bff59:/# exit
 exit
-user@machine:~/collageradiomics$ 
 ```
 
 ## Pip
