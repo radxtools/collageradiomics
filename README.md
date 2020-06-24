@@ -54,7 +54,7 @@ We offer 2 **Docker** images: a basic core image for you to start coding with th
 ### Examples
 This **Docker** image contains a running Jupyter notebook with the **CoLlAGe** module pre-installed. From the cloned repository directory, we will start up a **Docker** image which will run a live web server and host a **Jupyter** notebook at the URL http://localhost:8888 which contains examples of using the code.
 
-_Note: Using this method requires you to pull the code from our repository. If you don't need the **Jupyter** examples and just want to start using **CoLlAGe** right away, you can skip this step and move onto the instructions for **Core** below._
+_Note: Using this method requires you to pull the code from our repository. If you don't need the **Jupyter** examples and just want to start using **CoLlAGe** right away, you can skip this step and move onto the instructions for **Core** by [clicking here](#core)._
 
 1. Pull the latest **Docker** image:
 * _Linux_:
