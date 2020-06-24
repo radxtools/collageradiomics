@@ -1,14 +1,36 @@
 # Co-occurrence of Local Anisotropic Gradient Orientations (CoLlAGe)
 
+# Table of Contents
+- [Science](#science)
+  - [Overview](#overview)
+  - [Features](#features)
+  - [References](#references)
+- [Code](#code)
+  - [Idempotence](#idempotence)
+  - [Documentation](#documentation)
+  - [Dependencies](#dependencies)
+- [Installation & Usage](#installation-usage)
+  - [Docker](#docker)
+    - [Docker Setup](#docker-setup)
+    - [collageradiomics-examples Docker Image](#collageradiomics-examples-docker-image)
+    - [collageradiomics-pip Docker Image](#collageradiomics-pip-docker-image)
+  - [Pip](#pip)
+  - [Python Usage](#python-usage)
+    - [Basic Example](#basic-example)
+    - [Real Data](#real-data)
+- [Contact](#contact)
+
+# Science
+## Overview
+
 **CoLlAGe** captures subtle anisotropic differences in disease pathologies by measuring entropy of co-occurrences of voxel-level gradient orientations on imaging computed within a local neighborhood.
 
 **CoLlAGe** is based on the hypothesis that disruption in tissue microarchitecture can be quantified on imaging by measuring the disorder in voxel-wise gradient orientations. CoLlAGe involves assigning every image voxel a ‘disorder value’ associated with the co-occurrence matrix of gradient orientations computed around every voxel.
 
 Details on extraction of **CoLlAGe** features are included in [\[1\]](#references). After feature extraction, the subsequent distribution or different statistics such as mean, median, variance etc can be computed and used in conjunction with a machine learning classifier to distinguish similar appearing pathologies. The feasibility of CoLlAGe in distinguishing cancer from treatment confounders/benign conditions and characterizing molecular subtypes of cancers has been demonstrated in the context of multiple challenging clinical problems.
 
-## Feature Classes
-Currently supports the following Haralick [\[2\]](#references) features:
-
+## Features
+Each of the 13 **CoLlAGe** correlate to one of the 13 Haralick texture features[\[2\]](#references):
 1. _AngularSecondMoment_
 2. _Contrast_
 3. _Correlation_
@@ -23,21 +45,46 @@ Currently supports the following Haralick [\[2\]](#references) features:
 12. _InformationMeasureOfCorrelation2_
 13. _MaximalCorrelationCoefficient_
 
+## References
+
+<a href="http://bric-lab.com"><img align="right" height=100 src="https://static.wixstatic.com/media/a0e8e5_809a649f13254ff293405c7476004e20~mv2.png/v1/fill/w_248,h_240,al_c,usm_0.66_1.00_0.01/a0e8e5_809a649f13254ff293405c7476004e20~mv2.png"></a>
+
+If you make use of this implementation, please cite the following paper:
+
+[1] Prasanna, P., Tiwari, P., & Madabhushi, A. (2016). "Co-occurrence of Local Anisotropic Gradient Orientations (CoLlAGe): A new radiomics descriptor. Scientific Reports", 6:37241.
+
+[2] R. M. Haralick, K. Shanmugam and I. Dinstein, "Textural Features for Image Classification," in IEEE Transactions on Systems, Man, and Cybernetics, vol. SMC-3, no. 6, pp. 610-621, Nov. 1973, [doi: 10.1109/TSMC.1973.4309314](https://doi.org/10.1109/TSMC.1973.4309314).
+
+# Code
+
 ## Idempotence
 Our **CoLlAGe** module includes parameter tuning information in the output. It contains the image(s) and mask(s), and the settings applied upon them. This allows multiple fully reproducible runs without having to remember or find the original parameters.
 
 ## Documentation
 The best source of documentation is found the examples - instructions provided below.
 
+## Dependencies:
+We thank these generous developers that allowed us to build collageradiomics without reinventing the wheel:
+- `matplotlib`
+- `numpy`
+- `scikit-learn`
+- `scikit-build`
+- `mahotas`
+- `scipy`
+
+_(Note: We are using ```==``` for version numbers of our dependencies as a design choice.)_
+
 # Installation & Use
+
 These instructions will help set up the **CoLlAGe** core module and examples. They assume you are working out of a terminal such as **Powershell** on Windows or **Konsole** on Linux.
+
 
 ## Docker
 **Docker** is like a stand-alone operating system container that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding with **CoLlAGe**. We offer 2 **Docker** images: a basic core image for you to start coding with the **CoLlAGe** features (called _[collageradiomics-pip](#collageradiomics-pip-docker-image)_) and an image that contains a running **Jupyter** notebook with **CoLlAGe** pre-installed and examples ready to run (called _[collageradiomics-examples](#collageradiomics-examples-docker-image)_).
 
 ### Docker Setup
 #### Linux
-* [Click here](https://www.docker.com/get-started) and follow th einstructions to install **Docker**.
+* [Click here](https://www.docker.com/get-started) and follow the instructions to install **Docker**.
 * There are Ubuntu-specific instructions here: https://docs.docker.com/engine/install/ubuntu/
 
 #### Windows
@@ -436,7 +483,6 @@ ColLiAGe Feature #13 is a <class 'numpy.ndarray'> of shape (20, 20)
 >>> quit()
 user@machine:~$
 ```
-
 ### Real Data
 A simple example which uses a real-life sample image is as follows:
 ```console
@@ -470,26 +516,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> 
 ```
 
-## Dependencies:
-We thank these generous developers that allowed us to build collageradiomics without reinventing the wheel:
-- `matplotlib`
-- `numpy`
-- `scikit-learn`
-- `scikit-build`
-- `mahotas`
-- `scipy`
-
-_(Note: We are using ```==``` for version numbers of our dependencies as a design choice.)_
-
-# References
-
-<a href="http://bric-lab.com"><img align="right" height=100 src="https://static.wixstatic.com/media/a0e8e5_809a649f13254ff293405c7476004e20~mv2.png/v1/fill/w_248,h_240,al_c,usm_0.66_1.00_0.01/a0e8e5_809a649f13254ff293405c7476004e20~mv2.png"></a>
-
-If you make use of this implementation, please cite the following paper:
-
-[1] Prasanna, P., Tiwari, P., & Madabhushi, A. (2016). "Co-occurrence of Local Anisotropic Gradient Orientations (CoLlAGe): A new radiomics descriptor. Scientific Reports", 6:37241.
-
-[2] R. M. Haralick, K. Shanmugam and I. Dinstein, "Textural Features for Image Classification," in IEEE Transactions on Systems, Man, and Cybernetics, vol. SMC-3, no. 6, pp. 610-621, Nov. 1973, [doi: 10.1109/TSMC.1973.4309314](https://doi.org/10.1109/TSMC.1973.4309314).
+# Contact
 
 Please report any issues or feature requests via the [Issues](https://github.com/ccipd/collageradiomics/issues) tab
 
