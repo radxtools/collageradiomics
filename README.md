@@ -407,6 +407,9 @@ user@machine:~$ python3
 Python 3.7.5 (default, Apr 19 2020, 20:18:17) 
 [GCC 9.2.1 20191008] on linux
 Type "help", "copyright", "credits" or "license" for more information.
+```
+
+```python
 >>> import collageradiomics
 >>> import numpy as np
 >>> image_w = 20; image_h = 20; image_d = 3;
