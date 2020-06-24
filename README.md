@@ -108,11 +108,21 @@ PS C:\Users\user\collageradiomics>
 **Docker** is like a stand-alone operating system container that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding with **CoLlAGe**. We offer 2 **Docker** images: a basic core image for you to start coding with the **CoLlAGe** features (called `ccipd/collageradiomics-pip`) and an image that contains a running **Jupyter** notebook with **CoLlAGe** pre-installed and examples ready to run (called `ccipd/collageradiomics-examples`).
 
 ### Setup
+
 1. [Click here](https://www.docker.com/get-started) to install **Docker** for your operating system.
-* Windows:  
-![Docker Initializing](https://i.imgur.com/lylVdSc.png)  
+* _Ubuntu_: Follow the instructions here: https://docs.docker.com/engine/install/ubuntu/
+* _Windows_:  
+  * Install the program and search for **Docker** in your start manu and run it:  
+  ![Docker Search](https://i.imgur.com/QrhfUj9.png)
+  * If it's running you should see an icon:  
+  ![Docker Initializing](https://i.imgur.com/lylVdSc.png)  
+  ![Docker Icon](https://i.imgur.com/NzGJQaO.png)
+2. For _Windows_ users, you will have to give **Docker** access to your  user interface program, go to _Resources_ :arrow_right: _Shared Folders_ and add your cloned repository to the list of folders that **Docker** will have permission to share with the container.
+* Right click on the context menu near the clock:
 ![Docker Context Menu](https://i.imgur.com/CSY0GzK.png)
-2. For _Windows_ users, on the **Docker** graphical user interface program, go to _Resources_ :arrow_right: _Shared Folders_ and add your cloned repository to the list of folders that **Docker** will have permission to share with the container.
+* After you click on _Dashboard_, a window will pop up. Click on the gear icon for _Settings_ and move to _Resources_ :arrow_right: _File Sharing_.
+![Docker Filesharing](https://i.imgur.com/JLiVp72.png)
+* Add your cloned repository folder here to this list.
 
 ### Examples
 This **Docker** image contains a running Jupyter notebook with the **CoLlAGe** module pre-installed. From the cloned repository directory, we will start up a **Docker** image which will run a live web server and host a **Jupyter** notebook at the URL http://localhost:8888 which contains examples of using the code.
