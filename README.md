@@ -92,10 +92,11 @@ root@12b12d2bff59:/#
 3. If your terminal prompt changes to `root@[random_string]:/#` then you are working inside the **Docker** container environment.
 * _Windows_: There is a button in the docker graphical user interface to load a terminal from a given downloaded
 4. Test the python module by making sure the following command outputs `True` to the terminal:  
-```shell
-python -c 'import numpy as np; import collageradiomics; print(not not len(collageradiomics.__name__));'
+```console
+root@12b12d2bff59:/# python -c 'import numpy as np; import collageradiomics; print(not not len(collageradiomics.__name__) and not not len(collageradiomics.Collage.from_rectangle(np.random.rand(20,20,3), 10, 10, 10, 10).execute()));'
+True
+root@12b12d2bff59:/# 
 ```
-collageradiomics.Collage(np.empty((50,50)), np.empty((50,50))).execute()```
 * _Windows_: _(TODO)_
 5. Code in **Python**:
 * `python`
