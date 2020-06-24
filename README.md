@@ -63,18 +63,16 @@ user@machine:~/collageradiomics$
 
 ## Docker
 ### Overview
-**Docker** is like a stand-alone operating system container that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding with **CoLlAGe**.
-
-We offer 2 **Docker** images: a basic core image for you to start coding with the **CoLlAGe** features (called `ccipd/collageradiomics-pip`) and an image that contains a running **Jupyter** notebook with **CoLlAGe** pre-installed and examples ready to run (called `ccipd/collageradiomics-examples`).
+**Docker** is like a stand-alone operating system container that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding with **CoLlAGe**. We offer 2 **Docker** images: a basic core image for you to start coding with the **CoLlAGe** features (called `ccipd/collageradiomics-pip`) and an image that contains a running **Jupyter** notebook with **CoLlAGe** pre-installed and examples ready to run (called `ccipd/collageradiomics-examples`).
 
 ### Setup
 1. [Click here](https://www.docker.com/get-started) to install **Docker** for your operating system.
-2. For _Windows_ users, on the **Docker** graphical user interface program, go to _Resources_ :arrow_right: _Shared Folders_ and add your cloned repository to the list of folders that **Docker** will share with the container.
+2. For _Windows_ users, on the **Docker** graphical user interface program, go to _Resources_ :arrow_right: _Shared Folders_ and add your cloned repository to the list of folders that **Docker** will have permission to share with the container.
 
 ### Examples
 This **Docker** image contains a running Jupyter notebook with the **CoLlAGe** module pre-installed. From the cloned repository directory, we will start up a **Docker** image which will run a live web server and host a **Jupyter** notebook at the URL http://localhost:8888 which contains examples of using the code.
 
-_Note: Using this method requires you to pull the code from our repository. If you don't need the **Jupyter** examples and just want to start using **CoLlAGe** right away, you can skip this step and move onto the instructions for **Core** by [clicking here](#core)._
+_Note: Using this method requires you to pull the code from our repository. If you don't need the **Jupyter** examples and just want to start using **CoLlAGe** right away, you can skip this step and jump to the instructions for **Core** by [clicking here](#core)._
 
 1. Pull the latest **Docker** image:
 * _Linux_:
@@ -86,7 +84,10 @@ Status: Image is up to date for ccipd/collageradiomics-examples:latest
 docker.io/ccipd/collageradiomics-examples:latest
 user@machine:~/collageradiomics$ 
 ```
-* _Windows_: `docker pull ccipd/collageradiomics-examples:latest`
+* _Windows_:
+```console
+(powershell?)> docker pull ccipd/collageradiomics-examples:latest
+```
 2. Run the **Docker** image:
 * _Linux_:
 ```console
@@ -98,7 +99,10 @@ user@machine:~/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/root 
 [I 06:35:14.034 NotebookApp] http://d41cc76f5035:8888/
 [I 06:35:14.034 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
 ```
-* _Windows_: `docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples`
+* _Windows_:
+```console
+docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples
+```
 3. Open up a web browser to http://localhost:8888  
 ![Jupyter Home](https://i.imgur.com/0XQ8OlT.png)
 4. Navigate to the _Jupyter_ :arrow_right: _Examples_ directory.  
@@ -134,10 +138,11 @@ latest: Pulling from ccipd/collageradiomics-pip
 Digest: sha256:8fc7d61dbe6ad64eeff9c69cfaa788d90c61861bff8aaf8865ed1318c5666250
 Status: Image is up to date for ccipd/collageradiomics-pip:latest
 docker.io/ccipd/collageradiomics-pip:latest
+user@machine:~/collageradiomics$
 ```
 * _Windows_:
 ```console
-(powershell?)> docker pull ccipd/collageradiomics-pip:latest
+docker pull ccipd/collageradiomics-pip:latest
 ```
 2. Run the **Docker** image:
 * _Linux_:
@@ -147,7 +152,7 @@ root@12b12d2bff59:/#
 ```
 * _Windows_:
 ```console
-(powershell?)> docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-pip
+docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-pip
 ```
 3. If your terminal prompt changes to `root@[random_string]:/#` then you are working inside the **Docker** container environment.
 * _Windows_: There is a button in the **Docker** graphical user interface to load a terminal from a given pulled **Docker** image.
