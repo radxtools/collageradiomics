@@ -29,7 +29,7 @@ Our **CoLlAGe** module includes parameter tuning information in the output. It c
 ## Documentation
 The best source of documentation is found the examples - instructions provided below.
 
-# Installation
+# Installation & Use
 These instructions will help set up the **CoLlAGe** core module and examples. They assume you are working out of a terminal such as **Powershell** on Windows or **Konsole** on Linux.
 
 ## Docker
@@ -78,8 +78,7 @@ user@machine:~$ cd collageradiomics
 user@machine:~/collageradiomics$ ls -l
 
 ```
-3. Pull the latest **Docker** image:
-* _Linux_:
+3. Pull the latest **Docker** image:  
 ```console
 user@machine:~/collageradiomics$ sudo docker pull ccipd/collageradiomics-examples:latest
 latest: Pulling from ccipd/collageradiomics-examples
@@ -88,8 +87,7 @@ Status: Image is up to date for ccipd/collageradiomics-examples:latest
 docker.io/ccipd/collageradiomics-examples:latest
 user@machine:~/collageradiomics$ 
 ```
-4. Run the **Docker** image:
-* _Linux_:
+4. Run the **Docker** image:  
 ```console
 user@machine:~/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
 [I 06:35:13.806 NotebookApp] Writing notebook server cookie secret to /tmp/notebook_cookie_secret
