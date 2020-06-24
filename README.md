@@ -140,7 +140,27 @@ user@machine:~/collageradiomics$
 ```
 * _Windows_:
 ```console
-docker pull ccipd/collageradiomics-examples:latest
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\Users\user\collageradiomics> docker pull ccipd/collageradiomics-examples:latest
+latest: Pulling from ccipd/collageradiomics-examples
+d51af753c3d3: Already exists
+fc878cd0a91c: Already exists
+6154df8ff988: Already exists
+fee5db0ff82f: Already exists
+a6501aa3ed52: Already exists
+Digest: sha256:107a2804e76b156f40d571b8422f822a3712353645c86e5cc2275d2aea85c9be
+Status: Downloaded newer image for ccipd/collageradiomics-examples:latest
+docker.io/ccipd/collageradiomics-examples:latest
+PS C:\Users\user\collageradiomics> docker pull ccipd/collageradiomics-examples:latest
+latest: Pulling from ccipd/collageradiomics-examples
+Digest: sha256:107a2804e76b156f40d571b8422f822a3712353645c86e5cc2275d2aea85c9be
+Status: Image is up to date for ccipd/collageradiomics-examples:latest
+docker.io/ccipd/collageradiomics-examples:latest
+PS C:\Users\user\collageradiomics>
 ```
 2. Run the **Docker** image:
 * _Linux_:
