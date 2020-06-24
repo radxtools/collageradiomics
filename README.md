@@ -49,6 +49,11 @@ We offer 2 docker images: a basic core image for you to start coding with the co
 2. For _Windows_ users, on the **Docker** GUI program, go to _Resources_ :arrow_right: _Shared Folders_ and add your cloned repository to the list of folders that **Docker** will share with the container.
 
 ### Core
+* Pull the latest
+* Windows powershell screenshot
+* Windows-specific screenshots
+* python import command
+
 
 ### Examples
 From the cloned directory, we will start up a **Docker** image which will run a live web server and host a Jupyter notebook at the URL http://localhost:8888 which contains examples of using the code.
@@ -59,16 +64,12 @@ From the cloned directory, we will start up a **Docker** image which will run a 
 2. Run the **Docker** image:
 * _Linux_: ```sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples```
 * _Windows_:* ```docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples```
+3. Open up a web browser to http://localhost:8888
+4. Navigate to the _Jupyter_ :arrow_right: _Examples_ directory.
+5. Click on one of the example ```*.ipynb``` files.
 
-### Core
-* Pull the latest
-* Windows powershell screenshot
-* Windows-specific screenshots
-* python import command
+_TODO: Jupyter screenshot.__
 
-### Examples
-* Docker run command
-* Jupyter screenshot
 
 ## Pip
 ### Setup
