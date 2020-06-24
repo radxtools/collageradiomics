@@ -52,7 +52,9 @@ We offer 2 **Docker** images: a basic core image for you to start coding with th
 2. For _Windows_ users, on the **Docker** graphical user interface program, go to _Resources_ :arrow_right: _Shared Folders_ and add your cloned repository to the list of folders that **Docker** will share with the container.
 
 ### Examples
-From the cloned repository directory, we will start up a **Docker** image which will run a live web server and host a **Jupyter** notebook at the URL http://localhost:8888 which contains examples of using the code.
+This **Docker** image contains a running Jupyter notebook with the **CoLlAGe** module pre-installed. From the cloned repository directory, we will start up a **Docker** image which will run a live web server and host a **Jupyter** notebook at the URL http://localhost:8888 which contains examples of using the code.
+
+_Note: Using this method requires you to pull the code from our repository. If you don't need the **Jupyter** examples and just want to start using **CoLlAGe** right away, you can skip this step and move onto the instructions for **Core** below._
 
 1. Pull the latest **Docker** image:
 * _Linux_:
@@ -79,6 +81,8 @@ user@machine:~/code/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/
 _TODO: Jupyter screenshot.__
 
 ### Core
+This is the most straightforward way to start playing with the code. And it does not require the `git` commands that the **Jupyter** examples require. This is simply a pre-built container
+
 1. Pull the latest **Docker** image:
 * _Linux_: `sudo docker pull ccipd/collageradiomics-pip:latest`
 * _Windows_: `docker pull ccipd/collageradiomics-pip:latest`
