@@ -79,9 +79,9 @@ user@machine:~/code/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/
 ```
 * _Windows_: `docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples`
 3. Open up a web browser to http://localhost:8888
-![Jupyter Home](https://i.imgur.com/R8fd6mj.png)
+![Jupyter Home](https://i.imgur.com/0XQ8OlT.png)
 4. Navigate to the _Jupyter_ :arrow_right: _Examples_ directory.
-![Jupyter Examples](https://i.imgur.com/blShjBv.png)
+![Jupyter Examples](https://i.imgur.com/NjdMlOr.png)
 5. Click on one of the example `*.ipynb` files.
 6. Run _Cell_ :arrow_right: _Run all_.
 ![Jupyter Run Cells](https://i.imgur.com/GaAaNAS.png)
