@@ -40,39 +40,25 @@ These instructions will help set up the **CoLlAGe** core module and examples. Th
 
 ## Docker
 ### Overview
-Docker is like a stand-alone operating system that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding. 
+Docker is like a stand-alone operating system container that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding. 
+
 We offer 2 docker images: a basic core image for you to start coding with the collage features, and an image that contains a running Jupyter notebook with collage pre-installed and examples ready to run.
 
 ### Setup
-[Click here to install **Docker** for your operating system.](https://www.docker.com/get-started)
-
-From here on, we will assuming you have a terminal open 
+1. [Click here to install **Docker** for your operating system.](https://www.docker.com/get-started)
+2. For _Windows_ users, on the **Docker** GUI program, go to _Resources_ :arrow_right: _Shared Folders_ and add your cloned repository to the list of folders that **Docker** will share with the container.
 
 ### Core
 
 ### Examples
 From the cloned directory, we will start up a **Docker** image which will run a live web server and host a Jupyter notebook at the URL http://localhost:8888 which contains examples of using the code.
 
-* _Linux_: (From a terminal) ```sudo docker pull ccipd/collageradiomics-examples:latest```
-* _Windows
-
-2. Pull the latest image: 
-```
-docker pull radiomics/collageradiomics-examples:latest
-```
-3. Run one of these commands in the __root of git repository__:
-#### Linux:
-```
-docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
-```
-#### Windows/Powershell:
-```
-docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples
-```
-
-* How to setup docker on each OS
-* Windows Powershell
-* Linux sudo
+1. Pull the latest image:
+* _Linux_: ```sudo docker pull ccipd/collageradiomics-examples:latest```
+* _Windows_: ```docker pull ccipd/collageradiomics-examples:latest```
+2. Run the **Docker** image:
+* _Linux_: ```sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples```
+* _Windows_:* ```docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples```
 
 ### Core
 * Pull the latest
