@@ -109,13 +109,33 @@ Type "help", "copyright", "credits" or "license" for more information.
 'collageradiomics'
 >>> 
 ```
+6. Exit the **Docker** container:
+```console
+>>> quit()
+root@12b12d2bff59:/# exit
+exit
+user@machine:~/code/collageradiomics$ 
+```
 
 ## Pip
 To use this module in your existing **Python** development environment, you can install our **pip** module.
 
 1. Make sure **pip** is set up and installed on your appropriate operating system. [See instructions here](https://pip.pypa.io/en/stable/installing/).
+* _Ubuntu_:
+```console
+user@machine:~/code/collageradiomics$ sudo apt -y install python3-pip
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+python3-pip is already the newest version (18.1-5).
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+user@machine:~/code/collageradiomics$ 
+```
+
 2. Install our **CoLlAGe** module:  
-`pip3 install collageradiomics`
+```console
+pip3 install collageradiomics
+```
 
 *(Note: for some operating systems the command is simply `pip` instead of `pip**3**`).*
 
