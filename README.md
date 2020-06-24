@@ -444,6 +444,17 @@ Try the new cross-platform PowerShell https://aka.ms/pscore6
 
 PS C:\Users\user> python
 >>> import collageradiomics
+>>>
+```
+6. If you get an error like the one below, which can happen for some versions of python, call `import` again:
+```console
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\Users\user> python
+>>> import collageradiomics
 Could not import submodules (exact error was: DLL load failed while importing _bbox: The specified module could not be found.).
 
 There are many reasons for this error the most common one is that you have
@@ -452,6 +463,7 @@ installed them (using `python setup.py install`) and then proceeded to test
 mahotas **without changing the current directory**.
 
 Try installing and then changing to another directory before importing mahotas.
+>>> import collageradiomics
 >>>
 ```
 
