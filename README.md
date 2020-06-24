@@ -88,7 +88,10 @@ _TODO: Jupyter screenshot.__
 user@machine:~/code/collageradiomics$ sudo docker run -it -v $PWD:/root ccipd/collageradiomics-pip
 root@12b12d2bff59:/# 
 ```
-* _Windows_: `docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-pip`
+* _Windows_:
+```console
+(powershell?)> docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-pip
+```
 3. If your terminal prompt changes to `root@[random_string]:/#` then you are working inside the **Docker** container environment.
 * _Windows_: There is a button in the docker graphical user interface to load a terminal from a given downloaded
 4. Test the python module by making sure the following command outputs `True` to the terminal:  
@@ -97,7 +100,6 @@ root@12b12d2bff59:/# python -c 'import numpy as np; import collageradiomics; pri
 True
 root@12b12d2bff59:/# 
 ```
-* _Windows_: _(TODO)_
 5. Starting coding with **CoLlAGe** in **Python**:
 ```console
 root@12b12d2bff59:/# python
@@ -123,24 +125,36 @@ To use this module in your existing **Python** development environment, you can 
 1. Make sure **pip** is set up and installed on your appropriate operating system. [See instructions here](https://pip.pypa.io/en/stable/installing/).
 * _Ubuntu_:
 ```console
-user@machine:~/code/collageradiomics$ sudo apt -y install python3-pip
+user@machine:~$ sudo apt -y install python3-pip
 Reading package lists... Done
 Building dependency tree       
 Reading state information... Done
 python3-pip is already the newest version (18.1-5).
 0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
-user@machine:~/code/collageradiomics$ 
+user@machine:~$ 
 ```
-
 2. Install our **CoLlAGe** module:  
 ```console
-pip3 install collageradiomics
+user@machine:~$ pip3 install collageradiomics --upgrade
+Collecting collageradiomics
+  Downloading https://files.pythonhosted.org/packages/58/46/73d6b5a6d0d2b952086a1c9c4ae339087e4678f421044847ab2ea8728adf/collageradiomics-0.0.1a39-py3-none-any.whl
+...
+(some output omitted for brevity)
+...
+Successfully installed collageradiomics-...
+user@machine:~$ 
 ```
 
-*(Note: for some operating systems the command is simply `pip` instead of `pip**3**`).*
+*(Note: For some operating systems, the command is simply `pip` instead of `pip3`.)*
 
-## Usage
+## Python Usage
 collageradiomics can be implemented in **Python** through the `collageradiomics` pip module. It has a intuitive interface - simply create a `Collage` object or use one of the factory methods and run the `execute()` function.
+
+### Basic Example
+A simple example which executes it on a random array is as follows:
+
+### Real Data
+A simple example which uses a real-life sample image is as follows:
 
 ## Dependencies:
 We thank these generous developers that allowed us to build collageradiomics without reinventing the wheel:
