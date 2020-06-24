@@ -152,6 +152,37 @@ collageradiomics can be implemented in **Python** through the `collageradiomics`
 
 ### Basic Example
 A simple example which executes it on a random array is as follows:
+```console
+user@machine:~$ python3
+Python 3.7.5 (default, Apr 19 2020, 20:18:17) 
+[GCC 9.2.1 20191008] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import collageradiomics
+>>> import numpy as np
+>>> image_w = 20; image_h = 20; image_d = 3;
+>>> mask_min_x = 2; mask_min_y = 2; mask_w = 10; mask_h = 10;
+>>> random_image = np.random.rand(image_h, image_w, image_d);
+>>> collage = collageradiomics.Collage.from_rectangle(random_image, mask_min_x, mask_min_y, mask_w, mask_h)
+>>> result = collage.execute();
+>>> for f, slice in enumerate(result):
+...   print(f'ColLiAGe Feature #{f+1} is a {type(slice)} of shape {slice.shape}');
+... 
+ColLiAGe Feature #1 is a <class 'numpy.ndarray'> of shape (20, 20)
+ColLiAGe Feature #2 is a <class 'numpy.ndarray'> of shape (20, 20)
+ColLiAGe Feature #3 is a <class 'numpy.ndarray'> of shape (20, 20)
+ColLiAGe Feature #4 is a <class 'numpy.ndarray'> of shape (20, 20)
+ColLiAGe Feature #5 is a <class 'numpy.ndarray'> of shape (20, 20)
+ColLiAGe Feature #6 is a <class 'numpy.ndarray'> of shape (20, 20)
+ColLiAGe Feature #7 is a <class 'numpy.ndarray'> of shape (20, 20)
+ColLiAGe Feature #8 is a <class 'numpy.ndarray'> of shape (20, 20)
+ColLiAGe Feature #9 is a <class 'numpy.ndarray'> of shape (20, 20)
+ColLiAGe Feature #10 is a <class 'numpy.ndarray'> of shape (20, 20)
+ColLiAGe Feature #11 is a <class 'numpy.ndarray'> of shape (20, 20)
+ColLiAGe Feature #12 is a <class 'numpy.ndarray'> of shape (20, 20)
+ColLiAGe Feature #13 is a <class 'numpy.ndarray'> of shape (20, 20)
+>>> quit()
+user@machine:~$
+```
 
 ### Real Data
 A simple example which uses a real-life sample image is as follows:
