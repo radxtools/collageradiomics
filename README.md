@@ -44,13 +44,29 @@ These instructions will help set up the **CoLlAGe** core module and examples. Th
 
 ## Docker
 ### Overview
-Docker is like a stand-alone operating system container that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding. 
+**Docker** is like a stand-alone operating system container that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding. 
 
-We offer 2 docker images: a basic core image for you to start coding with the collage features, and an image that contains a running Jupyter notebook with collage pre-installed and examples ready to run.
+We offer 2 **Docker** images: a basic core image for you to start coding with the **CoLlAGe** features, and an image that contains a running **Jupyter** notebook with **CoLlAGe** pre-installed and examples ready to run.
 
 ### Setup
 1. [Click here to install **Docker** for your operating system.](https://www.docker.com/get-started)
-2. For _Windows_ users, on the **Docker** GUI program, go to _Resources_ :arrow_right: _Shared Folders_ and add your cloned repository to the list of folders that **Docker** will share with the container.
+2. For _Windows_ users, on the **Docker** graphical user interface program, go to _Resources_ :arrow_right: _Shared Folders_ and add your cloned repository to the list of folders that **Docker** will share with the container.
+
+### Examples
+From the cloned directory, we will start up a **Docker** image which will run a live web server and host a **Jupyter** notebook at the URL http://localhost:8888 which contains examples of using the code.
+
+1. Pull the latest image:
+* _Linux_: ```sudo docker pull ccipd/collageradiomics-examples:latest```
+* _Windows_: ```docker pull ccipd/collageradiomics-examples:latest```
+2. Run the **Docker** image:
+* _Linux_: ```sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples```
+* _Windows_:* ```docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples```
+3. Open up a web browser to http://localhost:8888
+4. Navigate to the _Jupyter_ :arrow_right: _Examples_ directory.
+5. Click on one of the example ```*.ipynb``` files.
+6. Run all cells.
+
+_TODO: Jupyter screenshot.__
 
 ### Core
 1. Pull the latest image:
@@ -69,42 +85,26 @@ We offer 2 docker images: a basic core image for you to start coding with the co
 * ```import```
 * ``` print```
 
-### Examples
-From the cloned directory, we will start up a **Docker** image which will run a live web server and host a Jupyter notebook at the URL http://localhost:8888 which contains examples of using the code.
-
-1. Pull the latest image:
-* _Linux_: ```sudo docker pull ccipd/collageradiomics-examples:latest```
-* _Windows_: ```docker pull ccipd/collageradiomics-examples:latest```
-2. Run the **Docker** image:
-* _Linux_: ```sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples```
-* _Windows_:* ```docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples```
-3. Open up a web browser to http://localhost:8888
-4. Navigate to the _Jupyter_ :arrow_right: _Examples_ directory.
-5. Click on one of the example ```*.ipynb``` files.
-6. Run all cells.
-
-_TODO: Jupyter screenshot.__
-
 ## Pip
-To use this module in your existing **Python** development environment, you can install our pip module.
+To use this module in your existing **Python** development environment, you can install our **pip** module.
 
-1. Make sure pip is set up and installed on your appropriate operating system. See instructions [here](https://pip.pypa.io/en/stable/installing/).
-2. Install our module:  
+1. Make sure **pip** is set up and installed on your appropriate operating system. See instructions [here](https://pip.pypa.io/en/stable/installing/).
+2. Install our **CoLlAGe** module:  
 ```pip3 install collageradiomics```
 
 *(Note: for some operating systems the command is simply ```pip``` instead of ```pip**3**```).*
 
 ## Usage
-collageradiomics can be implemented in Python through the collageradiomics module. It has a intuitive interface-- simply create a Collage object or use one of the factory methods and run the `execute()` function.
+collageradiomics can be implemented in **Python** through the `collageradiomics` pip module. It has a intuitive interface - simply create a `Collage` object or use one of the factory methods and run the `execute()` function.
 
 ## Dependencies:
 We thank these generous developers that allowed us to build collageradiomics without reinventing the wheel:
-- matplotlib
-- numpy
-- scikit-learn
-- scikit-build
-- mahotas
-- scipy
+- `matplotlib`
+- `numpy`
+- `scikit-learn`
+- `scikit-build`
+- `mahotas`
+- `scipy`
 
 We will likely provide a stripped down core version of our pip module which only contains the minimal dependencies.
 
