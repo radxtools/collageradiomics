@@ -198,16 +198,21 @@ Resolving deltas: 100% (126/126), done.
 user@machine:~$ cd collageradiomics/sample_data
 user@machine:~/collageradiomics/sample_data$ ll
 total 472
-drwxrwxr-x 2 tothtech tothtech   4096 Jun 24 02:18 ./
-drwxrwxr-x 7 tothtech tothtech   4096 Jun 24 02:18 ../
--rw-rw-r-- 1 tothtech tothtech   1870 Jun 24 02:18 BrainSliceTumorMask.png
--rw-rw-r-- 1 tothtech tothtech  80680 Jun 24 02:18 BrainSliceTumor.png
--rw-rw-r-- 1 tothtech tothtech    375 Jun 24 02:18 ImageMask.png
--rw-rw-r-- 1 tothtech tothtech    604 Jun 24 02:18 ImageNonRectangularMask2.png
--rw-rw-r-- 1 tothtech tothtech    451 Jun 24 02:18 ImageNonRectangularMask.png
--rw-rw-r-- 1 tothtech tothtech 199662 Jun 24 02:18 ImageSlice2.png
--rw-rw-r-- 1 tothtech tothtech 172921 Jun 24 02:18 ImageSlice.png
-user@machine:~/collageradiomics/sample_data$ python
+drwxrwxr-x 2 user user   4096 Jun 24 02:18 ./
+drwxrwxr-x 7 user user   4096 Jun 24 02:18 ../
+-rw-rw-r-- 1 user user   1870 Jun 24 02:18 BrainSliceTumorMask.png
+-rw-rw-r-- 1 user user  80680 Jun 24 02:18 BrainSliceTumor.png
+-rw-rw-r-- 1 user user    375 Jun 24 02:18 ImageMask.png
+-rw-rw-r-- 1 user user    604 Jun 24 02:18 ImageNonRectangularMask2.png
+-rw-rw-r-- 1 user user    451 Jun 24 02:18 ImageNonRectangularMask.png
+-rw-rw-r-- 1 user user 199662 Jun 24 02:18 ImageSlice2.png
+-rw-rw-r-- 1 user user 172921 Jun 24 02:18 ImageSlice.png
+user@machine:~/collageradiomics/sample_data$ python3
+Python 3.7.5 (default, Apr 19 2020, 20:18:17) 
+[GCC 9.2.1 20191008] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import collageradiomics
+>>> 
 ```
 
 ## Dependencies:
