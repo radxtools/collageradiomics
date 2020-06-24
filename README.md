@@ -83,6 +83,28 @@ _(Note: We are using ```==``` for version numbers of our dependencies as a desig
 
 These instructions will help set up the **CoLlAGe** core module and examples. They assume you are working out of a terminal such as **Powershell** on Windows or **Konsole** on Linux.
 
+## Executive Summary for Experts
+If you are already well-versed in **Docker** and **pip**, here is a quick list of commands for each operating system:
+
+### Linux
+```console
+Core Docker:
+user@machine:~$ sudo docker pull ccipd/collageradiomics-pip:latest
+user@machine:~$ sudo docker run -it ccipd/collageradiomics-pip
+
+Examples Docker:
+user@machine:~$ git clone https://github.com/ccipd/collageradiomics.git
+user@machine:~$ sudo docker pull ccipd/collageradiomics-examples:latest
+user@machine:~$ sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
+
+Pip:
+user@machine:~$ pip3 install collageradiomics
+```
+
+### Windows
+```console
+
+```
 
 ## Docker
 **Docker** is like a stand-alone operating system container that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding with **CoLlAGe**. We offer 2 **Docker** images: a basic core image for you to start coding with the **CoLlAGe** features (called _[collageradiomics-pip](#collageradiomics-pip-docker-image)_) and an image that contains a running **Jupyter** notebook with **CoLlAGe** pre-installed and examples ready to run (called _[collageradiomics-examples](#collageradiomics-examples-docker-image)_).
@@ -520,10 +542,10 @@ remote: Total 280 (delta 126), reused 231 (delta 86), pack-reused 0
 Receiving objects: 100% (280/280), 1.48 MiB | 5.39 MiB/s, done.
 Resolving deltas: 100% (126/126), done.
 user@machine:~$ cd collageradiomics/sample_data
-user@machine:~/collageradiomics/sample_data$ ll
+user@machine:~/collageradiomics/sample_data$ ls -l
 total 472
 drwxrwxr-x 2 user user   4096 Jun 24 02:18 ./
-drwxrwxr-x 7 user user   4096 Jun 24 02:18 ../
+drwxrwxr-x 7 user user   4096 Jun 4 02:18 ../
 -rw-rw-r-- 1 user user   1870 Jun 24 02:18 BrainSliceTumorMask.png
 -rw-rw-r-- 1 user user  80680 Jun 24 02:18 BrainSliceTumor.png
 -rw-rw-r-- 1 user user    375 Jun 24 02:18 ImageMask.png
@@ -531,6 +553,12 @@ drwxrwxr-x 7 user user   4096 Jun 24 02:18 ../
 -rw-rw-r-- 1 user user    451 Jun 24 02:18 ImageNonRectangularMask.png
 -rw-rw-r-- 1 user user 199662 Jun 24 02:18 ImageSlice2.png
 -rw-rw-r-- 1 user user 172921 Jun 24 02:18 ImageSlice.png
+user@machine:~collageradiomics/sample_data$ pip install SimpleITK
+Collecting SimpleITK
+  Downloading SimpleITK-1.2.4-cp38-cp38-win_amd64.whl (28.0 MB)
+     |████████████████████████████████| 28.0 MB 1.6 MB/s
+Installing collected packages: SimpleITK
+Successfully installed SimpleITK-1.2.4
 user@machine:~/collageradiomics/sample_data$ python3
 Python 3.7.5 (default, Apr 19 2020, 20:18:17) 
 [GCC 9.2.1 20191008] on linux
@@ -538,7 +566,13 @@ Type "help", "copyright", "credits" or "license" for more information.
 ```
 ```python
 >>> import collageradiomics
->>> 
+>>> import SimpleITK as sitk
+>>> img_array = sitk.GetArrayFromImage(sitk.ReadImage('ImageSlice.png'))
+>>> w = 30; h = 30; x = 200; y = 200;
+>>> features = collageradiomics.Collage.from_rectangle(img_array, x, y, w, h).execute()
+>>> for f, slice in enumerate(features):
+...   print(f'ColLiAGe Feature #{f+1} is a {type(slice)} of shape {slice.shape}');
+... 
 ```
 
 # Contact
