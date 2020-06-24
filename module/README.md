@@ -1,0 +1,1 @@
+Setup scripts and code for the collageradiomics pip module.

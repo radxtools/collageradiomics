@@ -2,7 +2,7 @@ FROM nathanhillyer/ml-base
 ENV LANG C.UTF-8
 RUN PIP_INSTALL="python -m pip install --upgrade --no-cache-dir --retries 10 --timeout 60" && \
     $PIP_INSTALL \
-        collageradiomics==0.0.1a37 \
+        collageradiomics==0.0.1a41 \
         Pillow \
         && \
     ldconfig && \

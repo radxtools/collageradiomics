@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='collageradiomics',
-    version='0.0.1a38',
+    version='0.0.1a41',
     author='Toth Technology',
     author_email='toth-tech@hillyer.me',
     description='CoLliage Implementation',
@@ -22,7 +22,7 @@ setuptools.setup(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Operating System :: POSIX :: Linux',
         'Operating System :: Microsoft :: Windows :: Windows 10',
@@ -35,6 +35,7 @@ setuptools.setup(
         'numpy==1.19.0',
         'scikit-learn==0.23.1',
         'scikit-build==0.11.1',
+        'scikit-image==0.17.2',
         'mahotas==1.4.10',
         'scipy==1.5.0'
     ],
