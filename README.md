@@ -44,7 +44,7 @@ git is already the newest version (1:2.20.1-2ubuntu1.19.10.3).
 0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
 user@machine:~$ 
 ```
-* _Windows_: A quick online search will provide you with several packaged executables.
+* _Windows_: A quick online search for _"git for Windows"_ will provide you with several options for installing the ```git``` command. If it's correctly installed, the following should output your current version of git:  
 ```console
 Windows PowerShell
 Copyright (C) Microsoft Corporation. All rights reserved.
@@ -56,19 +56,51 @@ git version 2.26.2.windows.1
 PS C:\Users\user>
 ```
 2. In a shell (e.g. **Powershell** on Windows or **Konsole** on Linux) clone the repository:  
+* _Linux_:
 ```console
 user@machine:~$ git clone https://github.com/ccipd/collageradiomics.git
 Cloning into 'collageradiomics'...
 remote: Enumerating objects: 280, done.
-remote: Total 280 (delta 0), reused 0 (delta 0), pack-reused 280
+remote: Total 280 (delta 0), reused 0 (delta 0), pack-reused 280user
 Receiving objects: 100% (280/280), 1.48 MiB | 9.23 MiB/s, done.
 Resolving deltas: 100% (125/125), done.
-user@machine:~$ 
-```
-3. Enter that directory and make sure you are in that directory for the examples below:  
-```console
 user@machine:~$ cd collageradiomics
-user@machine:~/collageradiomics$
+user@machine:~/collageradiomics$ ls -l
+
+```
+* _Windows_:
+```console
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\Users\user> git clone https://github.com/ccipd/collageradiomics.git
+Cloning into 'collageradiomics'...
+remote: Enumerating objects: 280, done.
+Receiving objects:  97% (272/280), 1.24 MiB | 1.02 MiB/sused 280 eceiving objects:  91% (255/280), 1.24 MiB | 1.02 MiB/s
+Receiving objects: 100% (280/280), 1.48 MiB | 1.09 MiB/s, done.
+Resolving deltas: 100% (125/125), done.
+PS C:\Users\user> cd collageradiomics
+PS C:\Users\user\collageradiomics> dir
+
+
+    Directory: C:\Users\user\collageradiomics
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----       2020-06-24      3:31                docker
+d-----       2020-06-24      3:31                jupyter
+d-----       2020-06-24      3:31                module
+d-----       2020-06-24      3:31                sample_data
+-a----       2020-06-24      3:31            215 .gitignore
+-a----       2020-06-24      3:31          35823 LICENSE
+-a----       2020-06-24      3:31           4045 README.md
+-a----       2020-06-24      3:31            136 start.sh
+
+
+PS C:\Users\user\collageradiomics>
 ```
 
 ## Docker
