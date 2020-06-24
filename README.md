@@ -24,26 +24,58 @@ Currently supports the following Haralick features:
 collageradiomics includes parameter tuning information in the output. It contains the image(s) and mask(s), and the settings applied upon them. This allows multiple fully reproducible runs without having to remember or find the original parameters.
 
 ## Documentation
-The best source of documentation is found the examples-- instructions provided below.
+The best source of documentation is found the examples - instructions provided below.
 
 # Installation
+These instructions will help set up the **CoLlAGe** core module and examples. They assume you are working out of a terminal such as **Powershell** on Windows or **Konsole** on Linux.
+
 ## Git
-Install the ```git``` based on your operating OS.
-
-In a shell (e.g. ```Powershell``` or ```Konsole```), clone the repository:
-
+1. Install the ```git``` command based on your operating OS.
+* _Ubuntu_: ```sudo apt -y install git```
+* _Windows_: A quick online search will provide you with several packaged ```git``` executables.
+2. In a shell (e.g. **Powershell** on Windows or **Konsole** on Linux) clone the repository:  
 ```git clone https://github.com/ccipd/collageradiomics.git```
+3. Enter that directory and make sure you are in that directory for the examples below:  
+```cd collageradiomics```
 
 ## Docker
 ### Overview
-Docker is like a stand-alone operating system that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding. We offer 2 docker images: a basic core image for you to start coding with the collage features, and an image that contains a running Jupyter notebook with collage pre-installed and examples ready to run.
+Docker is like a stand-alone operating system that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding. 
+We offer 2 docker images: a basic core image for you to start coding with the collage features, and an image that contains a running Jupyter notebook with collage pre-installed and examples ready to run.
 
 ### Setup
+[Click here to install **Docker** for your operating system.](https://www.docker.com/get-started)
+
+From here on, we will assuming you have a terminal open 
+
+### Core
+
+### Examples
+From the cloned directory, we will start up a **Docker** image which will run a live web server and host a Jupyter notebook at the URL http://localhost:8888 which contains examples of using the code.
+
+* _Linux_: (From a terminal) ```sudo docker pull ccipd/collageradiomics-examples:latest```
+* _Windows
+
+2. Pull the latest image: 
+```
+docker pull radiomics/collageradiomics-examples:latest
+```
+3. Run one of these commands in the __root of git repository__:
+#### Linux:
+```
+docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
+```
+#### Windows/Powershell:
+```
+docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples
+```
+
 * How to setup docker on each OS
 * Windows Powershell
 * Linux sudo
 
 ### Core
+* Pull the latest
 * Windows powershell screenshot
 * Windows-specific screenshots
 * python import command
@@ -69,20 +101,6 @@ git clone https://github.com/ccipd/collageradiomics && cd collageradiomics
 
 ## Docker Ubuntu 20.04 Jupyter Examples
 
-1. [Install Docker.](https://www.docker.com/get-started)
-2. Pull the latest image: 
-```
-docker pull radiomics/collageradiomics-examples:latest
-```
-3. Run one of these commands in the __root of git repository__:
-#### Linux:
-```
-docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
-```
-#### Windows/Powershell:
-```
-docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples
-```
 
 #### Open in browser:
 ```
