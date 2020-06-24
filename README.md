@@ -70,6 +70,12 @@ docker.io/ccipd/collageradiomics-pip:latest
 * _Linux_:
 ```console
 user@machine:~/code/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
+[I 06:35:13.806 NotebookApp] Writing notebook server cookie secret to /tmp/notebook_cookie_secret
+[W 06:35:14.030 NotebookApp] All authentication is disabled.  Anyone who can connect to this server will be able to run code.
+[I 06:35:14.033 NotebookApp] Serving notebooks from local directory: /root
+[I 06:35:14.034 NotebookApp] The Jupyter Notebook is running at:
+[I 06:35:14.034 NotebookApp] http://d41cc76f5035:8888/
+[I 06:35:14.034 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
 ```
 * _Windows_: `docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples`
 3. Open up a web browser to http://localhost:8888
