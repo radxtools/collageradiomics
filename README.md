@@ -186,6 +186,29 @@ user@machine:~$
 
 ### Real Data
 A simple example which uses a real-life sample image is as follows:
+```console
+user@machine:~$ git clone https://github.com/ccipd/collageradiomics
+Cloning into 'collageradiomics'...
+remote: Enumerating objects: 280, done.
+remote: Counting objects: 100% (280/280), done.
+remote: Compressing objects: 100% (157/157), done.
+remote: Total 280 (delta 126), reused 231 (delta 86), pack-reused 0
+Receiving objects: 100% (280/280), 1.48 MiB | 5.39 MiB/s, done.
+Resolving deltas: 100% (126/126), done.
+user@machine:~$ cd collageradiomics/sample_data
+user@machine:~/collageradiomics/sample_data$ ll
+total 472
+drwxrwxr-x 2 tothtech tothtech   4096 Jun 24 02:18 ./
+drwxrwxr-x 7 tothtech tothtech   4096 Jun 24 02:18 ../
+-rw-rw-r-- 1 tothtech tothtech   1870 Jun 24 02:18 BrainSliceTumorMask.png
+-rw-rw-r-- 1 tothtech tothtech  80680 Jun 24 02:18 BrainSliceTumor.png
+-rw-rw-r-- 1 tothtech tothtech    375 Jun 24 02:18 ImageMask.png
+-rw-rw-r-- 1 tothtech tothtech    604 Jun 24 02:18 ImageNonRectangularMask2.png
+-rw-rw-r-- 1 tothtech tothtech    451 Jun 24 02:18 ImageNonRectangularMask.png
+-rw-rw-r-- 1 tothtech tothtech 199662 Jun 24 02:18 ImageSlice2.png
+-rw-rw-r-- 1 tothtech tothtech 172921 Jun 24 02:18 ImageSlice.png
+user@machine:~/collageradiomics/sample_data$ python
+```
 
 ## Dependencies:
 We thank these generous developers that allowed us to build collageradiomics without reinventing the wheel:
