@@ -78,12 +78,12 @@ user@machine:~/code/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/
 [I 06:35:14.034 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
 ```
 * _Windows_: `docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples`
-3. Open up a web browser to http://localhost:8888
+3. Open up a web browser to http://localhost:8888  
 ![Jupyter Home](https://i.imgur.com/0XQ8OlT.png)
-4. Navigate to the _Jupyter_ :arrow_right: _Examples_ directory.
+4. Navigate to the _Jupyter_ :arrow_right: _Examples_ directory.  
 ![Jupyter Examples](https://i.imgur.com/NjdMlOr.png)
 5. Click on one of the example `*.ipynb` files.
-6. Run _Cell_ :arrow_right: _Run all_.
+6. Run _Cell_ :arrow_right: _Run all_.  
 ![Jupyter Run Cells](https://i.imgur.com/GaAaNAS.png)
 ![Jupyter Output](https://i.imgur.com/PapCcsg.png)
 7. Feel free to add your own cells and run them to get familiar with the **CoLlAGe** code.
