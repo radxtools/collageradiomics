@@ -111,7 +111,7 @@ docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples
 pip install collageradiomics
 ```
 
-You may wish to jump righ tto some [**Python** examples](#python-examples)
+You may wish to jump right to some [**Python** examples](#python-examples).
 
 ## Docker
 **Docker** is like a stand-alone operating system container that comes pre-installed with all the dependencies already set up properly. It allows you to jump right into coding with **CoLlAGe**. We offer 2 **Docker** images: a basic core image for you to start coding with the **CoLlAGe** features (called _[collageradiomics-pip](#collageradiomics-pip-docker-image)_) and an image that contains a running **Jupyter** notebook with **CoLlAGe** pre-installed and examples ready to run (called _[collageradiomics-examples](#collageradiomics-examples-docker-image)_).
