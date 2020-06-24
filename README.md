@@ -55,10 +55,20 @@ We offer 2 **Docker** images: a basic core image for you to start coding with th
 From the cloned repository directory, we will start up a **Docker** image which will run a live web server and host a **Jupyter** notebook at the URL http://localhost:8888 which contains examples of using the code.
 
 1. Pull the latest **Docker** image:
-* _Linux_: `sudo docker pull ccipd/collageradiomics-examples:latest`
+* _Linux_:
+```console
+user@machine:~/code/collageradiomics$ sudo docker pull ccipd/collageradiomics-examples:latest
+latest: Pulling from ccipd/collageradiomics-pip
+Digest: sha256:8fc7d61dbe6ad64eeff9c69cfaa788d90c61861bff8aaf8865ed1318c5666250
+Status: Image is up to date for ccipd/collageradiomics-pip:latest
+docker.io/ccipd/collageradiomics-pip:latest
+```
 * _Windows_: `docker pull ccipd/collageradiomics-examples:latest`
 2. Run the **Docker** image:
-* _Linux_: `sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples`
+* _Linux_:
+```console
+user@machine:~/code/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
+```
 * _Windows_: `docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples`
 3. Open up a web browser to http://localhost:8888
 4. Navigate to the _Jupyter_ :arrow_right: _Examples_ directory.
@@ -73,12 +83,16 @@ _TODO: Jupyter screenshot.__
 * _Linux_: `sudo docker pull ccipd/collageradiomics-pip:latest`
 * _Windows_: `docker pull ccipd/collageradiomics-pip:latest`
 2. Run the **Docker** image:
-* _Linux_: `sudo docker run -it -v $PWD:/root ccipd/collageradiomics-pip`
+* _Linux_:
+```console
+user@machine:~/code/collageradiomics$ sudo docker run -it -v $PWD:/root ccipd/collageradiomics-pip
+root@12b12d2bff59:/# 
+```
 * _Windows_: `docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-pip`
 3. If your terminal prompt changes to `root@[random_string]:/#` then you are working inside the **Docker** container environment.
 * _Windows_: There is a button in the docker graphical user interface to load a terminal from a given downloaded
 4. Test the python module by making sure the following command outputs `True` to the terminal:  
-```
+```shell
 python -c 'import numpy as np; import collageradiomics; print(not not len(collageradiomics.__name__));'
 ```
 collageradiomics.Collage(np.empty((50,50)), np.empty((50,50))).execute()```
