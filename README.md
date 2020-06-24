@@ -86,7 +86,7 @@ user@machine:~/collageradiomics$
 ```
 * _Windows_:
 ```console
-(powershell?)> docker pull ccipd/collageradiomics-examples:latest
+docker pull ccipd/collageradiomics-examples:latest
 ```
 2. Run the **Docker** image:
 * _Linux_:
