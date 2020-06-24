@@ -34,12 +34,32 @@ These instructions will help set up the **CoLlAGe** core module and examples. Th
 
 ## Git
 1. Install the **git** software based on your OS:
-* _Ubuntu_: `sudo apt -y install git`
+* _Ubuntu_:  
+```console
+user@machine:~$ sudo apt -y install git
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+git is already the newest version (1:2.20.1-2ubuntu1.19.10.3).
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+user@machine:~$ 
+```
 * _Windows_: A quick online search will provide you with several packaged executables.
 2. In a shell (e.g. **Powershell** on Windows or **Konsole** on Linux) clone the repository:  
-`git clone https://github.com/ccipd/collageradiomics.git`
+```console
+user@machine:~$ git clone https://github.com/ccipd/collageradiomics.git
+Cloning into 'collageradiomics'...
+remote: Enumerating objects: 280, done.
+remote: Total 280 (delta 0), reused 0 (delta 0), pack-reused 280
+Receiving objects: 100% (280/280), 1.48 MiB | 9.23 MiB/s, done.
+Resolving deltas: 100% (125/125), done.
+user@machine:~$ 
+```
 3. Enter that directory and make sure you are in that directory for the examples below:  
-`cd collageradiomics`
+```console
+user@machine:~$ cd collageradiomics
+user@machine:~/collageradiomics$
+```
 
 ## Docker
 ### Overview
@@ -59,18 +79,18 @@ _Note: Using this method requires you to pull the code from our repository. If y
 1. Pull the latest **Docker** image:
 * _Linux_:
 ```console
-user@machine:~/code/collageradiomics$ sudo docker pull ccipd/collageradiomics-examples:latest
+user@machine:~/collageradiomics$ sudo docker pull ccipd/collageradiomics-examples:latest
 latest: Pulling from ccipd/collageradiomics-examples
 Digest: sha256:107a2804e76b156f40d571b8422f822a3712353645c86e5cc2275d2aea85c9be
 Status: Image is up to date for ccipd/collageradiomics-examples:latest
 docker.io/ccipd/collageradiomics-examples:latest
-user@machine:~/code/collageradiomics$ 
+user@machine:~/collageradiomics$ 
 ```
 * _Windows_: `docker pull ccipd/collageradiomics-examples:latest`
 2. Run the **Docker** image:
 * _Linux_:
 ```console
-user@machine:~/code/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
+user@machine:~/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
 [I 06:35:13.806 NotebookApp] Writing notebook server cookie secret to /tmp/notebook_cookie_secret
 [W 06:35:14.030 NotebookApp] All authentication is disabled.  Anyone who can connect to this server will be able to run code.
 [I 06:35:14.033 NotebookApp] Serving notebooks from local directory: /root
@@ -88,7 +108,7 @@ user@machine:~/code/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/
 ![Jupyter Run Cells](https://i.imgur.com/GaAaNAS.png)
 ![Jupyter Output](https://i.imgur.com/PapCcsg.png)
 7. Feel free to add your own cells and run them to get familiar with the **CoLlAGe** code.
-8. To exit the **Docker** image, press `Ctrl+C` twice:
+8. To stop the **Jupyter** notebook and exit the **Docker** image, press `Ctrl+C` twice:
 ```console
 [I 07:05:36.271 NotebookApp] The Jupyter Notebook is running at:
 [I 07:05:36.271 NotebookApp] http://4f033d68769d:8888/
@@ -122,7 +142,7 @@ docker.io/ccipd/collageradiomics-pip:latest
 2. Run the **Docker** image:
 * _Linux_:
 ```console
-user@machine:~/code/collageradiomics$ sudo docker run -it -v $PWD:/root ccipd/collageradiomics-pip
+user@machine:~/collageradiomics$ sudo docker run -it -v $PWD:/root ccipd/collageradiomics-pip
 root@12b12d2bff59:/# 
 ```
 * _Windows_:
@@ -153,7 +173,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> quit()
 root@12b12d2bff59:/# exit
 exit
-user@machine:~/code/collageradiomics$ 
+user@machine:~/collageradiomics$ 
 ```
 
 ## Pip
