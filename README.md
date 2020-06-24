@@ -9,7 +9,7 @@
   - [Idempotence](#idempotence)
   - [Documentation](#documentation)
   - [Dependencies](#dependencies)
-- [Installation & Usage](#installation-usage)
+- [Installation & Usage](#installation--usage)
   - [Docker](#docker)
     - [Docker Setup](#docker-setup)
     - [collageradiomics-examples Docker Image](#collageradiomics-examples-docker-image)
@@ -74,7 +74,7 @@ We thank these generous developers that allowed us to build collageradiomics wit
 
 _(Note: We are using ```==``` for version numbers of our dependencies as a design choice.)_
 
-# Installation & Use
+# Installation & Usage
 
 These instructions will help set up the **CoLlAGe** core module and examples. They assume you are working out of a terminal such as **Powershell** on Windows or **Konsole** on Linux.
 
