@@ -70,14 +70,14 @@ def highlight_rectangle_on_image(image_data, min_x, min_y, w, h, colormap=plt.cm
 
     Args:
         image_data ([numpy array]): [image to highlight]
-        min_x ([type]): [x location to start highlight]
-        min_y ([type]): [y location to start highlight]
-        w ([type]): [width of highlight rectangle]
-        h ([type]): [height of highlight rectangle]
+        min_x ([int]): [x location to start highlight]
+        min_y ([int]): [y location to start highlight]
+        w ([int]): [width of highlight rectangle]
+        h ([int]): [height of highlight rectangle]
         colormap ([matplotlib colormap], optional): [color map to convert for display]. Defaults to plt.cm.gray.
 
     Returns:
-        [type]: [description]
+        [numpy array]: [image array with highlighted rectangle]
     """
     figure, axes = plt.subplots(1,2, figsize=(15,15))
 
@@ -196,7 +196,7 @@ class CollageCollection:
             haralick_feature_list (list, optional): [array of features to calculate]. Defaults to [HaralickFeature.All].
             log_sample_rate (int, optional): [higher values will log more svd angles, this only works with verbose logging]. Defaults to 500.
             cooccurence_angles (list, optional): [list of angles to use in the cooccurence matrix]. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
-            difference_variance_interpretation ([type], optional): [Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
+            difference_variance_interpretation ([DifferenceVarianceInterpretation], optional): [Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
             haralick_window_size (int, optional): [size of rolling window for texture calculations]. Defaults to -1.
             greylevels (int, optional): [number of bins to use for the grey levels]. Defaults to 64.
         """
@@ -259,16 +259,40 @@ class Collage:
             haralick_feature_list (list, optional): [array of features to calculate]. Defaults to [HaralickFeature.All].
             log_sample_rate (int, optional): [higher values will log more svd angles, this only works with verbose logging]. Defaults to 500.
             cooccurence_angles (list, optional): [list of angles to use in the cooccurence matrix]. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
-            difference_variance_interpretation ([type], optional): [Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
+            difference_variance_interpretation ([DifferenceVarianceInterpretation], optional): [Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
             haralick_window_size (int, optional): [size of rolling window for texture calculations]. Defaults to -1.
             greylevels (int, optional): [number of bins to use for the grey levels]. Defaults to 64.
         """
+        if haralick_window_size == -1:
+            self.haralick_window_size = svd_radius * 2 + 1
+        else:
+            self.haralick_window_size = haralick_window_size
+
+        if self.haralick_window_size < 1:
+            raise Exception('Haralick windows size must be at least 1 pixel.')
+
+        if svd_radius < 1:
+            raise Exception('SVD radius must be at least 1 pixel')
+
+        if greylevels < 1:
+            raise Exception('greylevels must contain at least 1 bin')
+
+        if mask_array.shape[0] != img_array.shape[0] or mask_array.shape[1] != img_array.shape[1]:
+            raise Exception('Mask must be same size as image.')
+
         self.img_array = img_array
+        
+        if self.img_array.shape[0] < self.haralick_window_size or self.img_array.shape[1] < self.haralick_window_size:
+            raise Exception(f'Image must be at least {self.haralick_window_size}x{self.haralick_window_size} to create appropriate windows.')
+
         if len(mask_array.shape) > 2:
             mask_array = mask_array[:,:,0]
         trimmed_mask_array = (mask_array == 255).astype('float64')
         non_zero_indices = np.argwhere(trimmed_mask_array)
-        (min_y, min_x), (max_y, max_x) = non_zero_indices.min(0), non_zero_indices.max(0) + 1 
+        try:
+            (min_y, min_x), (max_y, max_x) = non_zero_indices.min(0), non_zero_indices.max(0) + 1 
+        except:
+            raise Exception('Non-contiguous masks are not supported.')
         self.mask_min_x = min_x
         self.mask_min_y = min_y
         self.mask_max_x = max_x
@@ -286,9 +310,6 @@ class Collage:
         self.log_sample_rate = log_sample_rate
         self.cooccurence_angles = cooccurence_angles
         self.difference_variance_interpretation = difference_variance_interpretation
-
-        if haralick_window_size == -1:
-            self.haralick_window_size = self.svd_radius * 2 + 1
 
         self.greylevels = greylevels
         self.haralick_features = []
@@ -312,17 +333,17 @@ class Collage:
         """Calculates collageradiomics within the mask coordinates
 
         Args:
-            img_array ([type]): [image to run collage upon]
-            mask_min_x ([type]): [x location of window]
-            mask_min_y ([type]): [y location of window]
-            patch_window_width ([type]): [window width]
-            patch_window_height ([type]): [window height]
+            img_array ([numpy array]): [image to run collage upon]
+            mask_min_x ([int]): [x location of window]
+            mask_min_y ([int]): [y location of window]
+            patch_window_width ([int]): [window width]
+            patch_window_height ([int]): [window height]
             svd_radius (int, optional): [radius of svd]. Defaults to 5.
             verbose_logging (bool, optional): [turning this on will log intermediate results]. Defaults to False.
             haralick_feature_list (list, optional): [array of features to calculate]. Defaults to [HaralickFeature.All].
             log_sample_rate (int, optional): [higher values will log more svd angles, this only works with verbose logging]. Defaults to 500.
             cooccurence_angles (list, optional): [list of angles to use in the cooccurence matrix]. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
-            difference_variance_interpretation ([type], optional): [Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
+            difference_variance_interpretation ([DifferenceVarianceInterpretation], optional): [Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
             haralick_window_size (int, optional): [size of rolling window for texture calculations]. Defaults to -1.
             greylevels (int, optional): [number of bins to use for the grey levels]. Defaults to 64.
 
@@ -367,7 +388,7 @@ class Collage:
             haralick_feature_list (list, optional): [array of features to calculate]. Defaults to [HaralickFeature.All].
             log_sample_rate (int, optional): [higher values will log more svd angles, this only works with verbose logging]. Defaults to 500.
             cooccurence_angles (list, optional): [list of angles to use in the cooccurence matrix]. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
-            difference_variance_interpretation ([type], optional): [Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
+            difference_variance_interpretation ([DifferenceVarianceInterpretation], optional): [Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
             haralick_window_size (int, optional): [size of rolling window for texture calculations]. Defaults to -1.
             greylevels (int, optional): [number of bins to use for the grey levels]. Defaults to 64.
 
