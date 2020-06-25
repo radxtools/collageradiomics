@@ -117,7 +117,7 @@ docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples
 pip install collageradiomics
 ```
 
-You may wish to jump right to some [**Python** examples](#python-examples).
+You may wish to jump right to some [**Python** examples](https://github.com/ccipd/collageradiomics/tree/master/jupyter/examples).
 
 ## Docker
 _[Back to **Table of Contents**](#table-of-contents)_
