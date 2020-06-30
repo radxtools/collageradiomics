@@ -1,0 +1,10 @@
+version: 2
+
+sphinx:
+  configuration: module/docs/conf.py
+
+formats:
+  - pdf
+
+python:
+  version: 3.7
