@@ -70,7 +70,7 @@ Our **CoLlAGe** module includes parameter tuning information in the output. It c
 ## Documentation
 _[Back to **Table of Contents**](#table-of-contents)_
 
-The best source of documentation is found the examples - instructions provided below.
+https://collageradiomics.readthedocs.io/
 
 ## Dependencies:
 _[Back to **Table of Contents**](#table-of-contents)_
