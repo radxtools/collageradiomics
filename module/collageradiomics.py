@@ -40,7 +40,7 @@ def svd_dominant_angle(x, y, dx_windows, dy_windows):
     flattened_gradients[:,1] = np.reshape(dy_patch, ((window_area)), order='F')
     
     _, _, V = linalg.svd(flattened_gradients)
-    dominant_angle = math.atan2(V[0, 0], V[1, 0
+    dominant_angle = math.atan2(V[0, 0], V[1, 0])
     
     return dominant_angle
 
@@ -138,7 +138,7 @@ def bounding_box(iterable):
     print(iterable.shape)
     min_x, min_y = np.min(iterable[0], axis=0)
     max_x, max_y = np.max(iterable[0], axis=0)
-    return np.array(min_x, min_y), (max_x, min_y), (max_x, max_y), (min_x, max_y)
+    return np.array([(min_x, min_y), (max_x, min_y), (max_x, max_y), (min_x, max_y)])
 
 def bbox1(img):
     """Calculates bounding box where pixel values are 255
@@ -154,7 +154,7 @@ def bbox1(img):
             tuple representing bounding box minx, maxx, miny, maxy
     """
     a = np.where(img == 255)
-    bbox = np.min(a[0, np.max(a[0, np.min(a[1, np.max(a[1
+    bbox = np.min(a[0]), np.max(a[0]), np.min(a[1]), np.max(a[1])
     return bbox
 
 def scale_array_for_image(array_to_scale):
@@ -432,7 +432,7 @@ class Collage:
             Collage
                 Collage object to run collage on a rectangular section of the image]
         """
-        mask_array = np.zeros((img_array.shape[0], img_array.shape[1)
+        mask_array = np.zeros((img_array.shape[0], img_array.shape[1]))
         mask_array[mask_min_y:mask_min_y + patch_window_height, mask_min_x:mask_min_x + patch_window_width] = 255
         return cls(
             img_array, 
@@ -544,7 +544,7 @@ class Collage:
         cooccurence_matrix = cooccurence_matrix[:,:,0]
         
         # extract haralick using mahotas library:
-        har_feature = mt.features.texture.haralick_featurescooccurence_matrix], return_mean=mean)
+        har_feature = mt.features.texture.haralick_features([cooccurence_matrix], return_mean=mean)
         
         # output:
         if mean:
@@ -641,8 +641,8 @@ class Collage:
             print(f'svd diameter = {svd_diameter}')
             print(f'dx windows shape = {dx_windows.shape}')
 
-        center_x_range = range(dx_windows.shape[1
-        center_y_range = range(dx_windows.shape[0
+        center_x_range = range(dx_windows.shape[1])
+        center_y_range = range(dx_windows.shape[0])
 
         if self.verbose_logging:
             print(f'Center x: {center_x_range}, Center y: {center_y_range}')
