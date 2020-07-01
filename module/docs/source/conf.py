@@ -20,7 +20,7 @@
 project = 'collageradiomics'
 copyright = '2020, BrIC Laboratory'
 author = 'BrIC Laboratory'
-release = '0.1.0'
+release = '0.1.1'
 extensions = [
     'sphinx.ext.autodoc',
     'numpydoc',
