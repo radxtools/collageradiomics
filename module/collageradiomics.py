@@ -241,15 +241,28 @@ class CollageCollection:
             svd_radius : int, optional
                 radius of svd. Defaults to 5.
             verbose_logging : bool, optional
-                turning this on will log intermediate results]. Defaults to False.
+                turning this on will log intermediate results]. 
+                Defaults to False.
             haralick_feature_list : [HaralickFeature], optional
-                array of features to calculate. Defaults to [HaralickFeature.All].
+                array of features to calculate. 
+                Defaults to [HaralickFeature.All].
             log_sample_rate : int, optional
-                higher values will log more svd angles, this only works with verbose logging. Defaults to 500.
+                higher values will log more svd angles, this only 
+                works with verbose logging. Defaults to 500.
             cooccurence_angles : list, optional
-                list of angles to use in the cooccurence matrix. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
+                list of angles to use in the cooccurence matrix. 
+                Defaults to 
+                [0, 1*np.pi/4, 
+                2*np.pi/4, 
+                3*np.pi/4, 
+                4*np.pi/4, 
+                5*np.pi/4, 
+                6*np.pi/4, 
+                7*np.pi/4].
             difference_variance_interpretation : DifferenceVarianceInterpretation, optional
-                Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
+                Feature 10 has two interpretations, as the variance 
+                of |x-y| or as the variance of P(|x-y|).].
+                 Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
             haralick_window_size : int, optional
                 size of rolling window for texture calculations. Defaults to -1.
             greylevels : int, optional
@@ -315,15 +328,28 @@ class Collage:
             svd_radius : int, optional
                 radius of svd. Defaults to 5.
             verbose_logging : bool, optional
-                turning this on will log intermediate results]. Defaults to False.
+                turning this on will log intermediate results]. 
+                Defaults to False.
             haralick_feature_list : [HaralickFeature], optional
-                array of features to calculate. Defaults to [HaralickFeature.All].
+                array of features to calculate. 
+                Defaults to [HaralickFeature.All].
             log_sample_rate : int, optional
-                higher values will log more svd angles, this only works with verbose logging. Defaults to 500.
+                higher values will log more svd angles, this only 
+                works with verbose logging. Defaults to 500.
             cooccurence_angles : list, optional
-                list of angles to use in the cooccurence matrix. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
+                list of angles to use in the cooccurence matrix. 
+                Defaults to 
+                [0, 1*np.pi/4, 
+                2*np.pi/4, 
+                3*np.pi/4, 
+                4*np.pi/4, 
+                5*np.pi/4, 
+                6*np.pi/4, 
+                7*np.pi/4].
             difference_variance_interpretation : DifferenceVarianceInterpretation, optional
-                Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
+                Feature 10 has two interpretations, as the variance 
+                of |x-y| or as the variance of P(|x-y|).].
+                 Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
             haralick_window_size : int, optional
                 size of rolling window for texture calculations. Defaults to -1.
             greylevels : int, optional
@@ -396,7 +422,7 @@ class Collage:
     haralick_window_size=-1,
     greylevels = 64,
     ):
-        """Calculates collageradiomics within the mask coordinates
+        """Calculates collageradiomics within the mask coordinates.
 
         Parameters
         ----------
@@ -413,24 +439,36 @@ class Collage:
             svd_radius : int, optional
                 radius of svd. Defaults to 5.
             verbose_logging : bool, optional
-                turning this on will log intermediate results]. Defaults to False.
+                turning this on will log intermediate results]. 
+                Defaults to False.
             haralick_feature_list : [HaralickFeature], optional
-                array of features to calculate. Defaults to [HaralickFeature.All].
+                array of features to calculate. 
+                Defaults to [HaralickFeature.All].
             log_sample_rate : int, optional
-                higher values will log more svd angles, this only works with verbose logging. Defaults to 500.
+                higher values will log more svd angles, this only 
+                works with verbose logging. Defaults to 500.
             cooccurence_angles : list, optional
-                list of angles to use in the cooccurence matrix. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
+                list of angles to use in the cooccurence matrix. 
+                Defaults to 
+                [0, 1*np.pi/4, 
+                2*np.pi/4, 
+                3*np.pi/4, 
+                4*np.pi/4, 
+                5*np.pi/4, 
+                6*np.pi/4, 
+                7*np.pi/4].
             difference_variance_interpretation : DifferenceVarianceInterpretation, optional
-                Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
+                Feature 10 has two interpretations, as the variance 
+                of |x-y| or as the variance of P(|x-y|).].
+                 Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
             haralick_window_size : int, optional
                 size of rolling window for texture calculations. Defaults to -1.
             greylevels : int, optional
                 number of bins to use for the grey levels. Defaults to 64.
-
         Returns
         -------
             Collage
-                Collage object to run collage on a rectangular section of the image]
+                Collage object to run collage on a rectangular section of the image.
         """
         mask_array = np.zeros((img_array.shape[0], img_array.shape[1]))
         mask_array[mask_min_y:mask_min_y + patch_window_height, mask_min_x:mask_min_x + patch_window_width] = 255
@@ -471,15 +509,28 @@ class Collage:
             svd_radius : int, optional
                 radius of svd. Defaults to 5.
             verbose_logging : bool, optional
-                turning this on will log intermediate results]. Defaults to False.
+                turning this on will log intermediate results]. 
+                Defaults to False.
             haralick_feature_list : [HaralickFeature], optional
-                array of features to calculate. Defaults to [HaralickFeature.All].
+                array of features to calculate. 
+                Defaults to [HaralickFeature.All].
             log_sample_rate : int, optional
-                higher values will log more svd angles, this only works with verbose logging. Defaults to 500.
+                higher values will log more svd angles, this only 
+                works with verbose logging. Defaults to 500.
             cooccurence_angles : list, optional
-                list of angles to use in the cooccurence matrix. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
+                list of angles to use in the cooccurence matrix. 
+                Defaults to 
+                [0, 1*np.pi/4, 
+                2*np.pi/4, 
+                3*np.pi/4, 
+                4*np.pi/4, 
+                5*np.pi/4, 
+                6*np.pi/4, 
+                7*np.pi/4].
             difference_variance_interpretation : DifferenceVarianceInterpretation, optional
-                Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]. Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
+                Feature 10 has two interpretations, as the variance 
+                of |x-y| or as the variance of P(|x-y|).].
+                 Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
             haralick_window_size : int, optional
                 size of rolling window for texture calculations. Defaults to -1.
             greylevels : int, optional
@@ -488,7 +539,8 @@ class Collage:
         Returns
         -------
             CollageCollection
-                CollageCollection object that works similarly to Collage. Call execute() to run on all images]
+                CollageCollection object that works similarly to Collage. 
+                Call execute() to run on all images.
         """
         return CollageCollection(
             images_array, 
@@ -529,7 +581,7 @@ class Collage:
         Returns
         -------
             float
-                number representing value of haralick texture at coordinate
+                number representing value of haralick texture at coordinate.
         """
         # extract subpart of image (todo: pass in result from view_as_windows)
         min_x = int(max(0, center_x - window_size / 2 - 1))
@@ -552,7 +604,7 @@ class Collage:
         return har_feature[0, haralick_feature]
 
     def get_haralick_mt_feature(self, img, desired_haralick_feature, greylevels, haralick_window_size, symmetric=False, mean=False):
-        """Gets haralick image within the mask
+        """Gets haralick image within the mask.
 
         Parameters
         ----------
@@ -565,14 +617,16 @@ class Collage:
             haralick_window_size : int
                 size of window around pixels to calculate haralick value
             symmetric (bool, optional)
-                whether or not we should use the symmetrical cooccurence matrix. Defaults to False.
+                whether or not we should use the symmetrical cooccurence matrix. 
+                Defaults to False.
             mean (bool, optional)
-                whether we return the mean of the feature or not. Defaults to False.
+                whether we return the mean of the feature or not. 
+                Defaults to False.
 
         Returns
         -------
             numpy.array
-                image representing haralick texture
+                An image representing haralick texture.
         """
         haralick_image = np.zeros(img.shape)
         h, w = img.shape
@@ -588,7 +642,8 @@ class Collage:
         Returns
         -------
             numpy.array
-                image at original size that only has the masked section filled in with collage calculations]
+                An image at original size that only has the masked 
+                section filled in with collage calculations.
         """
         mask_min_x = int(self.mask_min_x)
         mask_min_y = int(self.mask_min_y)
