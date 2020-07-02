@@ -12,3 +12,4 @@ output_data/
 .vscode/
 module/collageradiomics.egg-info/*
 module/docs/build/*
+module/docs/source/_build/*
