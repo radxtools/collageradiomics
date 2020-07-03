@@ -18,11 +18,18 @@ Original Paper: `Co-occurrence of Local Anisotropic Gradient Orientations (CoLlA
 Code Documentation
 ==================
 
+Notes
+-----
+The **attributes** below represent the public output intended to be available to consumers of this module.
+
 .. automodule:: collageradiomics
    :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
 Indices and tables
