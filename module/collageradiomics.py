@@ -433,6 +433,10 @@ class Collage:
         """
         return self._full_images
 
+    @full_images.setter
+    def full_images(self, value):
+        self._full_images = value
+
     @property
     def full_masked_images(self):
         """
@@ -444,6 +448,25 @@ class Collage:
         :type: numpy.ndarray
         """
         return self._full_masked_images
+
+    @full_masked_images.setter
+    def full_masked_images(self, value):
+        self._full_masked_images = value
+
+    @property
+    def haralick_feature_list(self):
+        """
+        Iterable representing the list of requested features.
+
+        :getter: Returns the list of requested features.
+        :setter: Sets the list of requested features.
+        :type: Iterable
+        """
+        return self._haralick_feature_list
+
+    @haralick_feature_list.setter
+    def haralick_feature_list(self, value):
+        self._haralick_feature_list = value
 
     def __init__(self,
                  img_array,
@@ -481,6 +504,7 @@ class Collage:
             :param greylevels: number of bins to use for the texture calculation. Defaults to 64.
             :type greylevels: int, optional
         """
+        print('Dynamic Reloaded')
         if haralick_window_size == -1:
             self._haralick_window_size = svd_radius * 2 + 1
         else:
@@ -514,28 +538,21 @@ class Collage:
                 for color in uniqueValues:
                     print(f'Found color value of {color}.')
             print(f'Mask is not binary, there are {numberOfValues} unique colors in the image.')
-            print('Continue? 0 for no')
-            # Asks for user input and continues automatically after 5 seconds.
-            i, _, _ = select.select([sys.stdin], [], [], 5)
-            userContinue = sys.stdin.readline().strip()
-            if (i):
-                print(f'continuing with invalid mask of {uniqueValues.max()}')
-            if len(userContinue) == 0 or userContinue == False:
-                raise Exception('Please check your mask image and try again.')
+            print(f'Continuing with mask of {uniqueValues.max()}')
         trimmed_mask_array = (mask_array == uniqueValues.max()).astype('float64')
         non_zero_indices = np.argwhere(trimmed_mask_array)
         try:
             (min_y, min_x), (max_y, max_x) = non_zero_indices.min(0), non_zero_indices.max(0) + 1
         except:
             raise Exception('Non-contiguous masks are not supported.')
-        self._mask_min_x = min_x
-        self._mask_min_y = min_y
-        self._mask_max_x = max_x
-        self._mask_max_y = max_y
+        self.mask_min_x = min_x
+        self.mask_min_y = min_y
+        self.mask_max_x = max_x
+        self.mask_max_y = max_y
 
-        scaled_mask_array = mask_array[self._mask_min_y:self._mask_max_y, self._mask_min_x:self._mask_max_x]
-        self._patch_window_width = self._mask_max_x - self._mask_min_x
-        self._patch_window_height = self._mask_max_y - self._mask_min_y
+        scaled_mask_array = mask_array[self.mask_min_y:self.mask_max_y, self.mask_min_x:self.mask_max_x]
+        self.patch_window_width = self.mask_max_x - self.mask_min_x
+        self.patch_window_height = self.mask_max_y - self.mask_min_y
         self._svd_radius = svd_radius
         self._verbose_logging = verbose_logging
         self._mask_array = scaled_mask_array
@@ -547,7 +564,6 @@ class Collage:
         self._difference_variance_interpretation = difference_variance_interpretation
 
         self._greylevels = greylevels
-        self._haralick_features = []
 
     @classmethod
     def from_rectangle(cls,
@@ -843,12 +859,12 @@ class Collage:
         number_of_features = len(self.haralick_feature_list)
 
         haralick_feature_list = self.haralick_feature_list
-        if self.haralick_feature_list[0] == HaralickFeature.All:
+        if haralick_feature_list[0] == HaralickFeature.All:
             number_of_features = 13
         for feature in range(number_of_features):
 
             if number_of_features != 13:
-                feature = self.haralick_feature_list.pop().value
+                feature = haralick_feature_list.pop().value
             if self.verbose_logging:
                 print(f'Calculating feature {feature + 1}:')
             haralick_features[:, :, feature] = self.get_haralick_mt_feature(dominant_angles_shaped, feature, greylevels,
@@ -872,7 +888,6 @@ class Collage:
                 print(f'Calculated feature {feature + 1}.')
 
         self.haralick_features = haralick_features
-        self.haralick_feature_list = haralick_feature_list
         self.full_images = full_images
         self.full_masked_images = full_masked_images
 
