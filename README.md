@@ -128,8 +128,11 @@ _[Back to **Table of Contents**](#table-of-contents)_
 _[Back to **Table of Contents**](#table-of-contents)_
 
 #### Linux
-* [Click here](https://www.docker.com/get-started) and follow the instructions to install **Docker**.
-* There are Ubuntu-specific instructions here: https://docs.docker.com/engine/install/ubuntu/
+* Ubuntu: https://docs.docker.com/engine/install/ubuntu/
+* CentOS: https://docs.docker.com/engine/install/centos/
+* Debian: https://docs.docker.com/engine/install/debian/ 
+* Fedora: https://docs.docker.com/engine/install/fedora/ 
+* General Linux: (https://docs.docker.com/engine/install/binaries/).
 
 #### Windows
 1. [Click here](https://www.docker.com/get-started) and follow the instructions to install **Docker**.
