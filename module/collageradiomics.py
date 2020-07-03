@@ -49,9 +49,9 @@ def show_colored_image(figure, axis, image_data, colormap=plt.cm.jet):
 
 
         :param figure: figure upon which to display
-        :type figure: matplotlib.pyplot.figure
+        :type figure: matplotlib.figure.Figure
         :param axis: axis upon which to display
-        :type axis: matplotlib.pyplot.axis
+        :type axis: matplotlib.axes.Axes
         :param image_data: image to display
         :type image_data: numpy.ndarray
         :param colormap: color map to convert for display. Defaults to plt.cm.jet.
