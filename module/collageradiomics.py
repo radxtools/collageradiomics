@@ -650,7 +650,7 @@ class Collage:
             greylevels
         )
 
-    def get_haralick_mt_value(self, img_array, center_x, center_y, window_size, greylevels, haralick_feature, symmetric,
+    def get_haralick_value(self, img_array, center_x, center_y, window_size, greylevels, haralick_feature, symmetric,
                               mean):
                               
         """Gets the haralick texture value at the center of an x, y coordinate.
@@ -695,7 +695,7 @@ class Collage:
             return har_feature[haralick_feature]
         return har_feature[0, haralick_feature]
 
-    def get_haralick_mt_feature(self, img, desired_haralick_feature, greylevels, haralick_window_size, symmetric=False,
+    def get_haralick_feature(self, img, desired_haralick_feature, greylevels, haralick_window_size, symmetric=False,
                                 mean=False):
         """Gets haralick image within the mask.
 
@@ -721,7 +721,7 @@ class Collage:
         h, w = img.shape
         for pos in product(range(w), range(h)):
             if self.mask_array[pos[1]][pos[0]] != 0:
-                result = self.get_haralick_mt_value(img, pos[0], pos[1], haralick_window_size, greylevels,
+                result = self.get_haralick_value(img, pos[0], pos[1], haralick_window_size, greylevels,
                                                     desired_haralick_feature, symmetric, mean)
                 haralick_image[pos[1], pos[0]] = result
         return haralick_image
@@ -836,7 +836,7 @@ class Collage:
                 feature = haralick_feature_list.pop().value
             if self.verbose_logging:
                 print(f'Calculating feature {feature + 1}:')
-            haralick_features[:, :, feature] = self.get_haralick_mt_feature(dominant_angles_shaped, feature, greylevels,
+            haralick_features[:, :, feature] = self.get_haralick_feature(dominant_angles_shaped, feature, greylevels,
                                                                             self.haralick_window_size, symmetric=False,
                                                                             mean=True)
 
