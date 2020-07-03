@@ -551,7 +551,7 @@ class Collage:
                        haralick_window_size=-1,
                        greylevels=64,
                        ):
-        """Calculates collageradiomics within the mask coordinates.
+        """Creates a rectangle at the x,y,w,h and only calculates collage inside that mask.
 
             :param img_array: image to run collage upon
             :type img_array: numpy.ndarray
