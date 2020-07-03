@@ -177,7 +177,8 @@ class DifferenceVarianceInterpretation(Enum):
 
 
 class CollageCollection:
-    """Enables computation on multiple collage images at the same time.
+    """ Enables computation on multiple collage images at the same time.
+        See :py:meth:`from_multiple_images` function for example usage.
     """
 
     def __init__(self,
