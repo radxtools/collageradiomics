@@ -227,10 +227,10 @@ class CollageCollection:
                  ):
         """Designated initializer for CollageCollection
 
-            :param images_array: array of images to run collage upon
-            :type images_array: numpy.ndarray
-            :param masks_array: array of masks to correspond with the images
-            :type masks_array: numpy.ndarray
+            :param images_array: list of images to run collage upon
+            :type images_array: [numpy.ndarray]
+            :param mask_array: list of masks that correlates with the images
+            :type mask_array: [numpy.ndarray]
             :param svd_radius: radius of svd. Defaults to 5.
             :type svd_radius: int, optional
             :param verbose_logging: turning this on will log intermediate results]. Defaults to False.
@@ -644,10 +644,10 @@ class Collage:
                              ):
         """Helper method to run collage on multiple images.
 
-            :param image_array: image to run collage upon
-            :type image_array: numpy.ndarray
-            :param mask_array: mask that correlates with the image
-            :type mask_array: numpy.ndarray
+            :param images_array: list of images to run collage upon
+            :type images_array: [numpy.ndarray]
+            :param mask_array: list of masks that correlates with the images
+            :type mask_array: [numpy.ndarray]
             :param svd_radius: radius of svd. Defaults to 5.
             :type svd_radius: int, optional
             :param verbose_logging: turning this on will log intermediate results]. Defaults to False.
