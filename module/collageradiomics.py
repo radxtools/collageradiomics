@@ -520,8 +520,8 @@ class Collage:
         self.mask_max_y = max_y
 
         scaled_mask_array = mask_array[self.mask_min_y:self.mask_max_y, self.mask_min_x:self.mask_max_x]
-        self.patch_window_width = self.mask_max_x - self.mask_min_x
-        self.patch_window_height = self.mask_max_y - self.mask_min_y
+        self.mask_width = self.mask_max_x - self.mask_min_x
+        self.mask_height = self.mask_max_y - self.mask_min_y
         self._svd_radius = svd_radius
         self._verbose_logging = verbose_logging
         self._mask_array = scaled_mask_array
@@ -539,8 +539,8 @@ class Collage:
                        img_array,
                        mask_min_x,
                        mask_min_y,
-                       patch_window_width,
-                       patch_window_height,
+                       mask_width,
+                       mask_height,
                        svd_radius=5,
                        verbose_logging=False,
                        haralick_feature_list=[HaralickFeature.All],
@@ -559,10 +559,10 @@ class Collage:
             :type mask_min_x: int
             :param mask_min_y: y location of window
             :type mask_min_y: int
-            :param patch_window_width: window width
-            :type patch_window_width: int
-            :param patch_window_height: window height
-            :type patch_window_height: int
+            :param mask_width: window width
+            :type mask_width: int
+            :param mask_height: window height
+            :type mask_height: int
             :param svd_radius: radius of svd. Defaults to 5.
             :type svd_radius: int, optional
             :param verbose_logging: turning this on will log intermediate results. Defaults to False.
@@ -583,7 +583,7 @@ class Collage:
             :rtype: Collage
         """
         mask_array = np.zeros((img_array.shape[0], img_array.shape[1]))
-        mask_array[mask_min_y:mask_min_y + patch_window_height, mask_min_x:mask_min_x + patch_window_width] = 255
+        mask_array[mask_min_y:mask_min_y + mask_height, mask_min_x:mask_min_x + mask_width] = 255
         return cls(
             img_array,
             mask_array,
@@ -736,15 +736,15 @@ class Collage:
         mask_min_y = int(self.mask_min_y)
         mask_max_x = int(self.mask_max_x)
         mask_max_y = int(self.mask_max_y)
-        patch_window_width = int(self.patch_window_width)
-        patch_window_height = int(self.patch_window_height)
+        mask_width = int(self.mask_width)
+        mask_height = int(self.mask_height)
         svd_radius = self.svd_radius
         img_array = self.img_array[:, :, 0]
         if self.verbose_logging:
             print(f'IMAGE:\nwidth={img_array.shape[1]} height={img_array.shape[0]}')
 
-        cropped_array = img_array[mask_min_y:mask_min_y + patch_window_height,
-                        mask_min_x:mask_min_x + patch_window_width]
+        cropped_array = img_array[mask_min_y:mask_min_y + mask_height,
+                        mask_min_x:mask_min_x + mask_width]
         if self.verbose_logging:
             print(f'Cropped Array Shape: {cropped_array.shape}')
 
@@ -769,7 +769,7 @@ class Collage:
 
         # loop through all regions and calculate dominant angles
 
-        dominant_angles_array = np.zeros((patch_window_height, patch_window_width), np.single)
+        dominant_angles_array = np.zeros((mask_height, mask_width), np.single)
 
         if self.verbose_logging:
             print(f'dx shape = {dx.shape}')
@@ -821,7 +821,7 @@ class Collage:
         dominant_angles_shaped = dominant_angles_shaped.astype(int)
         self.dominant_angles_shaped = dominant_angles_shaped
 
-        haralick_features = np.empty((patch_window_height, patch_window_width, 13))
+        haralick_features = np.empty((mask_height, mask_width, 13))
         full_images = []
         full_masked_images = []
 
