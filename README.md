@@ -132,7 +132,7 @@ _[Back to **Table of Contents**](#table-of-contents)_
 * CentOS: https://docs.docker.com/engine/install/centos/
 * Debian: https://docs.docker.com/engine/install/debian/ 
 * Fedora: https://docs.docker.com/engine/install/fedora/ 
-* General Linux: (https://docs.docker.com/engine/install/binaries/)
+* General Linux: https://docs.docker.com/engine/install/binaries/
 
 #### macOS
 Follow instructions here: https://docs.docker.com/docker-for-mac/install/
