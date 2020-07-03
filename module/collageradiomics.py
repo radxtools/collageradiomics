@@ -118,38 +118,6 @@ def highlight_rectangle_on_image(image_data, min_x, min_y, w, h, colormap=plt.cm
     return cropped_array
 
 
-def bounding_box(iterable):
-    """Creates a bounding box within an iterable
-
-
-        :param iterable: array/list/iterable type to grab a boundingbox
-        :type iterable: typing.Iterable
-
-        :returns: array representing region of bounding box
-        :rtype: numpy.ndarray
-    """
-    print(iterable.shape)
-    min_x, min_y = np.min(iterable[0], axis=0)
-    max_x, max_y = np.max(iterable[0], axis=0)
-    return np.array([(min_x, min_y), (max_x, min_y), (max_x, max_y), (min_x, max_y)])
-
-
-def create_bounding_box(img):
-    """This function calculates a bounding box around 
-        a rectangular areaewhere pixel values are 255.
-
-
-        :param img: image to find bounding box
-        :type img: numpy.ndarray
-
-        :returns: tuple representing bounding box minx, maxx, miny, maxy
-        :rtype: tuple (x_min, x_max, y_min, y_max)
-    """
-    a = np.where(img == 255)
-    bbox = np.min(a[0]), np.max(a[0]), np.min(a[1]), np.max(a[1])
-    return bbox
-
-
 def scale_array_for_image(array_to_scale):
     """Scales an array from 0-255 integer values
 
