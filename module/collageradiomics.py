@@ -167,10 +167,10 @@ class HaralickFeature(Enum):
 class DifferenceVarianceInterpretation(Enum):
     """ Feature 10 has two interpretations, as the variance of |x-y|
         or as the variance of P(|x-y|).
+        See: https://ieeexplore.ieee.org/document/4309314
 
-
-        Enum DifferenceVarianceInterpretation
-            Interpretations of Feature 10
+        :param Enum: Enumeration Helper For Haralick Features
+        :type Enum: DifferenceVarianceInterpretation
     """
     XMinusYVariance = 0
     ProbabilityXMinusYVariance = 1
