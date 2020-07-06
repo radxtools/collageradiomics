@@ -1,4 +1,4 @@
-![Continuous Delivery](https://github.com/ccipd/collageradiomics/workflows/Continuous%20Delivery/badge.svg)
+![Continuous Delivery](https://github.com/ccipd/collageradiomics/workflows/Continuous%20Delivery/badge.svg) [![Documentation Status](https://readthedocs.org/projects/collageradiomics/badge/?version=latest)](https://collageradiomics.readthedocs.io/en/latest/?badge=latest)
 
 # Co-occurrence of Local Anisotropic Gradient Orientations (CoLlAGe)
 
