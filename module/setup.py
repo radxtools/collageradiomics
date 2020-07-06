@@ -3,9 +3,12 @@ import setuptools
 with open('README.md', 'r') as fh:
     long_description = fh.read()
 
+with open('VERSION') as version_file:
+    version = version_file.read().strip()
+
 setuptools.setup(
     name='collageradiomics',
-    version='0.1.1a8',
+    version=version,
     author='Toth Technology',
     author_email='toth-tech@hillyer.me',
     description='CoLliage Implementation',
