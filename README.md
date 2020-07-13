@@ -1,4 +1,4 @@
-![Continuous Delivery](https://github.com/ccipd/collageradiomics/workflows/Continuous%20Delivery/badge.svg) [![Documentation Status](https://readthedocs.org/projects/collageradiomics/badge/?version=latest)](https://collageradiomics.readthedocs.io/en/latest/?badge=latest) [![doi](https://img.shields.io/badge/doi-10.1038/srep37241-brightgreen.svg)](https://doi.org/10.1038/srep37241)
+![Continuous Delivery](https://github.com/radxtools/collageradiomics/workflows/Continuous%20Delivery/badge.svg) [![Documentation Status](https://readthedocs.org/projects/collageradiomics/badge/?version=latest)](https://collageradiomics.readthedocs.io/en/latest/?badge=latest) [![doi](https://img.shields.io/badge/doi-10.1038/srep37241-brightgreen.svg)](https://doi.org/10.1038/srep37241)
 
 # Co-occurrence of Local Anisotropic Gradient Orientations (CoLlAGe)
 
@@ -97,29 +97,30 @@ If you are already well-versed in **Docker** and **pip**, here is a quick list o
 
 ### Linux
 ```shell
-sudo docker pull ccipd/collageradiomics-pip:latest
-sudo docker run -it ccipd/collageradiomics-pip
+sudo docker pull radxtools/collageradiomics-pip:latest
+sudo docker run -it radxtools/collageradiomics-pip
 
-git clone https://github.com/ccipd/collageradiomics.git
-sudo docker pull ccipd/collageradiomics-examples:latest
-sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
+git clone https://github.com/radxtools/collageradiomics.git
+sudo docker pull radxtools/collageradiomics-examples:latest
+sudo docker run -it -p 8888:8888 -v $PWD:/root radxtools/collageradiomics-examples
 
 pip3 install collageradiomics
 ```
 
 ### Windows
 ```console
-docker pull ccipd/collageradiomics-pip:latest
-docker run -it -v ${PWD}:/root ccipd/collageradiomics-pip
+docker pull radxtools/collageradiomics-pip:latest
+docker run -it -v ${PWD}:/root radxtools/collageradiomics-pip
 
-git clone https://github.com/ccipd/collageradiomics.git
-docker pull ccipd/collageradiomics-examples:latest
-docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples
+git clone https://github.com/radxtools/collageradiomics.git
+docker pull radxtools/collageradiomics-examples:latest
+docker run -it -p 8888:8888 -v ${PWD}:/root radxtools/collageradiomics-examples
 
 pip install collageradiomics
 ```
 
-You may wish to jump right to some [**Python** examples](https://github.com/ccipd/collageradiomics/tree/master/jupyter/examples).
+You may wish to jump right to some [**Python** examples](https://github.com/radxtools/
+tree/master/jupyter/examples).
 
 ## Docker
 _[Back to **Table of Contents**](#table-of-contents)_
@@ -169,7 +170,7 @@ user@machine:~$
 ```
 2. Clone the repository:
 ```console
-user@machine:~$ git clone https://github.com/ccipd/collageradiomics.git
+user@machine:~$ git clone https://github.com/radxtools/collageradiomics.git
 Cloning into 'collageradiomics'...
 remote: Enumerating objects: 280, done.
 remote: Total 280 (delta 0), reused 0 (delta 0), pack-reused 280user
@@ -181,16 +182,16 @@ user@machine:~/collageradiomics$ ls -l
 ```
 3. Pull the latest **Docker** image:  
 ```console
-user@machine:~/collageradiomics$ sudo docker pull ccipd/collageradiomics-examples:latest
-latest: Pulling from ccipd/collageradiomics-examples
+user@machine:~/collageradiomics$ sudo docker pull radxtools/collageradiomics-examples:latest
+latest: Pulling from radxtools/collageradiomics-examples
 Digest: sha256:107a2804e76b156f40d571b8422f822a3712353645c86e5cc2275d2aea85c9be
-Status: Image is up to date for ccipd/collageradiomics-examples:latest
-docker.io/ccipd/collageradiomics-examples:latest
+Status: Image is up to date for radxtools/collageradiomics-examples:latest
+docker.io/radxtools/collageradiomics-examples:latest
 user@machine:~/collageradiomics$ 
 ```
 4. Run the **Docker** image:  
 ```console
-user@machine:~/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/root ccipd/collageradiomics-examples
+user@machine:~/collageradiomics$ sudo docker run -it -p 8888:8888 -v $PWD:/root radxtools/collageradiomics-examples
 [I 06:35:13.806 NotebookApp] Writing notebook server cookie secret to /tmp/notebook_cookie_secret
 [W 06:35:14.030 NotebookApp] All authentication is disabled.  Anyone who can connect to this server will be able to run code.
 [I 06:35:14.033 NotebookApp] Serving notebooks from local directory: /root
@@ -220,7 +221,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
 Try the new cross-platform PowerShell https://aka.ms/pscore6
 
-PS C:\Users\user> git clone https://github.com/ccipd/collageradiomics.git
+PS C:\Users\user> git clone https://github.com/radxtools/collageradiomics.git
 Cloning into 'collageradiomics'...
 remote: Enumerating objects: 280, done.
 Receiving objects:  97% (272/280), 1.24 MiB | 1.02 MiB/sused 280 eceiving objects:  91% (255/280), 1.24 MiB | 1.02 MiB/s
@@ -263,21 +264,21 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
 Try the new cross-platform PowerShell https://aka.ms/pscore6
 
-PS C:\Users\user\collageradiomics> docker pull ccipd/collageradiomics-examples:latest
-latest: Pulling from ccipd/collageradiomics-examples
+PS C:\Users\user\collageradiomics> docker pull radxtools/collageradiomics-examples:latest
+latest: Pulling from radxtools/collageradiomics-examples
 d51af753c3d3: Already exists
 fc878cd0a91c: Already exists
 6154df8ff988: Already exists
 fee5db0ff82f: Already exists
 a6501aa3ed52: Already exists
 Digest: sha256:107a2804e76b156f40d571b8422f822a3712353645c86e5cc2275d2aea85c9be
-Status: Downloaded newer image for ccipd/collageradiomics-examples:latest
-docker.io/ccipd/collageradiomics-examples:latest
-PS C:\Users\user\collageradiomics> docker pull ccipd/collageradiomics-examples:latest
-latest: Pulling from ccipd/collageradiomics-examples
+Status: Downloaded newer image for radxtools/collageradiomics-examples:latest
+docker.io/radxtools/collageradiomics-examples:latest
+PS C:\Users\user\collageradiomics> docker pull radxtools/collageradiomics-examples:latest
+latest: Pulling from radxtools/collageradiomics-examples
 Digest: sha256:107a2804e76b156f40d571b8422f822a3712353645c86e5cc2275d2aea85c9be
-Status: Image is up to date for ccipd/collageradiomics-examples:latest
-docker.io/ccipd/collageradiomics-examples:latest
+Status: Image is up to date for radxtools/collageradiomics-examples:latest
+docker.io/radxtools/collageradiomics-examples:latest
 PS C:\Users\user\collageradiomics>
 ```
 5. Run the **Docker** image:
@@ -288,7 +289,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 Try the new cross-platform PowerShell https://aka.ms/pscore6
 
 PS C:\Users\user> cd collageradiomics
-PS C:\Users\user\collageradiomics> docker run -it -p 8888:8888 -v ${PWD}:/root ccipd/collageradiomics-examples
+PS C:\Users\user\collageradiomics> docker run -it -p 8888:8888 -v ${PWD}:/root radxtools/collageradiomics-examples
 [I 08:28:36.091 NotebookApp] Writing notebook server cookie secret to /tmp/notebook_cookie_secret
 [W 08:28:36.576 NotebookApp] All authentication is disabled.  Anyone who can connect to this server will be able to run code.
 [I 08:28:36.585 NotebookApp] Serving notebooks from local directory: /root
@@ -332,16 +333,16 @@ This is the most straightforward way to start playing with the code. And it does
 #### Linux
 1. Pull the latest **Docker** image:
 ```console
-user@machine:~$ sudo docker pull ccipd/collageradiomics-pip:latest
-latest: Pulling from ccipd/collageradiomics-pip
+user@machine:~$ sudo docker pull radxtools/collageradiomics-pip:latest
+latest: Pulling from radxtools/collageradiomics-pip
 Digest: sha256:8fc7d61dbe6ad64eeff9c69cfaa788d90c61861bff8aaf8865ed1318c5666250
-Status: Image is up to date for ccipd/collageradiomics-pip:latest
-docker.io/ccipd/collageradiomics-pip:latest
+Status: Image is up to date for radxtools/collageradiomics-pip:latest
+docker.io/radxtools/collageradiomics-pip:latest
 user@machine:~/collageradiomics$
 ```
 2. Run the **Docker** image:
 ```console
-user@machine:~/collageradiomics$ sudo docker run -it -v $PWD:/root ccipd/collageradiomics-pip
+user@machine:~/collageradiomics$ sudo docker run -it -v $PWD:/root radxtools/collageradiomics-pip
 root@12b12d2bff59:/# 
 ```
 
@@ -353,8 +354,8 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
 Try the new cross-platform PowerShell https://aka.ms/pscore6
 
-PS C:\Users\user> docker pull ccipd/collageradiomics-pip:latest
-latest: Pulling from ccipd/collageradiomics-pip
+PS C:\Users\user> docker pull radxtools/collageradiomics-pip:latest
+latest: Pulling from radxtools/collageradiomics-pip
 d51af753c3d3: Already exists
 fc878cd0a91c: Already exists
 6154df8ff988: Already exists
@@ -363,8 +364,8 @@ e4255cf4d4f9: Downloading [=================>                                 ] 
 14a983cf96b6: Downloading [===========================>                       ]  55.72MB/102.9MB      
 14a983cf96b6: Pull complete
 Digest: sha256:8fc7d61dbe6ad64eeff9c69cfaa788d90c61861bff8aaf8865ed1318c5666250
-Status: Downloaded newer image for ccipd/collageradiomics-pip:latest
-docker.io/ccipd/collageradiomics-pip:latest
+Status: Downloaded newer image for radxtools/collageradiomics-pip:latest
+docker.io/radxtools/collageradiomics-pip:latest
 PS C:\Users\user>
 ```
 2. Run the **Docker** image:
@@ -374,8 +375,8 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
 Try the new cross-platform PowerShell https://aka.ms/pscore6
 
-PS C:\Users\user> docker pull ccipd/collageradiomics-pip:latest
-PS C:\Users\user> docker run -it ccipd/collageradiomics-pip
+PS C:\Users\user> docker pull radxtools/collageradiomics-pip:latest
+PS C:\Users\user> docker run -it radxtools/collageradiomics-pip
 root@461c5017ce0e:/#
 ```
 
@@ -566,7 +567,7 @@ _[Back to **Table of Contents**](#table-of-contents)_
 
 A simple example which uses a real-life sample image is as follows:
 ```console
-user@machine:~$ git clone https://github.com/ccipd/collageradiomics
+user@machine:~$ git clone https://github.com/radxtools/collageradiomics
 Cloning into 'collageradiomics'...
 remote: Enumerating objects: 280, done.
 remote: Counting objects: 100% (280/280), done.
@@ -611,6 +612,6 @@ Type "help", "copyright", "credits" or "license" for more information.
 # Contact
 _[Back to **Table of Contents**](#table-of-contents)_
 
-Please report any issues or feature requests via the [Issues](https://github.com/ccipd/collageradiomics/issues) tab
+Please report any issues or feature requests via the [Issues](https://github.com/radxtools/collageradiomics/issues) tab
 
 Additional information can be found on the [BrIC Lab](http://bric-lab.com) website.
