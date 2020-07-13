@@ -119,8 +119,7 @@ docker run -it -p 8888:8888 -v ${PWD}:/root radxtools/collageradiomics-examples
 pip install collageradiomics
 ```
 
-You may wish to jump right to some [**Python** examples](https://github.com/radxtools/
-tree/master/jupyter/examples).
+You may wish to jump right to some [**Python** examples](https://github.com/radxtools/tree/master/jupyter/examples).
 
 ## Docker
 _[Back to **Table of Contents**](#table-of-contents)_
