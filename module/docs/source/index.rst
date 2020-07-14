@@ -11,7 +11,7 @@ Helpful Links
 =============
 Instructions: `README <https://github.com/ccipd/collageradiomics/blob/master/README.md>`_
 
-BriC Lab Website: `BriC Lab <https://www.bric-lab.com/>`_
+RadxTools Website: `<https://radxtools.github.io>`_
 
 Original Paper: `Co-occurrence of Local Anisotropic Gradient Orientations (CoLlAGe): A new radiomics descriptor <https://www.nature.com/articles/srep37241>`_
 
