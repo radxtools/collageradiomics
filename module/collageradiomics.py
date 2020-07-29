@@ -301,6 +301,13 @@ class Collage:
         return self._mask_array
 
     @property
+    def is_3D(self):
+        """
+        Whether we are using 3D collage calculations (True) or 2D (False)
+        """
+        return self._is_3D
+        
+    @property
     def svd_radius(self):
         """
         SVD radius is used to calculate the pixel radius
@@ -473,7 +480,10 @@ class Collage:
             :param greylevels: number of bins to use for the texture calculation. Defaults to 64.
             :type greylevels: int, optional
         """
-        print('Dynamic Reloaded')
+        
+        if verbose_logging:
+            print('Collage Module Reloaded')
+        
         if haralick_window_size == -1:
             self._haralick_window_size = svd_radius * 2 + 1
         else:
@@ -488,18 +498,23 @@ class Collage:
         if greylevels < 1:
             raise Exception('greylevels must contain at least 1 bin')
 
-        if mask_array.shape[0] != img_array.shape[0] or mask_array.shape[1] != img_array.shape[1]:
-            raise Exception('Mask must be same size as image.')
+        if img_array.ndim < 2 or img_array.ndim > 3:
+            raise Exception('Expected a 2D or 3D image.')
 
+        if mask_array.shape != img_array.shape:
+            raise Exception('Mask must be the same shape as image.')
+        
         self._img_array = img_array
+        
+        self._is_3D = img_array.ndim == 3
+        if verbose_logging:
+            print(f'Running 3D Collage = {self.is_3D}')
 
-        if self._img_array.shape[0] <  self._haralick_window_size or self._img_array.shape[1] < self._haralick_window_size:
+        min_3D_slices = 3;
+        if self._img_array.shape[0] <  self._haralick_window_size or self._img_array.shape[1] < self._haralick_window_size or (self._is_3D and self._img_array.shape[2] < min_3D_slices):
             raise Exception(
-                f'Image must be at least {self._haralick_window_size}x{self._haralick_window_size} to create appropriate windows.')
-
-        if len(mask_array.shape) > 2:
-            mask_array = mask_array[:, :, 0]
-
+                f'Image is too small for a window size of {self._haralick_window_size} pixels.')
+        
         uniqueValues = np.unique(mask_array)
         numberOfValues = len(uniqueValues)
         if numberOfValues > 2:
@@ -739,7 +754,15 @@ class Collage:
         mask_width = int(self.mask_width)
         mask_height = int(self.mask_height)
         svd_radius = self.svd_radius
-        img_array = self.img_array[:, :, 0]
+        is_3D = False
+        if (self.img_array.ndim == 2):
+            img_array = self.img_array
+        elif (self.img_array.ndim == 3):
+            is_3D = True
+            img_array = self.img_array[:, :, 0]
+        else:
+            raise IndexError('Expected 2D or 3D numpy array.')
+        
         if self.verbose_logging:
             print(f'IMAGE:\nwidth={img_array.shape[1]} height={img_array.shape[0]}')
 
