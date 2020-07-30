@@ -528,8 +528,6 @@ class Collage:
 
         thresholded_mask_array = thresholded_mask_array.reshape(self.img_array.shape)
 
-        print(f'Shape = {thresholded_mask_array.shape}')
-        
         non_zero_indices = np.argwhere(thresholded_mask_array)
         min_mask_coordinates = non_zero_indices.min(0)
         max_mask_coordinates = non_zero_indices.max(0)+1
@@ -559,59 +557,6 @@ class Collage:
         self._difference_variance_interpretation = difference_variance_interpretation
 
         self._greylevels = greylevels
-
-    @classmethod
-    def from_multiple_images(cls,
-                             images_array,
-                             masks_array,
-                             svd_radius=5,
-                             verbose_logging=False,
-                             haralick_feature_list=[HaralickFeature.All],
-                             log_sample_rate=500,
-                             cooccurence_angles=[0, 1 * np.pi / 4, 2 * np.pi / 4, 3 * np.pi / 4, 4 * np.pi / 4,
-                                                 5 * np.pi / 4, 6 * np.pi / 4, 7 * np.pi / 4],
-                             difference_variance_interpretation=DifferenceVarianceInterpretation.XMinusYVariance,
-                             haralick_window_size=-1,
-                             greylevels=64,
-                             ):
-        """Helper method to run collage on multiple images.
-
-            :param images_array: list of images to run collage upon
-            :type images_array: [numpy.ndarray]
-            :param mask_array: list of masks that correlates with the images
-            :type mask_array: [numpy.ndarray]
-            :param svd_radius: radius of svd. Defaults to 5.
-            :type svd_radius: int, optional
-            :param verbose_logging: turning this on will log intermediate results]. Defaults to False.
-            :type verbose_logging: bool, optional
-            :param haralick_feature_list: array of features to calculate. Defaults to [HaralickFeature.All].
-            :type haralick_feature_list: [HaralickFeature], optional
-            :param log_sample_rate: higher values will log more svd angles, this only works with verbose logging. Defaults to 500.
-            :type log_sample_rate: int, optional
-            :param cooccurence_angles: list of angles to use in the cooccurence matrix. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
-            :type cooccurence_angles: list, optional
-            :param difference_variance_interpretation: Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).].Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
-            :type difference_variance_interpretation: DifferenceVarianceInterpretation, optional
-            :param haralick_window_size: size of rolling window for texture calculations. Defaults to -1.
-            :type haralick_window_size: int, optional
-            :param greylevels: number of bins to use for the texture calculation. Defaults to 64.
-            :type greylevels: int, optional
-
-            :returns: CollageCollection object that works similarly to Collage. Call execute() to run on all images.
-            :rtype: CollageCollection
-        """
-        return CollageCollection(
-            images_array,
-            masks_array,
-            svd_radius,
-            verbose_logging,
-            haralick_feature_list,
-            log_sample_rate,
-            cooccurence_angles,
-            difference_variance_interpretation,
-            haralick_window_size,
-            greylevels
-        )
 
     def get_haralick_value(self, img_array, center_x, center_y, window_size, greylevels, haralick_feature, symmetric,
                               mean):
