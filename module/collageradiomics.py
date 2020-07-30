@@ -452,9 +452,6 @@ class Collage:
                                                     self.mask_min_z:self.mask_max_z]
 
         # store variables internally
-        self.mask_width  = self.mask_max_x - self.mask_min_x
-        self.mask_height = self.mask_max_y - self.mask_min_y
-        self.mask_depth  = self.mask_max_z - self.mask_min_z
         self._mask_array = cropped_mask_array
 
         self._svd_radius = svd_radius
@@ -549,63 +546,69 @@ class Collage:
             :returns: An image at original size that only has the masked section filled in with collage calculations.
             :rtype: numpy.ndarray
         """
+
+        svd_radius = self.svd_radius
+
+        # mask location
         mask_min_x = int(self.mask_min_x)
         mask_min_y = int(self.mask_min_y)
+        mask_min_z = int(self.mask_min_z)
         mask_max_x = int(self.mask_max_x)
         mask_max_y = int(self.mask_max_y)
-        mask_width = int(self.mask_width)
-        mask_height = int(self.mask_height)
-        svd_radius = self.svd_radius
-        is_3D = False
-        if (self.img_array.ndim == 2):
-            img_array = self.img_array
-        elif (self.img_array.ndim == 3):
-            is_3D = True
-            img_array = self.img_array[:, :, 0]
-        else:
-            raise IndexError('Expected 2D or 3D numpy array.')
+        mask_max_z = int(self.mask_max_z)
+
+        mask_width  = mask_max_x - mask_min_x
+        mask_height = mask_max_y - mask_min_y
+        mask_depth  = mask_max_z - mask_min_z
+
+        img_array = self.img_array
+
+        # extend the mask outwards a bit (up to the edge of the image) to handle the svd radius
+        cropped_min_x = max(mask_min_x - svd_radius, 0)
+        cropped_min_y = max(mask_min_y - svd_radius, 0)
+        cropped_min_z = max(mask_min_z - 1         , 0) # for 3D, we just extend 1 slice in both directions
+        cropped_max_x = min(mask_max_x + svd_radius, img_array.shape[1])
+        cropped_max_y = min(mask_max_y + svd_radius, img_array.shape[0])
+        cropped_max_z = min(mask_max_z + 1         , img_array.shape[2])
+
+        print(mask_min_z)
+        print(mask_max_z)
+        print(cropped_min_z)
+        print(cropped_max_z)
+
+        cropped_image = img_array[cropped_min_y:cropped_max_y,
+                                  cropped_min_x:cropped_max_x,
+                                  cropped_min_z:cropped_max_z]
 
         if self.verbose_logging:
-            print(f'IMAGE:\nwidth={img_array.shape[1]} height={img_array.shape[0]}')
+            print(f'Image shape = {img_array.shape}')
+            print(f'Cropped image shape = {cropped_image.shape}')
 
-        cropped_array = img_array[mask_min_y:mask_min_y + mask_height,
-                        mask_min_x:mask_min_x + mask_width]
-        if self.verbose_logging:
-            print(f'Cropped Array Shape: {cropped_array.shape}')
+        # ensure the image values range from 0-1
+        if cropped_image.max() > 1:
+            if self.verbose_logging:
+                print('Note: Dividing image values by 255 to convert to 0-1 range')
+            cropped_image = cropped_image / 255.
 
-        # Extend outwards
-        padded_mask_min_x = max(mask_min_x - svd_radius, 0)
-        padded_mask_min_y = max(mask_min_y - svd_radius, 0)
-        padded_mask_max_x = min(mask_max_x + svd_radius, img_array.shape[1] - 1)
-        padded_mask_max_y = min(mask_max_y + svd_radius, img_array.shape[0] - 1)
-        if self.verbose_logging:
-            print(f'x = {padded_mask_min_x}:{padded_mask_max_x} ({padded_mask_max_x - padded_mask_min_x})')
-            print(f'y = {padded_mask_min_y}:{padded_mask_max_y} ({padded_mask_max_y - padded_mask_min_y})')
-        padded_cropped_array = img_array[padded_mask_min_y:padded_mask_max_y, padded_mask_min_x:padded_mask_max_x]
-        if self.verbose_logging:
-            print(f'Padded Cropped Array Shape: {padded_cropped_array.shape}')
-
-        # Calculate gradient
-        rescaled_padded_cropped_array = padded_cropped_array / 256
-        dx = np.gradient(rescaled_padded_cropped_array, axis=1)
-        dy = np.gradient(rescaled_padded_cropped_array, axis=0)
-        dz = np.gradient(rescaled_padded_cropped_array, axis=2) if self.is_3D else np.zeros(dx.shape)
+        # calculate gradient
+        dx = np.gradient(cropped_image, axis=1)
+        dy = np.gradient(cropped_image, axis=0)
+        dz = np.gradient(cropped_image, axis=2) if self.is_3D else np.zeros(dx.shape)
         self.dx = dx
         self.dy = dy
         self.dz = dz
 
         # create rolling windows
-        dominant_angles_array = np.zeros((mask_height, mask_width), np.single)
-
-        if self.verbose_logging:
-            print(f'dx shape = {dx.shape}')
-            print(f'dominant angles shape = {dominant_angles_array.shape}')
-
         svd_diameter = svd_radius * 2 + 1
-        window_shape = (svd_diameter, svd_diameter) + ((3,) if self.is_3D else ())
+        window_shape = (svd_diameter, svd_diameter) + ((3,) if self.is_3D else (1,))
         dx_windows = view_as_windows(dx, window_shape)
         dy_windows = view_as_windows(dy, window_shape)
         dz_windows = view_as_windows(dz, window_shape)
+
+        dominant_angles_array = np.zeros(dx.shape, np.single)
+
+        if self.verbose_logging:
+            print(f'Gradient image shape = {dx.shape}')
 
         if self.verbose_logging:
             print(f'svd radius = {svd_radius}')
