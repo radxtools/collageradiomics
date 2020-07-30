@@ -503,43 +503,55 @@ class Collage:
 
         if mask_array.shape != img_array.shape:
             raise Exception('Mask must be the same shape as image.')
-        
-        self._img_array = img_array
-        
+
         self._is_3D = img_array.ndim == 3
         if verbose_logging:
             print(f'Running 3D Collage = {self.is_3D}')
+
+        self._img_array = img_array
+        if not self.is_3D:
+            # in the case of a single 2D slice, give it a third dimension of unit length
+            self._img_array = self._img_array.reshape(self._img_array.shape + (1,))
 
         min_3D_slices = 3;
         if self._img_array.shape[0] <  self._haralick_window_size or self._img_array.shape[1] < self._haralick_window_size or (self._is_3D and self._img_array.shape[2] < min_3D_slices):
             raise Exception(
                 f'Image is too small for a window size of {self._haralick_window_size} pixels.')
-        
+
         uniqueValues = np.unique(mask_array)
         numberOfValues = len(uniqueValues)
         if numberOfValues > 2:
             if verbose_logging:
                 for color in uniqueValues:
                     print(f'Found color value of {color}.')
-            print(f'Mask is not binary, there are {numberOfValues} unique colors in the image.')
-            print(f'Continuing with mask of {uniqueValues.max()}')
-        trimmed_mask_array = (mask_array == uniqueValues.max()).astype('float64')
-        non_zero_indices = np.argwhere(trimmed_mask_array)
-        try:
-            (min_y, min_x), (max_y, max_x) = non_zero_indices.min(0), non_zero_indices.max(0) + 1
-        except:
-            raise Exception('Non-contiguous masks are not supported.')
-        self.mask_min_x = min_x
-        self.mask_min_y = min_y
-        self.mask_max_x = max_x
-        self.mask_max_y = max_y
+            print(f'Warning: Mask is not binary. Using all {numberOfValues} nonzero values in the mask.')
+        thresholded_mask_array = (mask_array != 0)
 
-        scaled_mask_array = mask_array[self.mask_min_y:self.mask_max_y, self.mask_min_x:self.mask_max_x]
-        self.mask_width = self.mask_max_x - self.mask_min_x
+        thresholded_mask_array = thresholded_mask_array.reshape(self.img_array.shape)
+
+        print(f'Shape = {thresholded_mask_array.shape}')
+        
+        non_zero_indices = np.argwhere(thresholded_mask_array)
+        min_mask_coordinates = non_zero_indices.min(0)
+        max_mask_coordinates = non_zero_indices.max(0)+1
+        self.mask_min_x = min_mask_coordinates[1]
+        self.mask_min_y = min_mask_coordinates[0]
+        self.mask_min_z = min_mask_coordinates[2]
+        self.mask_max_x = max_mask_coordinates[1]
+        self.mask_max_y = max_mask_coordinates[0]
+        self.mask_max_z = max_mask_coordinates[2]
+
+        cropped_mask_array = thresholded_mask_array[self.mask_min_y:self.mask_max_y,
+                                                    self.mask_min_x:self.mask_max_x,
+                                                    self.mask_min_z:self.mask_max_z]
+
+        self.mask_width  = self.mask_max_x - self.mask_min_x
         self.mask_height = self.mask_max_y - self.mask_min_y
+        self.mask_depth  = self.mask_max_z - self.mask_min_z
+        self._mask_array = cropped_mask_array
+
         self._svd_radius = svd_radius
         self._verbose_logging = verbose_logging
-        self._mask_array = scaled_mask_array
 
         self._haralick_feature_list = haralick_feature_list
         self._feature_count = len(haralick_feature_list)
@@ -762,7 +774,7 @@ class Collage:
             img_array = self.img_array[:, :, 0]
         else:
             raise IndexError('Expected 2D or 3D numpy array.')
-        
+
         if self.verbose_logging:
             print(f'IMAGE:\nwidth={img_array.shape[1]} height={img_array.shape[0]}')
 
@@ -787,8 +799,11 @@ class Collage:
         rescaled_padded_cropped_array = padded_cropped_array / 256
         dx = np.gradient(rescaled_padded_cropped_array, axis=1)
         dy = np.gradient(rescaled_padded_cropped_array, axis=0)
+        dz = np.gradient(rescaled_padded_cropped_array, axis=2) if self.is_3D else np.zeros(dx.shape)
+        print(dz)
         self.dx = dx
         self.dy = dy
+        self.dz = dz
 
         # loop through all regions and calculate dominant angles
 
@@ -799,6 +814,7 @@ class Collage:
             print(f'dominant angles shape = {dominant_angles_array.shape}')
 
         svd_diameter = svd_radius * 2 + 1
+        window_shape = (svd_diameter, svd_diameter) + ((3,) if self.is_3D else ())
         dx_windows = view_as_windows(dx, (svd_diameter, svd_diameter))
         dy_windows = view_as_windows(dy, (svd_diameter, svd_diameter))
 
