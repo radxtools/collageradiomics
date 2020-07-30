@@ -306,7 +306,7 @@ class Collage:
         Whether we are using 3D collage calculations (True) or 2D (False)
         """
         return self._is_3D
-        
+
     @property
     def svd_radius(self):
         """
@@ -451,8 +451,7 @@ class Collage:
                  verbose_logging=False,
                  haralick_feature_list=[HaralickFeature.All],
                  log_sample_rate=500,
-                 cooccurence_angles=[0, 1 * np.pi / 4, 2 * np.pi / 4, 3 * np.pi / 4, 4 * np.pi / 4, 5 * np.pi / 4,
-                                     6 * np.pi / 4, 7 * np.pi / 4],
+                 cooccurence_angles=[x * np.pi/4 for x in range(8)],
                  difference_variance_interpretation=DifferenceVarianceInterpretation.XMinusYVariance,
                  haralick_window_size=-1,
                  greylevels=64,
@@ -471,7 +470,7 @@ class Collage:
             :type haralick_feature_list: [HaralickFeature], optional
             :param log_sample_rate: higher values will log more svd angles, this only works with verbose logging. Defaults to 500.
             :type log_sample_rate: int, optional
-            :param cooccurence_angles: list of angles to use in the cooccurence matrix. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
+            :param cooccurence_angles: list of angles to use in the cooccurence matrix. Defaults to [x * np.pi/4 for x in range(8)]
             :type cooccurence_angles: list, optional
             :param difference_variance_interpretation: Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).].Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
             :type difference_variance_interpretation: DifferenceVarianceInterpretation, optional
@@ -560,69 +559,6 @@ class Collage:
         self._difference_variance_interpretation = difference_variance_interpretation
 
         self._greylevels = greylevels
-
-    @classmethod
-    def from_rectangle(cls,
-                       img_array,
-                       mask_min_x,
-                       mask_min_y,
-                       mask_width,
-                       mask_height,
-                       svd_radius=5,
-                       verbose_logging=False,
-                       haralick_feature_list=[HaralickFeature.All],
-                       log_sample_rate=500,
-                       cooccurence_angles=[0, 1 * np.pi / 4, 2 * np.pi / 4, 3 * np.pi / 4, 4 * np.pi / 4, 5 * np.pi / 4,
-                                           6 * np.pi / 4, 7 * np.pi / 4],
-                       difference_variance_interpretation=DifferenceVarianceInterpretation.XMinusYVariance,
-                       haralick_window_size=-1,
-                       greylevels=64,
-                       ):
-        """Creates a rectangle at the x,y,w,h and only calculates collage inside that mask.
-
-            :param img_array: image to run collage upon
-            :type img_array: numpy.ndarray
-            :param mask_min_x: x location of window
-            :type mask_min_x: int
-            :param mask_min_y: y location of window
-            :type mask_min_y: int
-            :param mask_width: window width
-            :type mask_width: int
-            :param mask_height: window height
-            :type mask_height: int
-            :param svd_radius: radius of svd. Defaults to 5.
-            :type svd_radius: int, optional
-            :param verbose_logging: turning this on will log intermediate results. Defaults to False.
-            :type verbose_logging: bool, optional
-            :param haralick_feature_list: array of features to calculate. Defaults to [HaralickFeature.All].
-            :type haralick_feature_list: [HaralickFeature], optional
-            :param log_sample_rate: higher values will log more svd angles, this only works with verbose logging. Defaults to 500.
-            :type log_sample_rate: int, optional
-            :param cooccurence_angles: list of angles to use in the cooccurence matrix. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
-            :type cooccurence_angles: list, optional
-            :param difference_variance_interpretation: Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).].Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
-            :type difference_variance_interpretation: DifferenceVarianceInterpretation, optional
-            :param haralick_window_size: size of rolling window for texture calculations. Defaults to -1.
-            :type haralick_window_size: int, optional
-            :param greylevels: number of bins to use for the texture calculation. Defaults to 64.
-            :type greylevels: int, optional
-            :returns: Collage object to run collage on a rectangular section of the image.
-            :rtype: Collage
-        """
-        mask_array = np.zeros((img_array.shape[0], img_array.shape[1]))
-        mask_array[mask_min_y:mask_min_y + mask_height, mask_min_x:mask_min_x + mask_width] = 255
-        return cls(
-            img_array,
-            mask_array,
-            svd_radius,
-            verbose_logging,
-            haralick_feature_list,
-            log_sample_rate,
-            cooccurence_angles,
-            difference_variance_interpretation,
-            haralick_window_size,
-            greylevels
-        )
 
     @classmethod
     def from_multiple_images(cls,
@@ -793,14 +729,13 @@ class Collage:
             print(f'y = {padded_mask_min_y}:{padded_mask_max_y} ({padded_mask_max_y - padded_mask_min_y})')
         padded_cropped_array = img_array[padded_mask_min_y:padded_mask_max_y, padded_mask_min_x:padded_mask_max_x]
         if self.verbose_logging:
-            print(f'PaddedCropped Array Shape: {padded_cropped_array.shape}')
+            print(f'Padded Cropped Array Shape: {padded_cropped_array.shape}')
 
         # Calculate gradient
         rescaled_padded_cropped_array = padded_cropped_array / 256
         dx = np.gradient(rescaled_padded_cropped_array, axis=1)
         dy = np.gradient(rescaled_padded_cropped_array, axis=0)
         dz = np.gradient(rescaled_padded_cropped_array, axis=2) if self.is_3D else np.zeros(dx.shape)
-        print(dz)
         self.dx = dx
         self.dy = dy
         self.dz = dz
@@ -815,8 +750,9 @@ class Collage:
 
         svd_diameter = svd_radius * 2 + 1
         window_shape = (svd_diameter, svd_diameter) + ((3,) if self.is_3D else ())
-        dx_windows = view_as_windows(dx, (svd_diameter, svd_diameter))
-        dy_windows = view_as_windows(dy, (svd_diameter, svd_diameter))
+        dx_windows = view_as_windows(dx, window_shape)
+        dy_windows = view_as_windows(dy, window_shape)
+        dz_windows = view_as_windows(dz, window_shape)
 
         if self.verbose_logging:
             print(f'svd radius = {svd_radius}')
