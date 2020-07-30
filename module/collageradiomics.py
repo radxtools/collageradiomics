@@ -189,8 +189,6 @@ class Collage:
         :type verbose_logging: bool, optional
         :param haralick_feature_list: array of features to calculate. Defaults to [HaralickFeature.All].
         :type haralick_feature_list: [HaralickFeature], optional
-        :param log_sample_rate: higher values will log more svd angles, this only works with verbose logging. Defaults to 500.
-        :type log_sample_rate: int, optional
         :param cooccurence_angles: list of angles to use in the cooccurence matrix. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
         :type cooccurence_angles: list, optional
         :param difference_variance_interpretation: Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).].Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
@@ -265,17 +263,6 @@ class Collage:
         :type: [HaralickFeature]
         """
         return self._haralick_feature_list
-
-    @property
-    def log_sample_rate(self):
-        """
-        Sample rate of how many angles we log.
-
-        :getter: Returns the sample rate.
-        :setter: A higher value will result in more logging.
-        :type: int
-        """
-        return self._log_sample_rate
 
     @property
     def cooccurence_angles(self):
@@ -374,7 +361,6 @@ class Collage:
                  svd_radius=5,
                  verbose_logging=False,
                  haralick_feature_list=[HaralickFeature.All],
-                 log_sample_rate=500,
                  cooccurence_angles=[x * np.pi/4 for x in range(8)],
                  difference_variance_interpretation=DifferenceVarianceInterpretation.XMinusYVariance,
                  haralick_window_size=-1,
@@ -392,8 +378,6 @@ class Collage:
             :type verbose_logging: bool, optional
             :param haralick_feature_list: array of features to calculate. Defaults to [HaralickFeature.All].
             :type haralick_feature_list: [HaralickFeature], optional
-            :param log_sample_rate: higher values will log more svd angles, this only works with verbose logging. Defaults to 500.
-            :type log_sample_rate: int, optional
             :param cooccurence_angles: list of angles to use in the cooccurence matrix. Defaults to [x * np.pi/4 for x in range(8)]
             :type cooccurence_angles: list, optional
             :param difference_variance_interpretation: Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).].Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
@@ -405,8 +389,9 @@ class Collage:
         """
         
         if verbose_logging:
-            print('Collage Module Reloaded')
-        
+            print('Collage Module Initialized')
+
+        # error checking
         if haralick_window_size == -1:
             self._haralick_window_size = svd_radius * 2 + 1
         else:
@@ -441,17 +426,17 @@ class Collage:
             raise Exception(
                 f'Image is too small for a window size of {self._haralick_window_size} pixels.')
 
+        # threshold mask
         uniqueValues = np.unique(mask_array)
         numberOfValues = len(uniqueValues)
-        if numberOfValues > 2:
-            if verbose_logging:
-                for color in uniqueValues:
-                    print(f'Found color value of {color}.')
+        if numberOfValues > 2 and verbose_logging:
             print(f'Warning: Mask is not binary. Using all {numberOfValues} nonzero values in the mask.')
         thresholded_mask_array = (mask_array != 0)
 
+        # make correct shape
         thresholded_mask_array = thresholded_mask_array.reshape(self.img_array.shape)
 
+        # extract rectangular area of mask
         non_zero_indices = np.argwhere(thresholded_mask_array)
         min_mask_coordinates = non_zero_indices.min(0)
         max_mask_coordinates = non_zero_indices.max(0)+1
@@ -466,6 +451,7 @@ class Collage:
                                                     self.mask_min_x:self.mask_max_x,
                                                     self.mask_min_z:self.mask_max_z]
 
+        # store variables internally
         self.mask_width  = self.mask_max_x - self.mask_min_x
         self.mask_height = self.mask_max_y - self.mask_min_y
         self.mask_depth  = self.mask_max_z - self.mask_min_z
@@ -476,7 +462,6 @@ class Collage:
 
         self._haralick_feature_list = haralick_feature_list
         self._feature_count = len(haralick_feature_list)
-        self._log_sample_rate = log_sample_rate
         self._cooccurence_angles = cooccurence_angles
         self._difference_variance_interpretation = difference_variance_interpretation
 
@@ -609,8 +594,7 @@ class Collage:
         self.dy = dy
         self.dz = dz
 
-        # loop through all regions and calculate dominant angles
-
+        # create rolling windows
         dominant_angles_array = np.zeros((mask_height, mask_width), np.single)
 
         if self.verbose_logging:
@@ -639,10 +623,6 @@ class Collage:
                     current_svd_center_x, current_svd_center_y,
                     dx_windows, dy_windows)
                 dominant_angles_array[current_svd_center_y, current_svd_center_x] = current_dominant_angle
-                if random.randint(0, self.log_sample_rate) == 0:
-                    if self.verbose_logging:
-                        print(f'x={current_svd_center_x}, y={current_svd_center_y}')
-                        print(f'angle={current_dominant_angle}')
 
         if self.verbose_logging:
             print('Done calculating dominant angles.')
