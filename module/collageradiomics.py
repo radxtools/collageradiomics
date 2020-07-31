@@ -12,6 +12,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy import linalg
 from skimage.feature.texture import greycomatrix
 from skimage.util.shape import view_as_windows
+from enum import Enum
 
 
 def svd_dominant_angles(dx, dy, dz, svd_radius):
@@ -116,6 +117,9 @@ def show_colored_image(figure, axis, image_data, colormap=plt.cm.jet):
         :param colormap: color map to convert for display. Defaults to plt.cm.jet.
         :type colormap: matplotlib.colors.Colormap, optional
     """
+    print(f'Image data shape = {image_data.shape}')
+    if image_data.ndim == 3:
+        image_data = image_data[:,:,0]
     image = axis.imshow(image_data, cmap=colormap)
     divider = make_axes_locatable(axis)
     colorbar_axis = divider.append_axes("right", size="5%", pad=0.05)
@@ -178,8 +182,7 @@ def highlight_rectangle_on_image(image_data, min_x, min_y, w, h, colormap=plt.cm
 
 
 def scale_array_for_image(array_to_scale):
-    """Scales an array from 0-255 integer values
-
+    """Scales an array to have 0-255 values as the output
 
         :param array_to_scale: array to scale
         :type array_to_scale: numpy.ndarray
@@ -187,17 +190,13 @@ def scale_array_for_image(array_to_scale):
         :returns: array scaled from 0-255
         :rtype: numpy.ndarray
     """
-    flat_array = array_to_scale.flatten()
-    minimum = float(min(flat_array))
-    maximum = float(max(flat_array))
+    minimum = float(array_to_scale.min())
+    maximum = float(array_to_scale.max())
     array_range = maximum - minimum
     array_to_scale = array_to_scale - minimum
     array_to_scale /= array_range
     array_to_scale *= 255
     return array_to_scale
-
-
-from enum import Enum
 
 
 class HaralickFeature(Enum):
@@ -254,8 +253,8 @@ class Collage:
         :type difference_variance_interpretation: DifferenceVarianceInterpretation, optional
         :param haralick_window_size: size of rolling window for texture calculations. Defaults to -1.
         :type haralick_window_size: int, optional
-        :param grey_levels: number of bins to use for the texture calculation. Defaults to 64.
-        :type grey_levels: int, optional
+        :param num_unique_angles: number of bins to use for the texture calculation. Defaults to 64.
+        :type num_unique_angles: int, optional
     """
 
 
@@ -358,7 +357,7 @@ class Collage:
         return self._haralick_window_size
 
     @property
-    def grey_levels(self):
+    def num_unique_angles(self):
         """
         Number of bins to use for texture calculations. Defaults to 64.
 
@@ -366,7 +365,7 @@ class Collage:
         :setter: Sets requested number of bins.
         :type: int
         """
-        return self._grey_levels
+        return self._num_unique_angles
 
     @property
     def full_images(self):
@@ -423,7 +422,7 @@ class Collage:
                  cooccurence_angles=[x * np.pi/4 for x in range(8)],
                  difference_variance_interpretation=DifferenceVarianceInterpretation.XMinusYVariance,
                  haralick_window_size=-1,
-                 grey_levels=64,
+                 num_unique_angles=64,
                  ):
         """Designated initializer for Collage
 
@@ -443,10 +442,10 @@ class Collage:
             :type difference_variance_interpretation: DifferenceVarianceInterpretation, optional
             :param haralick_window_size: size of rolling window for texture calculations. Defaults to -1.
             :type haralick_window_size: int, optional
-            :param grey_levels: number of bins to use for the texture calculation. Defaults to 64.
-            :type grey_levels: int, optional
+            :param num_unique_angles: number of bins to use for the texture calculation. Defaults to 64.
+            :type num_unique_angles: int, optional
         """
-        
+
         if verbose_logging:
             print('Collage Module Initialized')
 
@@ -462,8 +461,8 @@ class Collage:
         if svd_radius < 1:
             raise Exception('SVD radius must be at least 1 pixel')
 
-        if grey_levels < 1:
-            raise Exception('grey_levels must contain at least 1 bin')
+        if num_unique_angles < 1:
+            raise Exception('num_unique_angles must contain at least 1 bin')
 
         if img_array.ndim < 2 or img_array.ndim > 3:
             raise Exception('Expected a 2D or 3D image.')
@@ -521,13 +520,54 @@ class Collage:
         self._cooccurence_angles = cooccurence_angles
         self._difference_variance_interpretation = difference_variance_interpretation
 
-        self._grey_levels = grey_levels
+        self._num_unique_angles = num_unique_angles
 
-    def get_haralick_value(self, img_array, center_x, center_y, window_size, grey_levels, haralick_feature, symmetric,
-                              mean):
-                              
+
+    def calculate_haralick_textures(self, dominant_angles):
+        """
+        Loop through the haralick features that are being requested
+        and calculate each haralick feature from the array of dominant angles.
+        """
+
+        # rescale from 0 to (num_unique_angles-1)
+        num_unique_angles = self.num_unique_angles
+        if self.verbose_logging:
+            print(f'Rescaling dominant angles to {num_unique_angles} unique values.')
+        dominant_angles_max = dominant_angles.max()
+        dominant_angles_min = dominant_angles.min()
+        dominant_angles_binned = (dominant_angles - dominant_angles_min) /(dominant_angles_max - dominant_angles_min) * (num_unique_angles - 1)
+        dominant_angles_binned = np.round(dominant_angles_binned).astype(int)
+        self.dominant_angles_binned = dominant_angles_binned
+        if self.verbose_logging:
+            print(f'Rescaling dominant angles done.')
+
+        # calculate up to 13 haralick textures for the dominant angles
+        haralick_features = np.empty(dominant_angles.shape + (13,))
+        haralick_features[:] = np.nan
+        print(f'Haralick features array shape = {haralick_features.shape}')
+
+        number_of_features = len(self.haralick_feature_list)
+        haralick_feature_list = self.haralick_feature_list
+        if HaralickFeature.All in haralick_feature_list:
+            number_of_features = 13
+        for feature in range(number_of_features):
+            if number_of_features != 13:
+                feature = haralick_feature_list.pop().value
+            if self.verbose_logging:
+                print(f'Calculating feature {feature + 1}:')
+            haralick_features[:, :, :, feature] = self.get_haralick_feature(
+                dominant_angles_binned,
+                feature,
+                num_unique_angles)
+            if self.verbose_logging:
+                print('Calculating feature done.')
+
+        return haralick_features
+
+    def get_haralick_value(self, img_array, center_x, center_y, window_size, num_unique_angles, haralick_feature):
+
         """Gets the haralick texture value at the center of an x, y coordinate.
-
+, pos[1]
             :param image_array: image to calculate texture
             :type image_array: numpy.ndarray
             :param center_x: x center of coordinate
@@ -536,14 +576,10 @@ class Collage:
             :type center_y: int
             :param window_size: size of window to pull for calculation
             :type window_size: int
-            :param grey_levels: number of bins
-            :type grey_levels: int
+            :param num_unique_angles: number of bins
+            :type num_unique_angles: int
             :param haralick_feature: desired haralick feature
             :type haralick_feature: HaralickFeature
-            :param symmetric: whether or not we should use the symmetrical cooccurence matrix
-            :type symmetric: bool
-            :param mean: whether we return the mean of the feature or not
-            :type mean: bool
 
             :returns: number representing value of haralick texture at coordinate.
             :rtype: float
@@ -556,48 +592,51 @@ class Collage:
         cropped_img_array = img_array[min_y:max_y, min_x:max_x]
 
         # co-occurence matrix of all 8 directions and sum them
-        cooccurence_matrix = greycomatrix(cropped_img_array, [1], self.cooccurence_angles, levels=grey_levels)
+        cooccurence_matrix = greycomatrix(cropped_img_array, [1], self.cooccurence_angles, levels=num_unique_angles)
         cooccurence_matrix = np.sum(cooccurence_matrix, axis=3)
         cooccurence_matrix = cooccurence_matrix[:, :, 0]
 
-        # extract haralick using mahotas library:
-        har_feature = mt.features.texture.haralick_features([cooccurence_matrix], return_mean=mean)
+        # extract haralick using mahotas library
+        feature_values = mt.features.texture.haralick_features([cooccurence_matrix], return_mean=True)
+        return feature_values[haralick_feature]
 
-        # output:
-        if mean:
-            return har_feature[haralick_feature]
-        return har_feature[0, haralick_feature]
 
-    def get_haralick_feature(self, img, desired_haralick_feature, grey_levels, haralick_window_size, symmetric=False,
-                                mean=False):
+    def get_haralick_feature(self, dominant_angles_array, desired_haralick_feature, num_unique_angles):
         """Gets haralick image within the mask.
 
-            :param img: image to get feature from
-            :type img: numpy.ndarray
+            :param dominant_angles_array: An image of the dominant angles at each voxel
+            :type dominant_angles_array: numpy.ndarray
             :param desired_haralick_feature: which feature to calculate
             :type desired_haralick_feature: Haralick Feature
-            :param grey_levels: number of bins
-            :type grey_levels: int
+            :param num_unique_angles: number of bins
+            :type num_unique_angles: int
             :param haralick_window_size: size of window around pixels to calculate haralick value
-            :type haralick_window_size: int
-            :param symmetric: (bool, optional)
-                whether or not we should use the symmetrical cooccurence matrix. 
-                Defaults to False.
-            mean (bool, optional)
-                whether we return the mean of the feature or not. 
-                Defaults to False.
 
             :returns: An image representing haralick texture.
             :rtype: numpy.ndarray
         """
-        haralick_image = np.zeros(img.shape)
-        h, w = img.shape
-        for pos in product(range(w), range(h)):
-            if self.mask_array[pos[1]][pos[0]] != 0:
-                result = self.get_haralick_value(img, pos[0], pos[1], haralick_window_size, grey_levels,
-                                                    desired_haralick_feature, symmetric, mean)
-                haralick_image[pos[1], pos[0]] = result
+
+        # prepare output
+        shape = dominant_angles_array.shape
+        haralick_image = np.empty(shape)
+        haralick_image[:] = np.nan
+
+        # the haralick is calculated for each slice separately
+        height, width, depth = shape
+        for z in range(depth):
+            # loop through the pixels in the region
+            for y,x in product(range(height), range(width)):
+                if self.mask_array[y,x,z]:
+                    # only calculate for masked pixels
+                    haralick_value = self.get_haralick_value(\
+                        dominant_angles_array[:,:,z],
+                        x, y,
+                        self.haralick_window_size,
+                        num_unique_angles,
+                        desired_haralick_feature)
+                    haralick_image[y,x,z] = haralick_value
         return haralick_image
+
 
     def execute(self):
         """Begins haralick calculation.
@@ -636,7 +675,8 @@ class Collage:
 
         if self.verbose_logging:
             print(f'Image shape = {img_array.shape}')
-            print(f'Image shape (cropped to mask) = {cropped_image.shape}')
+            print(f'Mask size = {mask_height}x{mask_width}x{mask_depth}')
+            print(f'Image shape (cropped and padded) = {cropped_image.shape}')
 
         # ensure the image values range from 0-1
         if cropped_image.max() > 1:
@@ -644,9 +684,9 @@ class Collage:
                 print('Note: Dividing image values by 255 to convert to 0-1 range')
             cropped_image = cropped_image / 255.
 
-        # calculate gradients
+        # calculate x,y,z gradients
         if self.verbose_logging:
-            print('Calculating x,y,z pixel gradients:')
+            print('Calculating pixel gradients:')
         dx = np.gradient(cropped_image, axis=1)
         dy = np.gradient(cropped_image, axis=0)
         dz = np.gradient(cropped_image, axis=2) if self.is_3D else np.zeros(dx.shape)
@@ -658,58 +698,42 @@ class Collage:
 
         # calculate dominant angles of each patch
         if self.verbose_logging:
-            print(f'Using SVD to calculate the dominant gradient angle for each image patch of size {svd_radius}x{svd_radius}')
+            print(f'Calculating dominant gradient angles using SVD for each image patch of size {svd_radius}x{svd_radius}')
         dominant_angles_array = svd_dominant_angles(dx, dy, dz, svd_radius)
         self.dominant_angles_array = dominant_angles_array
         if self.verbose_logging:
-            print('Done calculating dominant angles.')
+            print('Calculating dominant gradient angles done.')
             print(f'Dominant angles shape = {dominant_angles_array.shape}')
 
-        # rescale from 0 to (grey_levels-1)
-        grey_levels = self.grey_levels
-        dominant_angles_max = dominant_angles_array.max()
-        dominant_angles_min = dominant_angles_array.min()
-        dominant_angles_shaped = (dominant_angles_array - dominant_angles_min) /(dominant_angles_max - dominant_angles_min) * (grey_levels - 1)
-        dominant_angles_shaped = np.round(dominant_angles_shaped).astype(int)
-        self.dominant_angles_shaped = dominant_angles_shaped
+        # calculate haralick features of the dominant angles
+        if self.verbose_logging:
+            print('Calculating haralick features of angles:')
+            print(dominant_angles_array.shape)
+        haralick_features = self.calculate_haralick_textures(dominant_angles_array)
+        if self.verbose_logging:
+            print('Calculating haralick features of angles done.')
 
-        # calculate haralick textures of the dominant angles
-        haralick_features = np.empty((mask_height, mask_width, 13))
-        full_images = []
-        full_masked_images = []
+        # prepare an output full of "NaN's"
+        num_haralick_features = haralick_features.shape[3]
+        collage_output = np.empty(img_array.shape + (num_haralick_features,))
+        collage_output[:] = np.nan
 
-        number_of_features = len(self.haralick_feature_list)
-        haralick_feature_list = self.haralick_feature_list
-        if HaralickFeature.All in haralick_feature_list:
-            number_of_features = 13
-        for feature in range(number_of_features):
+        # insert the haralick output into the correct spot
+        for feature_index in range(num_haralick_features):
+            collage_output[mask_min_y:mask_max_y,
+                           mask_min_x:mask_max_x,
+                           mask_min_z:mask_max_z,
+                           feature_index] =\
+                               haralick_features[:,:,:,feature_index]
 
-            if number_of_features != 13:
-                feature = haralick_feature_list.pop().value
+        # remove the singleton third dimension from the output
+        if not self.is_3D:
+            collage_output = np.squeeze(collage_output, 2)
             if self.verbose_logging:
-                print(f'Calculating feature {feature + 1}:')
-            haralick_features[:, :, feature] = self.get_haralick_feature(dominant_angles_shaped, feature, grey_levels,
-                                                                            self.haralick_window_size, symmetric=False,
-                                                                            mean=True)
+                print('Note: Squeezing out the third dimension.')
 
-            single_feature = scale_array_for_image(haralick_features[:, :, feature].astype('float64'))
-
-            # This is the patch overlayed on top of the whole image.
-            full_image = img_array
-            full_image = scale_array_for_image(full_image)
-            full_image[mask_min_y:mask_max_y, mask_min_x:mask_max_x] = single_feature
-            full_images.append(full_image)
-
-            # This is an array the same shape as the image but with zeros for the non-patch values.
-            full_masked_image = np.zeros(img_array.shape)
-            full_masked_image[mask_min_y:mask_max_y, mask_min_x:mask_max_x] = single_feature
-            full_masked_images.append(full_masked_image)
-
-            if self.verbose_logging:
-                print(f'Calculated feature {feature + 1}.')
-
-        self.haralick_features = haralick_features
-        self.full_images = full_images
-        self.full_masked_images = full_masked_images
-
-        return full_masked_images
+        # output
+        self.collage_output = collage_output
+        if self.verbose_logging:
+            print(f'Output shape = {collage_output.shape}')
+        return collage_output
