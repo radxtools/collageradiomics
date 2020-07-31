@@ -49,13 +49,8 @@ def svd_dominant_angles(dx, dy, dz, svd_radius):
     center_x_range = range(angles_shape[1])
     center_y_range = range(angles_shape[0])
     center_z_range = range(angles_shape[2])
-    for current_svd_center_x in center_x_range:
-        for current_svd_center_y in center_y_range:
-            for current_svd_center_z in center_z_range:
-                dominant_angles_array[current_svd_center_y, current_svd_center_x, current_svd_center_z, :] = \
-                    svd_dominant_angle(\
-                        current_svd_center_x, current_svd_center_y, current_svd_center_z,
-                        dx_windows, dy_windows, dz_windows)
+    for x, y, z in product(center_x_range, center_y_range, center_z_range):
+        dominant_angles_array[y, x, z, :] = svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows)
 
     return dominant_angles_array
 
