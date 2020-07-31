@@ -245,9 +245,7 @@ class Collage:
         :type svd_radius: int, optional
         :param verbose_logging: turning this on will log intermediate results]. Defaults to False.
         :type verbose_logging: bool, optional
-        :param haralick_feature_list: array of features to calculate. Defaults to [HaralickFeature.All].
-        :type haralick_feature_list: [HaralickFeature], optional
-        :param cooccurence_angles: list of angles to use in the cooccurence matrix. Defaults to [0, 1*np.pi/4, 2*np.pi/4, 3*np.pi/4, 4*np.pi/4, 5*np.pi/4, 6*np.pi/4, 7*np.pi/4].
+        :param cooccurence_angles: list of angles to use in the cooccurence matrix. Defaults to [x*numpy.pi/4 for x in range(8)]
         :type cooccurence_angles: list, optional
         :param difference_variance_interpretation: Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).].Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
         :type difference_variance_interpretation: DifferenceVarianceInterpretation, optional
@@ -312,17 +310,6 @@ class Collage:
         return self._verbose_logging
 
     @property
-    def haralick_feature(self):
-        """
-        Iterable of which haralick features to calculate.
-
-        :getter: Returns True if on.
-        :setter: Turns verbose logging off or on.
-        :type: [HaralickFeature]
-        """
-        return self._haralick_feature_list
-
-    @property
     def cooccurence_angles(self):
         """
         Iterable of angles that will be used in the cooccurence matrix.
@@ -361,64 +348,35 @@ class Collage:
         """
         Number of bins to use for texture calculations. Defaults to 64.
 
-        :getter: Returns requested number of bins.
-        :setter: Sets requested number of bins.
+        :getter: Returns requested number of unique angles to bin into.
         :type: int
         """
         return self._num_unique_angles
 
     @property
-    def full_images(self):
+    def collage_output(self):
         """
-        numpy.ndarray image representing collage upon the mask within the full images.
+        Array representing collage upon the mask within the full images.
+        If the input was 2D, the output will be height×width×13 where "13" is the number of haralick textures.
+        If the input was 3D, the output will be height×width×depth×13x2 where "2" is the primary angle (element 0) or the secondary angle (element 1)
 
-        :getter: Returns original image with collage upon the mask region.
-        :setter: Sets original image with collage upon the mask.
+        The output will have numpy.nan values everywhere outside the masked region.
+
+        :getter: Returns array the same shape as the original image with collage in the mask region.
         :type: numpy.ndarray
         """
-        return self._full_images
+        return self._collage_output
 
-    @full_images.setter
-    def full_images(self, value):
-        self._full_images = value
+    @collage_output.setter
+    def collage_output(self, value):
+        self._collage_output = value
 
-    @property
-    def full_masked_images(self):
-        """
-        numpy.ndarray image representing collage upon the mask within the full images. 
-        Does not include values outside the mask.
-
-        :getter: Returns images with empty values outside of mask and with collage upon the mask region.
-        :setter: Sets images with empty values outside of mask and with collage upon the mask region.
-        :type: numpy.ndarray
-        """
-        return self._full_masked_images
-
-    @full_masked_images.setter
-    def full_masked_images(self, value):
-        self._full_masked_images = value
-
-    @property
-    def haralick_feature_list(self):
-        """
-        Iterable representing the list of requested features.
-
-        :getter: Returns the list of requested features.
-        :setter: Sets the list of requested features.
-        :type: Iterable
-        """
-        return self._haralick_feature_list
-
-    @haralick_feature_list.setter
-    def haralick_feature_list(self, value):
-        self._haralick_feature_list = value
 
     def __init__(self,
                  img_array,
                  mask_array,
                  svd_radius=5,
                  verbose_logging=False,
-                 haralick_feature_list=[HaralickFeature.All],
                  cooccurence_angles=[x * np.pi/4 for x in range(8)],
                  difference_variance_interpretation=DifferenceVarianceInterpretation.XMinusYVariance,
                  haralick_window_size=-1,
@@ -434,8 +392,6 @@ class Collage:
             :type svd_radius: int, optional
             :param verbose_logging: turning this on will log intermediate results. Defaults to False.
             :type verbose_logging: bool, optional
-            :param haralick_feature_list: array of features to calculate. Defaults to [HaralickFeature.All].
-            :type haralick_feature_list: [HaralickFeature], optional
             :param cooccurence_angles: list of angles to use in the cooccurence matrix. Defaults to [x * np.pi/4 for x in range(8)]
             :type cooccurence_angles: list, optional
             :param difference_variance_interpretation: Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).].Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
@@ -515,8 +471,6 @@ class Collage:
         self._svd_radius = svd_radius
         self._verbose_logging = verbose_logging
 
-        self._haralick_feature_list = haralick_feature_list
-        self._feature_count = len(haralick_feature_list)
         self._cooccurence_angles = cooccurence_angles
         self._difference_variance_interpretation = difference_variance_interpretation
 
