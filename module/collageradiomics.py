@@ -29,13 +29,20 @@ def svd_dominant_angles(dx, dy, dz, svd_radius):
 
     # create rolling windows
     svd_diameter = svd_radius * 2 + 1
-    window_shape = (svd_diameter, svd_diameter) + ((3 if is_3D else 1),)
+    
+    # the first (commented out) version would actually take a patch of one slice above and below,
+    # but by convention, the third dimension is simply used for the gradient calculation;
+    # the actual collection of nearby gradient values to run through the SVD calculation is
+    # still done on a given 2D slice
+    #window_shape = (svd_diameter, svd_diameter) + ((3 if is_3D else 1),)
+    window_shape = (svd_diameter, svd_diameter, 1)
+    print(f'Window patch shape for dominant angle calculation = {window_shape}')
     dx_windows = view_as_windows(dx, window_shape)
     dy_windows = view_as_windows(dy, window_shape)
     dz_windows = view_as_windows(dz, window_shape)
 
     angles_shape = dx_windows.shape[0:3]
-    dominant_angles_array = np.zeros(angles_shape, np.single)
+    dominant_angles_array = np.zeros(angles_shape + (2 if is_3D else 1,), np.single)
 
     # loop through each voxel and use SVD to calculate the dominant angle for that rolling window
     # centered on that x,y,z coordinate
@@ -45,12 +52,10 @@ def svd_dominant_angles(dx, dy, dz, svd_radius):
     for current_svd_center_x in center_x_range:
         for current_svd_center_y in center_y_range:
             for current_svd_center_z in center_z_range:
-                # calculate
-                current_dominant_angle = svd_dominant_angle(
-                    current_svd_center_x, current_svd_center_y, current_svd_center_z,
-                    dx_windows, dy_windows, dz_windows)
-                # store
-                dominant_angles_array[current_svd_center_y, current_svd_center_x, current_svd_center_z] = current_dominant_angle
+                dominant_angles_array[current_svd_center_y, current_svd_center_x, current_svd_center_z, :] = \
+                    svd_dominant_angle(\
+                        current_svd_center_x, current_svd_center_y, current_svd_center_z,
+                        dx_windows, dy_windows, dz_windows)
 
     return dominant_angles_array
 
@@ -101,7 +106,13 @@ def svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows):
     # calculate the dominant angle for this voxel
     dominant_angle = math.atan2(dominant_y, dominant_x)
 
-    return dominant_angle
+    if is_3D:
+        # also include the secondary angle
+        dominant_z = v[2,0]
+        secondary_angle = math.atan2(dominant_z, math.sqrt(dominant_x ** 2 + dominant_y ** 2))
+        return (dominant_angle, secondary_angle)
+    else:
+        return dominant_angle
 
 
 def show_colored_image(figure, axis, image_data, colormap=plt.cm.jet):
@@ -537,7 +548,6 @@ class Collage:
         dominant_angles_min = dominant_angles.min()
         dominant_angles_binned = (dominant_angles - dominant_angles_min) / (dominant_angles_max - dominant_angles_min) * (num_unique_angles - 1)
         dominant_angles_binned = np.round(dominant_angles_binned).astype(int)
-        self.dominant_angles_binned = dominant_angles_binned
         if self.verbose_logging:
             print(f'Rescaling dominant angles done.')
 
@@ -617,33 +627,39 @@ class Collage:
         # calculate dominant angles of each patch
         if self.verbose_logging:
             print(f'Calculating dominant gradient angles using SVD for each image patch of size {svd_radius}x{svd_radius}')
-        dominant_angles_array = svd_dominant_angles(dx, dy, dz, svd_radius)
-        self.dominant_angles_array = dominant_angles_array
+        dominant_angles = svd_dominant_angles(dx, dy, dz, svd_radius)
+        self.dominant_angles = dominant_angles
+        angles_shape = dominant_angles.shape
         if self.verbose_logging:
             print('Calculating dominant gradient angles done.')
-            print(f'Dominant angles shape = {dominant_angles_array.shape}')
+            print(f'Dominant angles shape = {angles_shape}')
 
         # calculate haralick features of the dominant angles
         if self.verbose_logging:
             print('Calculating haralick features of angles:')
-            print(dominant_angles_array.shape)
-        haralick_features = self.calculate_haralick_textures(dominant_angles_array)
+        haralick_features = np.empty(angles_shape[0:3] + (13, 2 if self.is_3D else 1,))
+        haralick_features[:] = np.nan
+        for angle_index in range(angles_shape[3]):
+            print(f'Calculating features for angle {angle_index}:')
+            haralick_features[:,:,:,:,angle_index] = self.calculate_haralick_textures(dominant_angles[:,:,:,angle_index])
+            print(f'Calculating features for angle {angle_index} done.')
         if self.verbose_logging:
             print('Calculating haralick features of angles done.')
 
         # prepare an output full of "NaN's"
-        num_haralick_features = haralick_features.shape[3]
-        collage_output = np.empty(img_array.shape + (num_haralick_features,))
+        collage_output = np.empty(img_array.shape + haralick_features.shape[3:5])
         collage_output[:] = np.nan
+        print(collage_output.shape)
 
         # insert the haralick output into the correct spot
         collage_output[mask_min_y:mask_max_y,
                        mask_min_x:mask_max_x,
                        mask_min_z:mask_max_z,
-                       :] = haralick_features
+                       :, :] = haralick_features
 
         # remove the singleton third dimension from the output
         if not self.is_3D:
+            collage_output = np.squeeze(collage_output, 4)
             collage_output = np.squeeze(collage_output, 2)
 
         # output
