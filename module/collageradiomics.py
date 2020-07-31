@@ -14,32 +14,51 @@ from skimage.feature.texture import greycomatrix
 from skimage.util.shape import view_as_windows
 
 
-def svd_dominant_angle(x, y, dx_windows, dy_windows):
+def svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows):
     """Calculates the dominate angle at the coordinate within the windows.
-
 
         :param x: x value of coordinate
         :type x: int
         :param y: y value of coordinate
         :type y: int
-        :param dx_windows: dx windows of x, y shape to run svd upon
+        :param z: z value of coordinate
+        :type z: int
+        :param dx_windows: dx windows of x, y shape to run svd upon (shape = rows, cols, slices, row_radius, col_radius, slice_radius)
         :type dx_windows: numpy.ndarray
         :param dy_windows: dy windows of x, y shape to run svd upon
         :type dy_windows: numpy.ndarray
+        :param dz_windows: dy windows of x, y shape to run svd upon
+        :type dz_windows: numpy.ndarray
 
         :returns: dominant angle at x, y
         :rtype: float 
     """
-    dx_patch = dx_windows[y, x]
-    dy_patch = dy_windows[y, x]
 
+    # extract the patch of pixel gradient values for this specific voxel
+    dx_patch = dx_windows[y, x, z]
+    dy_patch = dy_windows[y, x, z]
+    dz_patch = dz_windows[y, x, z]
+
+    is_3D = dx_windows.shape[2] > 1
+
+    # flatten all N gradient values in this patch into an Nxd matrix to pass into svd
     window_area = dx_patch.size
-    flattened_gradients = np.zeros((window_area, 2))
-    flattened_gradients[:, 0] = np.reshape(dx_patch, ((window_area)), order='F')
-    flattened_gradients[:, 1] = np.reshape(dy_patch, ((window_area)), order='F')
+    flattened_gradients = np.zeros((window_area, (3 if is_3D else 2)))
+    matrix_order = 'F' # fortran-style to be consistent with original matlab implementation
+    flattened_gradients[:, 0] = np.reshape(dx_patch, window_area, order=matrix_order)
+    flattened_gradients[:, 1] = np.reshape(dy_patch, window_area, order=matrix_order)
+    if is_3D:
+        flattened_gradients[:, 2] = np.reshape(dz_patch, window_area, order=matrix_order)
 
+    # calculate svd
     _, _, v = linalg.svd(flattened_gradients)
-    dominant_angle = math.atan2(v[0, 0], v[1, 0])
+
+    # extract results from the first column (in matlab this would be the first row)
+    dominant_y = v[0,0]
+    dominant_x = v[1,0]
+
+    # calculate the dominant angle for this voxel
+    dominant_angle = math.atan2(dominant_y, dominant_x)
 
     return dominant_angle
 
@@ -571,11 +590,6 @@ class Collage:
         cropped_max_y = min(mask_max_y + svd_radius, img_array.shape[0])
         cropped_max_z = min(mask_max_z + 1         , img_array.shape[2])
 
-        print(mask_min_z)
-        print(mask_max_z)
-        print(cropped_min_z)
-        print(cropped_max_z)
-
         cropped_image = img_array[cropped_min_y:cropped_max_y,
                                   cropped_min_x:cropped_max_x,
                                   cropped_min_z:cropped_max_z]
@@ -600,32 +614,38 @@ class Collage:
 
         # create rolling windows
         svd_diameter = svd_radius * 2 + 1
-        window_shape = (svd_diameter, svd_diameter) + ((3,) if self.is_3D else (1,))
+        window_shape = (svd_diameter, svd_diameter) + ((3 if self.is_3D else 1),)
         dx_windows = view_as_windows(dx, window_shape)
         dy_windows = view_as_windows(dy, window_shape)
         dz_windows = view_as_windows(dz, window_shape)
 
-        dominant_angles_array = np.zeros(dx.shape, np.single)
+        angles_shape = dx_windows.shape[0:3]
+        dominant_angles_array = np.zeros(angles_shape, np.single)
 
         if self.verbose_logging:
-            print(f'Gradient image shape = {dx.shape}')
+            print(f'Gradient image shape = {angles_shape}')
 
         if self.verbose_logging:
             print(f'svd radius = {svd_radius}')
             print(f'svd diameter = {svd_diameter}')
-            print(f'dx windows shape = {dx_windows.shape}')
+            print(f'Gradient windows shape = {dx_windows.shape}')
 
-        center_x_range = range(dx_windows.shape[1])
-        center_y_range = range(dx_windows.shape[0])
-
+        # loop through each voxel and use SVD to calculate the dominant angle for that rolling window
+        # centered on that x,y,z coordinate
+        center_x_range = range(angles_shape[1])
+        center_y_range = range(angles_shape[0])
+        center_z_range = range(angles_shape[2])
         if self.verbose_logging:
-            print(f'Center x: {center_x_range}, Center y: {center_y_range}')
+            print(f'Center x: {center_x_range}, Center y: {center_y_range}, Center z: {center_z_range}')
         for current_svd_center_x in center_x_range:
             for current_svd_center_y in center_y_range:
-                current_dominant_angle = svd_dominant_angle(
-                    current_svd_center_x, current_svd_center_y,
-                    dx_windows, dy_windows)
-                dominant_angles_array[current_svd_center_y, current_svd_center_x] = current_dominant_angle
+                for current_svd_center_z in center_z_range:
+                    # calculate
+                    current_dominant_angle = svd_dominant_angle(
+                        current_svd_center_x, current_svd_center_y, current_svd_center_z,
+                        dx_windows, dy_windows, dz_windows)
+                    # store
+                    dominant_angles_array[current_svd_center_y, current_svd_center_x, current_svd_center_z] = current_dominant_angle
 
         if self.verbose_logging:
             print('Done calculating dominant angles.')
