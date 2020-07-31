@@ -596,7 +596,7 @@ class Collage:
 
         if self.verbose_logging:
             print(f'Image shape = {img_array.shape}')
-            print(f'Cropped image shape = {cropped_image.shape}')
+            print(f'Image shape (cropped to mask) = {cropped_image.shape}')
 
         # ensure the image values range from 0-1
         if cropped_image.max() > 1:
@@ -623,20 +623,14 @@ class Collage:
         dominant_angles_array = np.zeros(angles_shape, np.single)
 
         if self.verbose_logging:
+            print(f'Using SVD to calculate the dominant gradient angle for each image patch of size {dx_windows.shape[3:6]}:')
             print(f'Gradient image shape = {angles_shape}')
-
-        if self.verbose_logging:
-            print(f'svd radius = {svd_radius}')
-            print(f'svd diameter = {svd_diameter}')
-            print(f'Gradient windows shape = {dx_windows.shape}')
 
         # loop through each voxel and use SVD to calculate the dominant angle for that rolling window
         # centered on that x,y,z coordinate
         center_x_range = range(angles_shape[1])
         center_y_range = range(angles_shape[0])
         center_z_range = range(angles_shape[2])
-        if self.verbose_logging:
-            print(f'Center x: {center_x_range}, Center y: {center_y_range}, Center z: {center_z_range}')
         for current_svd_center_x in center_x_range:
             for current_svd_center_y in center_y_range:
                 for current_svd_center_z in center_z_range:
