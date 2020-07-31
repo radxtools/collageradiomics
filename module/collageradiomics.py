@@ -1,14 +1,7 @@
 import math
-import random
-import sys, select
 from itertools import product
-
 import mahotas as mt
-import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.gridspec import GridSpec
-from matplotlib.patches import Rectangle
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy import linalg
 from skimage.feature.texture import greycomatrix
 from skimage.util.shape import view_as_windows
