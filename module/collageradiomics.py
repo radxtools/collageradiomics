@@ -5,7 +5,7 @@ import numpy as np
 from scipy import linalg
 from skimage.feature.texture import greycomatrix
 from skimage.util.shape import view_as_windows
-from enum import Enum
+from enum import Enum, IntEnum
 
 
 def svd_dominant_angles(dx, dy, dz, svd_radius):
@@ -120,12 +120,11 @@ def scale_array_for_image(array_to_scale):
     return array_to_scale
 
 
-class HaralickFeature(Enum):
+class HaralickFeature(IntEnum):
     """Enumeration Helper For Haralick Features
 
-
-        :param Enum: Enumeration Helper For Haralick Features
-        :type Enum: HaralickFeature
+        :param IntEnum: Enumeration Helper For Haralick Features
+        :type IntEnum: HaralickFeature
     """
     AngularSecondMoment = 0
     Contrast = 1
@@ -140,7 +139,6 @@ class HaralickFeature(Enum):
     InformationMeasureOfCorrelation1 = 10
     InformationMeasureOfCorrelation2 = 11
     MaximalCorrelationCoefficient = 12
-    All = 13
 
 
 class DifferenceVarianceInterpretation(Enum):
@@ -291,6 +289,21 @@ class Collage:
     @collage_output.setter
     def collage_output(self, value):
         self._collage_output = value
+
+
+    def get_single_feature_output(self, which_feature):
+        """
+        Output a single collage output feature.
+        If this was a 3D calculation, the output will be of size height×width×depth×2
+        where the "2" represents the collage calculation from the primary angle (0) or secondary angle (1).
+
+          :param which_feature: Either an integer from 0 to 12 (inclusive) or a HaralickFeature enum value
+          :type which_feature HaralickFeature
+        """
+        if self.is_3D:
+            return self.collage_output[:,:,:,which_feature,:]
+        else:
+            return self.collage_output[:,:,which_feature]
 
 
     def __init__(self,
