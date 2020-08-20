@@ -11,7 +11,7 @@ output_data/
 .bash_history
 .vscode/
 module/collageradiomics.egg-info/*
-module/__pycache__/*
 module/docs/build/*
 module/docs/source/_build/*
 .idea/*
+__pycache__
