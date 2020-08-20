@@ -85,6 +85,9 @@
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_2">
+        <property name="toolTip">
+         <string>Unlike 2D features, two dominant directions (θ 3D, φ 3D) are computed for 3D CoLlAGe associated with each c ∈ C, which provide complimentary information about the degree of disorder of the principal gradient orientations in (X,Y) and (X,Y,Z) directions.</string>
+        </property>
         <property name="text">
          <string>Dominant Direction(s):</string>
         </property>
@@ -94,6 +97,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QCheckBox" name="phiCheckBox">
+          <property name="toolTip">
+           <string>Unlike 2D features, two dominant directions (θ 3D, φ 3D) are computed for 3D CoLlAGe associated with each c ∈ C, which provide complimentary information about the degree of disorder of the principal gradient orientations in (X,Y) and (X,Y,Z) directions.</string>
+          </property>
           <property name="text">
            <string>θ</string>
           </property>
@@ -104,6 +110,9 @@
         </item>
         <item>
          <widget class="QCheckBox" name="thetaCheckBox">
+          <property name="toolTip">
+           <string>Unlike 2D features, two dominant directions (θ 3D, φ 3D) are computed for 3D CoLlAGe associated with each c ∈ C, which provide complimentary information about the degree of disorder of the principal gradient orientations in (X,Y) and (X,Y,Z) directions.</string>
+          </property>
           <property name="text">
            <string>ϕ </string>
           </property>
@@ -283,7 +292,9 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The Haralick Window size default of -1 will result in a window size of SVD_RADIUS * 2 - 1.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The Difference Variance Interpretation means feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The Difference Variance Interpretation means feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).]&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Note that unlike 2D features, two dominant directions (θ 3D, φ 3D) are computed for 3D CoLlAGe associated with each c ∈ C, which provide complimentary information about the degree of disorder of the principal gradient orientations in (X,Y) and (X,Y,Z) directions.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="acceptRichText">
       <bool>false</bool>
