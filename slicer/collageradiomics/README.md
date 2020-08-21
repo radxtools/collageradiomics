@@ -58,6 +58,8 @@ Additional information can be found on the [BrIC Lab](http://bric-lab.com) websi
 # References
 _[Back to **Table of Contents**](#table-of-contents)_
 
+[![doi](https://img.shields.io/badge/doi-10.1038/srep37241-brightgreen.svg)](https://doi.org/10.1038/srep37241)
+
 <a href="http://bric-lab.com"><img align="right" height=100 src="https://static.wixstatic.com/media/a0e8e5_809a649f13254ff293405c7476004e20~mv2.png/v1/fill/w_248,h_240,al_c,usm_0.66_1.00_0.01/a0e8e5_809a649f13254ff293405c7476004e20~mv2.png"></a>
 
 If you make use of this implementation, please cite the following paper:
