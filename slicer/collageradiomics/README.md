@@ -11,18 +11,8 @@ Details on extraction of **CoLlAGe** features are included in [\[1\]](#reference
   - [Overview](#overview)
 - [Tutorials](#tutorials)
   - [End to End Demo](#end-to-end-demo)
-  - [Documentation](#documentation)
+  - [Multiple Angles & Textures](#multiple-angles-&-textures)
   - [Dependencies](#dependencies)
-- [Installation & Usage](#installation--usage)
-  - [Executive Summary for Experts](#executive-summary-for-experts)
-  - [Docker](#docker)
-    - [Docker Setup](#docker-setup)
-    - [collageradiomics-examples Docker Image](#collageradiomics-examples-docker-image)
-    - [collageradiomics-pip Docker Image](#collageradiomics-pip-docker-image)
-  - [Pip](#pip)
-  - [Python Usage](#python-usage)
-    - [Basic Example](#basic-example)
-    - [Real Data](#real-data)
 - [Contact](#contact)
 - [References](#references)
 
@@ -55,6 +45,13 @@ _[Back to **Table of Contents**](#table-of-contents)_
 Here is a demonstration of how to process and view multiple dominant directions and textures.
 
 [![Collage Multiple Angles & Textures Demonstration](Tutorials/CollageMultipleDemo.png?raw=true)](https://youtu.be/9om8FMpY1vA "Collage Multiple Angles & Textures Demonstration")
+
+# Contact
+_[Back to **Table of Contents**](#table-of-contents)_
+
+Please report any issues or feature requests via the [Issue Tracker](https://github.com/radxtools/collageradiomics/issues).
+
+Additional information can be found on the [BrIC Lab](http://bric-lab.com) website.
 
 # References
 _[Back to **Table of Contents**](#table-of-contents)_
