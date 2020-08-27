@@ -14,7 +14,6 @@ Details on extraction of **CoLlAGe** features are included in [\[1\]](#reference
 - [Tutorials](#tutorials)
   - [End to End Demo](#end-to-end-demo)
   - [Multiple Angles & Textures](#multiple-angles-&-textures)
-  - [Dependencies](#dependencies)
 - [Contact](#contact)
 - [References](#references)
 
