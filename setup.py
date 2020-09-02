@@ -15,7 +15,8 @@ setup(name='Collageradiomics_CLI',
       install_requires=[
       'collageradiomics',
       'setuptools>=47',
-      'PyInstaller>=3.6'
+      'PyInstaller>=3.6',
+      'SimpleITK==1.2.4'
       ],
       scripts=['collageradiomics_cli.py'],
       classifiers=[
