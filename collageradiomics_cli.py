@@ -20,6 +20,10 @@ if __name__ == '__main__':
                       help='The binary mask containing annotation.\n',
                       required=True)
 
+  parser.add_argument('-o', dest='outputCSV', type=str,
+                      help='The output CSV file.\n',
+                      required=True)
+
   # parser.add_argument('-v', '--version', action='version',
   #                     version=pkg_resources.require("Hausdorff95")[0].version, help="Show program's version number and exit.") # disabled because pyinstaller doesn't import it properly
                           
@@ -27,8 +31,11 @@ if __name__ == '__main__':
 
   inputImage = os.path.abspath(args.inputImage)
   maskImage = os.path.abspath(args.maskImage)
+  outputCSV = os.path.abspath(args.outputCSV)
 
   image = sitk.GetArrayFromImage(sitk.ReadImage(inputImage))
   mask = sitk.GetArrayFromImage(sitk.ReadImage(maskImage))
 
-  print(hd95(gt,mk))
+  ## todo: extract collage features here
+
+  ## todo: write CSV file here
