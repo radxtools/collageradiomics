@@ -3,6 +3,7 @@
 
 import argparse
 import os
+import sys
 import SimpleITK as sitk
 
 # import collagaradiomics
@@ -36,6 +37,15 @@ if __name__ == '__main__':
   image = sitk.GetArrayFromImage(sitk.ReadImage(inputImage))
   mask = sitk.GetArrayFromImage(sitk.ReadImage(maskImage))
 
+  dim = image.GetDimension()
+  # sanity check
+  if image.GetDimension() != mask.GetDimension():
+    sys.exit('The Dimension of input image and mask need to be the same')
+
   ## todo: extract collage features here
+  if dim == 2:
+    test = 2 # extract 2D collage features 
+  elif dim == 3:
+    test = 3 # extract 3D collage features 
 
   ## todo: write CSV file here
