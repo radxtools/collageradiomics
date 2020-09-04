@@ -21,6 +21,7 @@
   - [Python Usage](#python-usage)
     - [Basic Example](#basic-example)
     - [Real Data](#real-data)
+  - [CLI Application](#cli-usage)
 - [Contact](#contact)
 
 # Science
@@ -522,6 +523,18 @@ Try installing and then changing to another directory before importing mahotas.
 _[Back to **Table of Contents**](#table-of-contents)_
 
 collageradiomics can be implemented in **Python** through the `collageradiomics` pip module. It has a intuitive interface - simply create a `Collage` object and run the `execute()` function.
+
+## CLI Usage
+_[Back to **Table of Contents**](#table-of-contents)_
+
+The CLI for collageradiomics is in the `./cli` folder and can be installed using the following command:
+
+```powershell
+cd ./cli
+pip install -e . # this will give you access to the program collageradiomics_cli
+```
+
+[collageradiomics_cli.py](./cli/collageradiomics_cli.py) takes 3 parameters: an input image, a binary mask and the CSV file to write the results out to. Depending on the image/mask dimensions, it will calculate the features and write it to the CSV file.
 
 # Contact
 _[Back to **Table of Contents**](#table-of-contents)_
