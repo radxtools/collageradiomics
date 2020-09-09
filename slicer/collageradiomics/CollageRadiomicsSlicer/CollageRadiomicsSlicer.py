@@ -6,13 +6,6 @@ import numpy as np
 import datetime
 from slicer.ScriptedLoadableModule import *
 from slicer.util import VTKObservationMixin
-try:
-  import collageradiomics
-except:
-  slicer.util.pip_install('collageradiomics')
-  slicer.util.pip_install('mahotas')
-
-from collageradiomics import HaralickFeature, DifferenceVarianceInterpretation, Collage
 #
 # CollageRadiomicsSlicer
 #
@@ -57,6 +50,13 @@ class CollageRadiomicsSlicerWidget(ScriptedLoadableModuleWidget, VTKObservationM
     VTKObservationMixin.__init__(self)
     self.logic = None
     self._parameterNode = None
+    try:
+      import collageradiomics
+    except ModuleNotFoundError as e:
+      if slicer.util.confirmOkCancelDisplay("CollageRadiomics requires 'collageradiomics' python package. Click OK to download it now. It may take a few minues."):
+        slicer.util.pip_install('collageradiomics')
+        import collageradiomics
+        from collageradiomics import HaralickFeature, DifferenceVarianceInterpretation, Collage
 
   def setup(self):
     """
