@@ -37,6 +37,14 @@ If you make use of this implementation, please cite the following paper:
 # CollageRadiomicsSlicerWidget
 #
 
+def install_collage():
+    try:
+      import collageradiomics
+    except ModuleNotFoundError as e:
+      if slicer.util.confirmOkCancelDisplay("CollageRadiomics also requires the 'collageradiomics' python package. Click OK to download it now. This may take a few minutes."):
+        slicer.util.pip_install('collageradiomics')
+        import collageradiomics
+
 class CollageRadiomicsSlicerWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
   """Uses ScriptedLoadableModuleWidget base class, available at:
   https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py
@@ -50,19 +58,19 @@ class CollageRadiomicsSlicerWidget(ScriptedLoadableModuleWidget, VTKObservationM
     VTKObservationMixin.__init__(self)
     self.logic = None
     self._parameterNode = None
-    try:
-      import collageradiomics
-    except ModuleNotFoundError as e:
-      if slicer.util.confirmOkCancelDisplay("CollageRadiomics requires 'collageradiomics' python package. Click OK to download it now. It may take a few minues."):
-        slicer.util.pip_install('collageradiomics')
-        import collageradiomics
-        from collageradiomics import HaralickFeature, DifferenceVarianceInterpretation, Collage
 
   def setup(self):
     """
     Called when the user opens the module the first time and the widget is initialized.
     """
     ScriptedLoadableModuleWidget.setup(self)
+
+    try:
+      import collageradiomicstypes
+    except ModuleNotFoundError as e:
+      if slicer.util.confirmOkCancelDisplay("CollageRadiomics requires the 'collageradiomics-types' python package. Click OK to download it now."):
+        slicer.util.pip_install('collageradiomicstypes')
+        import collageradiomicstypes
 
     uiWidget = slicer.util.loadUI(self.resourcePath('UI/CollageRadiomicsSlicer.ui'))
     self.layout.addWidget(uiWidget)
@@ -75,7 +83,7 @@ class CollageRadiomicsSlicerWidget(ScriptedLoadableModuleWidget, VTKObservationM
 
     self.individualFeatures = {}
     
-    for i, feature in enumerate(HaralickFeature):
+    for i, feature in enumerate(collageradiomicstypes.HaralickFeature):
       checkBox = ctk.ctkCheckBox()
       checkBox.text = feature.name
       self.individualFeatures[feature] = checkBox
@@ -88,8 +96,8 @@ class CollageRadiomicsSlicerWidget(ScriptedLoadableModuleWidget, VTKObservationM
     self.allFeatures.text = 'All'
     self.allFeatures.setChecked(True)
     self.allFeatures.connect('clicked(bool)', self.onAllFeature)
-    row = len(HaralickFeature) / 2
-    column = len(HaralickFeature) % 2
+    row = len(collageradiomicstypes.HaralickFeature) / 2
+    column = len(collageradiomicstypes.HaralickFeature) % 2
     advancedFormLayout.addWidget(self.allFeatures, row, column)
 
     self.ui.inputMaskSelector.nodeTypes = ['vtkMRMLLabelMapVolumeNode', 'vtkMRMLSegmentationNode']
@@ -102,7 +110,7 @@ class CollageRadiomicsSlicerWidget(ScriptedLoadableModuleWidget, VTKObservationM
     self.ui.inputMaskSelector.setMRMLScene(slicer.mrmlScene)
     self.ui.inputMaskSelector.setToolTip('Pick the regions for feature calculation - defined by a segmentation or labelmap volume node.')
     
-    for interpretation in DifferenceVarianceInterpretation:
+    for interpretation in collageradiomicstypes.DifferenceVarianceInterpretation:
       self.ui.differenceVarianceComboBox.addItem(interpretation.name)
 
     self.ui.phiCheckBox.connect('clicked(bool)', self.onPhi)
@@ -207,6 +215,7 @@ class CollageRadiomicsSlicerWidget(ScriptedLoadableModuleWidget, VTKObservationM
     """
     Run processing when user clicks "Apply" button.
     """
+    install_collage()
     features = []
     for feature, checkbox in self.individualFeatures.items():
       if checkbox.checked or self.allFeatures.checked:
@@ -252,7 +261,7 @@ class CollageRadiomicsSlicerLogic(ScriptedLoadableModuleLogic):
     # if not parameterNode.GetParameter("Invert"):
     #   parameterNode.SetParameter("Invert", "false")
 
-  def run(self, inputVolume, mask, dimensions=[0], invert=False, showResult=True, svd_radius=2, verbose_logging=True, features=[HaralickFeature.Contrast], window_size=-1, grey_levels=64):
+  def run(self, inputVolume, mask, dimensions=[0], invert=False, showResult=True, svd_radius=2, verbose_logging=True, features=[], window_size=-1, grey_levels=64):
     # This will convert the mask segmentation into a binary representation via LabelMapVolume
     # LabelMapVolume supports conversion to numpy arrays and that's what we need
     # to input to collage.
@@ -282,7 +291,8 @@ class CollageRadiomicsSlicerLogic(ScriptedLoadableModuleLogic):
         logging.info('User cancelled collage from large mask warning.')
         return
     
-    collage = Collage(inputArray, inputMaskArray, svd_radius=svd_radius, verbose_logging=True, haralick_window_size=window_size, num_unique_angles=int(grey_levels))
+    import collageradiomics
+    collage = collageradiomics.Collage(inputArray, inputMaskArray, svd_radius=svd_radius, verbose_logging=True, haralick_window_size=window_size, num_unique_angles=int(grey_levels))
     results = collage.execute()
 
     iso_time_string = datetime.datetime.now().isoformat()
