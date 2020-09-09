@@ -7,7 +7,6 @@ from skimage.feature.texture import greycomatrix
 from skimage.util.shape import view_as_windows
 from enum import Enum, IntEnum
 
-
 def svd_dominant_angles(dx, dy, dz, svd_radius):
     """Calculate a new numpy image containing the dominant angles for each voxel.
 

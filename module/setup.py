@@ -34,7 +34,6 @@ setuptools.setup(
         'Topic :: Scientific/Engineering :: Bio-Informatics',
     ],
     install_requires=[
-        'matplotlib==3.2.2',
         'numpy==1.19.0',
         'scikit-learn==0.23.1',
         'scikit-build==0.11.1',
