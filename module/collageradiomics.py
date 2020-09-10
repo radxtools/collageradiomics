@@ -484,6 +484,9 @@ class Collage:
         if self.verbose_logging:
             print(f'dominant_angles_binned shape is {shape} mask shape is {self.mask_array.shape}')
 
+        if self.verbose_logging:
+            print('starting haralick calculations...')
+
         # We extended the dominant angles by one slice in each direction, so now we need to trim those off.
         for z in range(1, depth - 1):
             for y,x in product(range(height), range(width)):
