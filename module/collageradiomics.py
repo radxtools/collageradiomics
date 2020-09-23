@@ -7,7 +7,6 @@ from skimage.feature.texture import greycomatrix
 from skimage.util.shape import view_as_windows
 from enum import Enum, IntEnum
 
-
 def svd_dominant_angles(dx, dy, dz, svd_radius):
     """Calculate a new numpy image containing the dominant angles for each voxel.
 
@@ -369,7 +368,7 @@ class Collage:
             # in the case of a single 2D slice, give it a third dimension of unit length
             self._img_array = self._img_array.reshape(self._img_array.shape + (1,))
 
-        min_3D_slices = 3;
+        min_3D_slices = 3
         if self._img_array.shape[0] <  self._haralick_window_size or self._img_array.shape[1] < self._haralick_window_size or (self._is_3D and self._img_array.shape[2] < min_3D_slices):
             raise Exception(
                 f'Image is too small for a window size of {self._haralick_window_size} pixels.')
@@ -485,8 +484,11 @@ class Collage:
         if self.verbose_logging:
             print(f'dominant_angles_binned shape is {shape} mask shape is {self.mask_array.shape}')
 
-        # We extended the dominant angles by one slice in each direction, so now we need to trim those off.
-        for z in range(1, depth - 1):
+        if self.verbose_logging:
+            print('starting haralick calculations...')
+
+        # In 3D, we extended the dominant angles by one slice in each direction, so now we need to trim those off if we are running in 3D.
+        for z in range(1, depth - 1) if self.is_3D else range(depth):
             for y,x in product(range(height), range(width)):
                 if self.mask_array[y,x,z]:
                     haralick_image[y,x,z,:] = self.calculate_haralick_feature_values(dominant_angles_binned[:,:,z], x, y)
