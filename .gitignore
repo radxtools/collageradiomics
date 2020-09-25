@@ -17,3 +17,5 @@ module/docs/source/_build/*
 __pycache__
 debug.log
 *venv*
+*/build/*
+*.egg*
