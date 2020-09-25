@@ -2,12 +2,11 @@
 
 block_cipher = None
 
-
 a = Analysis(['collageradiomicscli.py'],
              pathex=[os.getcwd()],
              binaries=[],
              datas=[],
-             hiddenimports=['skimage'],
+             hiddenimports=['skimage', 'skimage.io', 'skimage.transform', 'skimage.filter.rank.core_cy', 'skimage._shared.interpolation', 'skimage.feature', 'skimage.feature._orb_descriptor_positions'],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -23,7 +22,7 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='collageradiomicscli',
+          name='collageradiomics',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
