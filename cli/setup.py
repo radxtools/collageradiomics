@@ -16,7 +16,8 @@ setup(name='collageradiomicscli',
       'collageradiomics',
       'setuptools>=47',
       'SimpleITK==1.2.4',
-      'click'
+      'click',
+      'pyinstaller'
       ],
       scripts=['collageradiomicscli.py'],
       classifiers=[
