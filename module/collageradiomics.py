@@ -584,7 +584,15 @@ class Collage:
         # prepare an output full of "NaN's"
         collage_output = np.empty(img_array.shape + haralick_features.shape[3:5])
         collage_output[:] = np.nan
-        print(collage_output.shape)
+
+        # if a mask covers the whole image, we'll offset the edges as nans
+        if mask_height == img_array.shape[0] and mask_width == img_array.shape[1]:
+            y_offset = int((img_array.shape[0] - dominant_angles.shape[0]) / 2)
+            mask_min_y += y_offset
+            mask_max_y -= y_offset
+            x_offset = int((img_array.shape[1] - dominant_angles.shape[1]) / 2)
+            mask_min_x += x_offset
+            mask_max_x -= x_offset
 
         # insert the haralick output into the correct spot
         collage_output[mask_min_y:mask_max_y,
