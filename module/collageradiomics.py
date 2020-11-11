@@ -360,6 +360,12 @@ class Collage:
         if mask_array.shape != img_array.shape:
             raise Exception('Mask must be the same shape as image.')
 
+        # Our minimum size for x & y is 50x50
+        min_x_y_size = 50
+
+        if img_array.shape[0] < min_x_y_size or img_array.shape[1] < min_x_y_size:
+            raise Exception(f'Image size ({img_array.shape[0]}x{img_array.shape[1]}) unsupported. Image must be a minimum of a 50x50 for collage to run.')
+
         self._is_3D = img_array.ndim == 3
         logger.debug(f'Running 3D Collage = {self.is_3D}')
 
