@@ -37,9 +37,6 @@ def run(input, outputfile, verbose, dimensions, label, svdradius, haralickwindow
     header.append(features_list)
     output_list = [header]
   else:
-#    header = ['ID', 'Image', 'Mask', 'svdradius', 'haralickwindow', 'binsize', 'label']
-#    features_list = []
-    
     for suffix in ['Theta', 'Phi']:
       for feature in collageradiomics.HaralickFeature:
         if extendstats:
@@ -47,10 +44,7 @@ def run(input, outputfile, verbose, dimensions, label, svdradius, haralickwindow
         else:
           features_list.extend(['Collage'+feature.name+'Median'+suffix, 'Collage'+feature.name+'Skewness'+suffix, 'Collage'+feature.name+'Kurtosis'+suffix, 'Collage'+feature.name+'Variance'+suffix])
     header.extend(features_list)
-#    output_list = [['ID', 'Image', 'Mask', 'svdradius', 'haralickwindow', 'binsize', '']]
     output_list = [header]
-    
-  print(output_list)
   
   with open(input, newline='') as csvfile:
     reader = csv.DictReader(csvfile)
@@ -133,67 +127,19 @@ def run(input, outputfile, verbose, dimensions, label, svdradius, haralickwindow
               output_case.extend([median_theta, feature_stats_theta.skewness, feature_stats_theta.kurtosis, feature_stats_theta.variance, median_phi, feature_stats_phi.skewness, feature_stats_phi.kurtosis, feature_stats_phi.variance])
         output_list.append(output_case)
       except RuntimeError as err:
-        print(err)
         list_failed_cases.append([case_id, image_filepath, mask_filepath, err])
       except ValueError as err:
-        print(err)
         list_failed_cases.append([case_id, image_filepath, mask_filepath, err])
-      print(list_failed_cases)
-    print(list_failed_cases)
-    
+  
+  # Create collage radiomic features output csv file
   with open(outputfile, 'w') as file:
     writer = csv.writer(file)
     writer.writerows(output_list)
-    
+  
+  # Create errors output csv file
   with open(os.path.join(os.path.dirname(outputfile), 'errors.csv'), 'w') as file:
     writer = csv.writer(file)
     writer.writerows(list_failed_cases)
-  # Create a csv file at the passed in output file location.
   
-#  with open(outputfile, 'w', newline='') as csv_output_file:
-#    writer = csv.writer(csv_output_file)
-#    writer.writerows(RESULTS)
-#    # Write the columns.
-#    writer.writerow(['FeatureName', 'Value'])
-#    for feature in collageradiomics.HaralickFeature:
-#      feature_output = collage.get_single_feature_output(feature)
-#      if image_array.ndim == 2:
-#        feature_output = feature_output[~np.isnan(feature_output)]
-#
-#        # NumPy supports median natively, we'll use that.
-#        median = np.nanmedian(feature_output, axis=None)
-#
-#        # Use SciPy for kurtosis, variance, and skewness.
-#        feature_stats = stats.describe(feature_output, axis=None)
-#
-#        # Write CSV row for current feature.
-##        _write_csv_stats_row(writer, feature, median, feature_stats.skewness, feature_stats.kurtosis, feature_stats.variance)
-#      else:
-#        # Extract phi and theta angles.
-#        feature_output_theta = feature_output[:,:,:,0]
-#        feature_output_phi = feature_output[:,:,:,1]
-#
-#        # Remove NaN for stat calculations.
-#        feature_output_theta = feature_output_theta[~np.isnan(feature_output_theta)]
-#        feature_output_phi = feature_output_phi[~np.isnan(feature_output_phi)]
-#
-#        # NumPy supports median natively, we'll use that.
-#        median_theta = np.nanmedian(feature_output_theta, axis=None)
-#        median_phi = np.nanmedian(feature_output_phi, axis=None)
-#
-#        # Use SciPy for kurtosis, variance, and skewness.
-#        feature_stats_theta = stats.describe(feature_output_theta.flatten(), axis=None)
-#        feature_stats_phi = stats.describe(feature_output_phi.flatten(), axis=None)
-
-        # Write CSV rows for each angle.
-#        _write_csv_stats_row(writer, feature, median_theta, feature_stats_theta.skewness, feature_stats_theta.kurtosis, feature_stats_theta.variance, 'Theta')
-#        _write_csv_stats_row(writer, feature, median_phi, feature_stats_phi.skewness, feature_stats_phi.kurtosis, feature_stats_phi.variance, 'Phi')
-#
-#def _write_csv_stats_row(writer, feature, median, skewness, kurtosis, variance, suffix=''):
-#  writer.writerow([f'Collage{feature.name}Median{suffix}', f'{median:.10f}'])
-#  writer.writerow([f'Collage{feature.name}Skewness{suffix}', f'{skewness:.10f}'])
-#  writer.writerow([f'Collage{feature.name}Kurtosis{suffix}', f'{kurtosis:.10f}'])
-#  writer.writerow([f'Collage{feature.name}Variance{suffix}', f'{variance:.10f}'])
-
 if __name__ == '__main__':
   run()
