@@ -137,7 +137,7 @@ def run(input, outputfile, verbose, dimensions, label, svdradius, haralickwindow
     writer.writerows(output_list)
   
   # Create errors output csv file
-  with open(os.path.join(os.path.dirname(outputfile), 'errors.csv'), 'w') as file:
+  with open(os.path.join(os.path.dirname(outputfile), 'errors_' + os.path.basename(outputfile)), 'w') as file:
     writer = csv.writer(file)
     writer.writerows(list_failed_cases)
   
