@@ -462,7 +462,7 @@ class Collage:
         # prepare output
         shape = dominant_angles_binned.shape
         haralick_image = np.empty(shape + (13,))
-        # haralick_image[:] = np.nan
+        haralick_image[:] = np.nan
 
         # the haralick is calculated for each slice separately
         height, width, depth = shape
