@@ -34,11 +34,11 @@ setuptools.setup(
         'Topic :: Scientific/Engineering :: Bio-Informatics',
     ],
     install_requires=[
-        'numpy==1.19.0',
-        'scikit-build==0.11.1',
-        'scikit-image==0.17.2',
-        'mahotas==1.4.10',
-        'scipy==1.5.0'
+        'numpy',
+        'scikit-build',
+        'scikit-image',
+        'mahotas',
+        'scipy'
     ],
     python_requires='>=3.6',
     keywords='radiomics cancerimaging medicalresearch computationalimaging',
