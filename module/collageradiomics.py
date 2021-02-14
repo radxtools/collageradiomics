@@ -10,7 +10,7 @@ from enum import Enum, IntEnum
 
 logger = logging.getLogger('collageradiomics')
 
-def svd_dominant_angles(dx, dy, dz, svd_radius):
+def _svd_dominant_angles(dx, dy, dz, svd_radius):
     """Calculate a new numpy image containing the dominant angles for each voxel.
 
         :param dx: 3D numpy array of the pixel gradient in the x directions
@@ -45,12 +45,12 @@ def svd_dominant_angles(dx, dy, dz, svd_radius):
     center_y_range = range(angles_shape[0])
     center_z_range = range(angles_shape[2])
     for x, y, z in product(center_x_range, center_y_range, center_z_range):
-        dominant_angles_array[y, x, z, :] = svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows)
+        dominant_angles_array[y, x, z, :] = _svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows)
 
     return dominant_angles_array
 
 
-def svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows):
+def _svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows):
     """Calculates the dominate angle at the coordinate within the windows.
 
         :param x: x value of coordinate
@@ -103,24 +103,6 @@ def svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows):
         return (dominant_angle, secondary_angle)
     else:
         return dominant_angle
-
-def scale_array_for_image(array_to_scale):
-    """Scales an array to have 0-255 values as the output
-
-        :param array_to_scale: array to scale
-        :type array_to_scale: numpy.ndarray
-
-        :returns: array scaled from 0-255
-        :rtype: numpy.ndarray
-    """
-    minimum = float(array_to_scale.min())
-    maximum = float(array_to_scale.max())
-    array_range = maximum - minimum
-    array_to_scale = array_to_scale - minimum
-    array_to_scale /= array_range
-    array_to_scale *= 255
-    return array_to_scale
-
 
 class HaralickFeature(IntEnum):
     """Enumeration Helper For Haralick Features
@@ -416,7 +398,7 @@ class Collage:
         self._num_unique_angles = num_unique_angles
 
 
-    def calculate_haralick_feature_values(self, img_array, center_x, center_y):
+    def _calculate_haralick_feature_values(self, img_array, center_x, center_y):
 
         """Gets the haralick texture feature values at the x, y, z coordinate.
 , pos[1]
@@ -453,7 +435,7 @@ class Collage:
         return mt.features.texture.haralick_features([cooccurence_matrix], return_mean=True)
 
 
-    def calculate_haralick_textures(self, dominant_angles):
+    def _calculate_haralick_textures(self, dominant_angles):
         """Gets haralick texture values 
 
             :param dominant_angles_array: An image of the dominant angles at each voxel
@@ -480,7 +462,7 @@ class Collage:
         # prepare output
         shape = dominant_angles_binned.shape
         haralick_image = np.empty(shape + (13,))
-        # haralick_image[:] = np.nan
+        haralick_image[:] = np.nan
 
         # the haralick is calculated for each slice separately
         height, width, depth = shape
@@ -491,7 +473,7 @@ class Collage:
         for z in range(1, depth - 1) if self.is_3D else range(depth):
             for y,x in product(range(height), range(width)):
                 if self.mask_array[y,x,z]:
-                    haralick_image[y,x,z,:] = self.calculate_haralick_feature_values(dominant_angles_binned[:,:,z], x, y)
+                    haralick_image[y,x,z,:] = self._calculate_haralick_feature_values(dominant_angles_binned[:,:,z], x, y)
 
         return haralick_image
 
@@ -566,7 +548,7 @@ class Collage:
 
         # calculate dominant angles of each patch
         logger.debug(f'Calculating dominant gradient angles using SVD for each image patch of size {svd_radius}x{svd_radius}')
-        dominant_angles = svd_dominant_angles(dx, dy, dz, svd_radius)
+        dominant_angles = _svd_dominant_angles(dx, dy, dz, svd_radius)
         self.dominant_angles = dominant_angles
         angles_shape = dominant_angles.shape
         logger.debug('Calculating dominant gradient angles done.')
@@ -577,7 +559,7 @@ class Collage:
         haralick_features = np.empty(angles_shape[0:3] + (13, 2 if self.is_3D else 1,))
         for angle_index in range(angles_shape[3]):
             logger.info(f'Calculating features for angle {angle_index}:')
-            haralick_features[:,:,:,:,angle_index] = self.calculate_haralick_textures(dominant_angles[:,:,:,angle_index])
+            haralick_features[:,:,:,:,angle_index] = self._calculate_haralick_textures(dominant_angles[:,:,:,angle_index])
             logger.info(f'Calculating features for angle {angle_index} done.')
         logger.debug('Calculating haralick features of angles done.')
 
