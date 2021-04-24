@@ -2,7 +2,7 @@ import os
 import PyInstaller
 from shutil import copyfile
 
-print("Creating exe")
+print("Creating executable")
 
 os.system("pyinstaller --onefile collageradiomicscli.spec")
 
