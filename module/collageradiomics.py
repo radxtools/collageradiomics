@@ -8,6 +8,10 @@ from skimage.feature.texture import greycomatrix
 from skimage.util.shape import view_as_windows
 from enum import Enum, IntEnum
 
+import pkg_resources
+
+__version__ = pkg_resources.require("collageradiomics")[0].version
+
 logger = logging.getLogger('collageradiomics')
 
 def _svd_dominant_angles(dx, dy, dz, svd_radius):
