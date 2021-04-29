@@ -15,3 +15,8 @@ module/docs/build/*
 module/docs/source/_build/*
 .idea/*
 __pycache__
+debug.log
+*venv*
+*/build/*
+*/dist/*
+*.egg*

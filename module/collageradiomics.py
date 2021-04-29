@@ -1,4 +1,5 @@
 import math
+import logging
 from itertools import product
 import mahotas as mt
 import numpy as np
@@ -7,7 +8,13 @@ from skimage.feature.texture import greycomatrix
 from skimage.util.shape import view_as_windows
 from enum import Enum, IntEnum
 
-def svd_dominant_angles(dx, dy, dz, svd_radius):
+import pkg_resources
+
+__version__ = pkg_resources.require("collageradiomics")[0].version
+
+logger = logging.getLogger('collageradiomics')
+
+def _svd_dominant_angles(dx, dy, dz, svd_radius):
     """Calculate a new numpy image containing the dominant angles for each voxel.
 
         :param dx: 3D numpy array of the pixel gradient in the x directions
@@ -28,7 +35,7 @@ def svd_dominant_angles(dx, dy, dz, svd_radius):
     # still done on a given 2D slice
     #window_shape = (svd_diameter, svd_diameter) + ((3 if is_3D else 1),)
     window_shape = (svd_diameter, svd_diameter, 1)
-    print(f'Window patch shape for dominant angle calculation = {window_shape}')
+    logger.info(f'Window patch shape for dominant angle calculation = {window_shape}')
     dx_windows = view_as_windows(dx, window_shape)
     dy_windows = view_as_windows(dy, window_shape)
     dz_windows = view_as_windows(dz, window_shape)
@@ -42,12 +49,12 @@ def svd_dominant_angles(dx, dy, dz, svd_radius):
     center_y_range = range(angles_shape[0])
     center_z_range = range(angles_shape[2])
     for x, y, z in product(center_x_range, center_y_range, center_z_range):
-        dominant_angles_array[y, x, z, :] = svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows)
+        dominant_angles_array[y, x, z, :] = _svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows)
 
     return dominant_angles_array
 
 
-def svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows):
+def _svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows):
     """Calculates the dominate angle at the coordinate within the windows.
 
         :param x: x value of coordinate
@@ -101,24 +108,6 @@ def svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows):
     else:
         return dominant_angle
 
-def scale_array_for_image(array_to_scale):
-    """Scales an array to have 0-255 values as the output
-
-        :param array_to_scale: array to scale
-        :type array_to_scale: numpy.ndarray
-
-        :returns: array scaled from 0-255
-        :rtype: numpy.ndarray
-    """
-    minimum = float(array_to_scale.min())
-    maximum = float(array_to_scale.max())
-    array_range = maximum - minimum
-    array_to_scale = array_to_scale - minimum
-    array_to_scale /= array_range
-    array_to_scale *= 255
-    return array_to_scale
-
-
 class HaralickFeature(IntEnum):
     """Enumeration Helper For Haralick Features
 
@@ -161,7 +150,7 @@ class Collage:
         :type mask_array: numpy.ndarray
         :param svd_radius: radius of svd. Defaults to 5.
         :type svd_radius: int, optional
-        :param verbose_logging: turning this on will log intermediate results]. Defaults to False.
+        :param verbose_logging: This parameter is now ignored. Please use the python logging module.
         :type verbose_logging: bool, optional
         :param cooccurence_angles: list of angles to use in the cooccurence matrix. Defaults to [x*numpy.pi/4 for x in range(8)]
         :type cooccurence_angles: list, optional
@@ -218,8 +207,7 @@ class Collage:
     @property
     def verbose_logging(self):
         """
-        Turning this on will result in more
-        detailed logging.
+        This parameter is now ignored. Please use the python logging module.
 
         :getter: Returns True if on.
         :setter: Turns verbose logging off or on.
@@ -323,7 +311,7 @@ class Collage:
             :type mask_array: numpy.ndarray
             :param svd_radius: radius of svd. Defaults to 5.
             :type svd_radius: int, optional
-            :param verbose_logging: turning this on will log intermediate results. Defaults to False.
+            :param verbose_logging: This parameter is now ignored. Please use the python logging module.
             :type verbose_logging: bool, optional
             :param cooccurence_angles: list of angles to use in the cooccurence matrix. Defaults to [x * np.pi/4 for x in range(8)]
             :type cooccurence_angles: list, optional
@@ -335,8 +323,7 @@ class Collage:
             :type num_unique_angles: int, optional
         """
 
-        if verbose_logging:
-            print('Collage Module Initialized')
+        logger.debug('Collage Module Initialized')
 
         # error checking
         if haralick_window_size == -1:
@@ -359,9 +346,14 @@ class Collage:
         if mask_array.shape != img_array.shape:
             raise Exception('Mask must be the same shape as image.')
 
+        # Our minimum size for x & y is 50x50
+        min_x_y_size = 50
+
+        if img_array.shape[0] < min_x_y_size or img_array.shape[1] < min_x_y_size:
+            raise Exception(f'Image size ({img_array.shape[0]}x{img_array.shape[1]}) unsupported. Image must be a minimum of a 50x50 for collage to run.')
+
         self._is_3D = img_array.ndim == 3
-        if verbose_logging:
-            print(f'Running 3D Collage = {self.is_3D}')
+        logger.debug(f'Running 3D Collage = {self.is_3D}')
 
         self._img_array = img_array
         if not self.is_3D:
@@ -377,7 +369,7 @@ class Collage:
         uniqueValues = np.unique(mask_array)
         numberOfValues = len(uniqueValues)
         if numberOfValues > 2:
-            print(f'Warning: Mask is not binary. Considering all {numberOfValues} nonzero values in the mask as a value of True.')
+            logger.info(f'Warning: Mask is not binary. Considering all {numberOfValues} nonzero values in the mask as a value of True.')
         thresholded_mask_array = (mask_array != 0)
 
         # make correct shape
@@ -410,7 +402,7 @@ class Collage:
         self._num_unique_angles = num_unique_angles
 
 
-    def calculate_haralick_feature_values(self, img_array, center_x, center_y):
+    def _calculate_haralick_feature_values(self, img_array, center_x, center_y):
 
         """Gets the haralick texture feature values at the x, y, z coordinate.
 , pos[1]
@@ -447,7 +439,7 @@ class Collage:
         return mt.features.texture.haralick_features([cooccurence_matrix], return_mean=True)
 
 
-    def calculate_haralick_textures(self, dominant_angles):
+    def _calculate_haralick_textures(self, dominant_angles):
         """Gets haralick texture values 
 
             :param dominant_angles_array: An image of the dominant angles at each voxel
@@ -464,14 +456,12 @@ class Collage:
 
         # rescale from 0 to (num_unique_angles-1)
         num_unique_angles = self.num_unique_angles
-        if self.verbose_logging:
-            print(f'Rescaling dominant angles to {num_unique_angles} unique values.')
+        logger.debug(f'Rescaling dominant angles to {num_unique_angles} unique values.')
         dominant_angles_max = dominant_angles.max()
         dominant_angles_min = dominant_angles.min()
         dominant_angles_binned = (dominant_angles - dominant_angles_min) / (dominant_angles_max - dominant_angles_min) * (num_unique_angles - 1)
         dominant_angles_binned = np.round(dominant_angles_binned).astype(int)
-        if self.verbose_logging:
-            print(f'Rescaling dominant angles done.')
+        logger.debug(f'Rescaling dominant angles done.')
 
         # prepare output
         shape = dominant_angles_binned.shape
@@ -481,17 +471,13 @@ class Collage:
         # the haralick is calculated for each slice separately
         height, width, depth = shape
 
-        if self.verbose_logging:
-            print(f'dominant_angles_binned shape is {shape} mask shape is {self.mask_array.shape}')
+        logger.debug(f'dominant_angles_binned shape is {shape} mask shape is {self.mask_array.shape}')
 
-        if self.verbose_logging:
-            print('starting haralick calculations...')
-
-        # In 3D, we extended the dominant angles by one slice in each direction, so now we need to trim those off if we are running in 3D.
+        # In 3D, we extended the dominant angles by one slice in each direction, so now we need to trim those off.
         for z in range(1, depth - 1) if self.is_3D else range(depth):
             for y,x in product(range(height), range(width)):
                 if self.mask_array[y,x,z]:
-                    haralick_image[y,x,z,:] = self.calculate_haralick_feature_values(dominant_angles_binned[:,:,z], x, y)
+                    haralick_image[y,x,z,:] = self._calculate_haralick_feature_values(dominant_angles_binned[:,:,z], x, y)
 
         return haralick_image
 
@@ -534,20 +520,17 @@ class Collage:
                                   cropped_min_x:cropped_max_x,
                                   cropped_min_z:cropped_max_z]
 
-        if self.verbose_logging:
-            print(f'Image shape = {img_array.shape}')
-            print(f'Mask size = {mask_height}x{mask_width}x{mask_depth}')
-            print(f'Image shape (cropped and padded) = {cropped_image.shape}')
+        logger.debug(f'Image shape = {img_array.shape}')
+        logger.debug(f'Mask size = {mask_height}x{mask_width}x{mask_depth}')
+        logger.debug(f'Image shape (cropped and padded) = {cropped_image.shape}')
 
         # ensure the image values range from 0-1
         if cropped_image.max() > 1:
-            if self.verbose_logging:
-                print('Note: Dividing image values by 255 to convert to 0-1 range')
-            cropped_image = cropped_image / 255.
+            logger.debug(f'Note: Dividing image values by {cropped_image.max()} to convert to 0-1 range')
+            cropped_image = cropped_image / cropped_image.max()
 
         # calculate x,y,z gradients
-        if self.verbose_logging:
-            print('Calculating pixel gradients:')
+        logger.debug('Calculating pixel gradients:')
         dx = np.gradient(cropped_image, axis=1)
         dy = np.gradient(cropped_image, axis=0)
         dz = np.gradient(cropped_image, axis=2) if self.is_3D else np.zeros(dx.shape)
@@ -565,35 +548,37 @@ class Collage:
         self.dx = dx
         self.dy = dy
         self.dz = dz
-        if self.verbose_logging:
-            print('Calculating pixel gradients done.')
+        logger.debug('Calculating pixel gradients done.')
 
         # calculate dominant angles of each patch
-        if self.verbose_logging:
-            print(f'Calculating dominant gradient angles using SVD for each image patch of size {svd_radius}x{svd_radius}')
-        dominant_angles = svd_dominant_angles(dx, dy, dz, svd_radius)
+        logger.debug(f'Calculating dominant gradient angles using SVD for each image patch of size {svd_radius}x{svd_radius}')
+        dominant_angles = _svd_dominant_angles(dx, dy, dz, svd_radius)
         self.dominant_angles = dominant_angles
         angles_shape = dominant_angles.shape
-        if self.verbose_logging:
-            print('Calculating dominant gradient angles done.')
-            print(f'Dominant angles shape = {angles_shape}')
+        logger.debug('Calculating dominant gradient angles done.')
+        logger.debug(f'Dominant angles shape = {angles_shape}')
 
         # calculate haralick features of the dominant angles
-        if self.verbose_logging:
-            print('Calculating haralick features of angles:')
+        logger.debug('Calculating haralick features of angles:')
         haralick_features = np.empty(angles_shape[0:3] + (13, 2 if self.is_3D else 1,))
-        haralick_features[:] = np.nan
         for angle_index in range(angles_shape[3]):
-            print(f'Calculating features for angle {angle_index}:')
-            haralick_features[:,:,:,:,angle_index] = self.calculate_haralick_textures(dominant_angles[:,:,:,angle_index])
-            print(f'Calculating features for angle {angle_index} done.')
-        if self.verbose_logging:
-            print('Calculating haralick features of angles done.')
+            logger.info(f'Calculating features for angle {angle_index}:')
+            haralick_features[:,:,:,:,angle_index] = self._calculate_haralick_textures(dominant_angles[:,:,:,angle_index])
+            logger.info(f'Calculating features for angle {angle_index} done.')
+        logger.debug('Calculating haralick features of angles done.')
 
         # prepare an output full of "NaN's"
         collage_output = np.empty(img_array.shape + haralick_features.shape[3:5])
         collage_output[:] = np.nan
-        print(collage_output.shape)
+
+        # if a mask covers the whole image, we'll offset the edges as nans
+        if mask_height == img_array.shape[0] and mask_width == img_array.shape[1]:
+            y_offset = int((img_array.shape[0] - dominant_angles.shape[0]) / 2)
+            mask_min_y += y_offset
+            mask_max_y -= y_offset
+            x_offset = int((img_array.shape[1] - dominant_angles.shape[1]) / 2)
+            mask_min_x += x_offset
+            mask_max_x -= x_offset
 
         # insert the haralick output into the correct spot
         collage_output[mask_min_y:mask_max_y,
@@ -608,6 +593,5 @@ class Collage:
 
         # output
         self.collage_output = collage_output
-        if self.verbose_logging:
-            print(f'Output shape = {collage_output.shape}')
+        logger.debug(f'Output shape = {collage_output.shape}')
         return collage_output
