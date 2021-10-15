@@ -458,7 +458,7 @@ class Collage:
         logger.debug(f'Rescaling dominant angles to {num_unique_angles} unique values.')
         dominant_angles_max = dominant_angles.max()
         dominant_angles_min = dominant_angles.min()
-        dominant_angles_binned = (dominant_angles - dominant_angles_min) / (dominant_angles_max - dominant_angles_min) * (num_unique_angles - 1)
+        dominant_angles_binned = (dominant_angles - dominant_angles_min) / (dominant_angles_max - dominant_angles_min + np.finfo(float).eps) * (num_unique_angles - 1)
         dominant_angles_binned = np.round(dominant_angles_binned).astype(int)
         logger.debug(f'Rescaling dominant angles done.')
 
