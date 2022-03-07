@@ -21,6 +21,7 @@
   - [Python Usage](#python-usage)
     - [Basic Example](#basic-example)
     - [Real Data](#real-data)
+- [Other Platforms](#other-platforms)
 - [Contact](#contact)
 
 # Science
@@ -522,6 +523,12 @@ Try installing and then changing to another directory before importing mahotas.
 _[Back to **Table of Contents**](#table-of-contents)_
 
 collageradiomics can be implemented in **Python** through the `collageradiomics` pip module. It has a intuitive interface - simply create a `Collage` object and run the `execute()` function.
+
+# Other Platforms
+_[Back to **Table of Contents**](#table-of-contents)_
+
+The RadxTools COLLAGE implementation is now available through the Cancer Phenomics Toolkit (CaPTk), developed by the Center for Biomedical Image Computing and Analytics (CBICA) at the University of Pennsylvania. For more information see https://github.com/CBICA/CaPTk
+
 
 # Contact
 _[Back to **Table of Contents**](#table-of-contents)_
