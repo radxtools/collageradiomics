@@ -8,7 +8,7 @@
   - [References](#references)
 - [Code](#code)
 - [Installation & Setup](#installation--setup)
-  - [Pipe Usage](#pipe-usage)
+  - [Pip Usage](#pip-usage)
   - [Docker Notebooks](#docker-notebooks)
   - [Docker Sandbox](#docker-sandbox)
 - [Python Usage](#python-usage)
