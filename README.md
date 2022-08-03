@@ -200,7 +200,6 @@ logger.info('Correcting image...')
 np_array = instance.pixel_array
 corrected = apply_modality_lut(np_array, instance)
 corrected = apply_voi_lut(corrected, instance)
-logger.debug(f'np.histogram(scaled_array) = {np.histogram(corrected)}')
 scaled_array = equalize_hist(corrected)
 logger.debug(f'np.histogram(scaled_array) = {np.histogram(scaled_array)}')
 logger.info('done.')
