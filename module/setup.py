@@ -9,9 +9,9 @@ with open('VERSION') as version_file:
 setuptools.setup(
     name='collageradiomics',
     version=version,
-    author='Toth Technology',
-    author_email='toth-tech@hillyer.me',
-    description='CoLliage Implementation',
+    author='ThetaTech',
+    author_email='robert.toth@thetatech.ai',
+    description='Python implementation of COLLAGE texture features from BRIC & INVENTLAB.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/ccipd/collageradiomics',
