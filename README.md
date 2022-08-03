@@ -107,8 +107,20 @@ pip3 install collageradiomics
 
 ## Local usage
 ```console
+# get the code
 git clone https://github.com/radxtools/collageradiomics
-python3 collageradiomics/moduels/test
+cd collageradiomics
+
+# set up virtual environment
+python3 -m venv collageenv
+source collageenv/bin/activate
+
+# install requirements
+sudo apt -y install libopenblas-dev liblapack-dev build-essential
+pip3 install -r requirements.txt
+
+# run test script
+python3 collageradiomics/modules/test_script.py
 ```
 
 
