@@ -63,17 +63,17 @@ If you make use of this implementation, please cite the following paper:
 # Code
 _[Back to **Table of Contents**](#table-of-contents)_
 
-## Idempotence
 We made the collage object idempotent Our **CoLlAGe** module includes parameter tuning information in the output. It contains the image(s) and mask(s), and the settings applied upon them. This allows multiple fully reproducible runs without having to remember or find the original parameters.
 
-## Documentation
+Documentation can be found at
 http://collageradiomics.rtfd.io/
 
-## Dependencies:
+We depend on the following libraries:
 - `matplotlib`
 - `numpy`
 - `scikit-learn`
 - `scikit-build`
+- `sklearn`
 - `mahotas`
 - `scipy`
 
