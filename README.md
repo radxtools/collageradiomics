@@ -82,11 +82,11 @@ _[Back to **Table of Contents**](#table-of-contents)_
 
 ## Pip Usage
 ```console
-pip3 install collageradiomics
+pip3 install --upgrade collageradiomics
 ```
 
 ## Local usage
-```console
+```shell
 # get the code
 git clone https://github.com/radxtools/collageradiomics
 cd collageradiomics
@@ -97,7 +97,6 @@ source collageenv/bin/activate
 
 # install requirements
 sudo apt -y install build-essential gcc gfortran python-dev libopenblas-dev liblapack-dev cython libjpeg-dev zlib1g-dev
-
 pip3 install -r requirements.txt
 
 # run test script
@@ -144,7 +143,7 @@ sudo docker run -it -v $PWD:/root radxtools/collageradiomics-pip
 If your terminal prompt changes to `root@[random_string]:/#` then you are now working inside the standardized **Docker** sandbox container environment.
 
 1. Test the python module by making sure the following command outputs `True` to the terminal:  
-```console
+```shell
 python -c 'import numpy as np; import collageradiomics; print(not not len(collageradiomics.__name__) and not not len(collageradiomics.Collage.from_rectangle(np.random.rand(20,20,3), 2, 2, 10, 10).execute()));'
 ```
 This should display `True`.
@@ -159,131 +158,3 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> collageradiomics.__name__
 'collageradiomics'
 ```
-
-## Pip
-_[Back to **Table of Contents**](#table-of-contents)_
-
-To use this module in your existing **Python** development environment, you can install our **pip** module.
-
-### Linux
-1. Install **pip**:
-```console
-user@machine:~$ sudo apt -y install python3-pip
-Reading package lists... Done
-Building dependency tree       
-Reading state information... Done
-python3-pip is already the newest version (18.1-5).
-0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
-user@machine:~$ 
-```
-2. Install our **CoLlAGe** module:  
-```console
-user@machine:~$ pip3 install collageradiomics --upgrade
-Collecting collageradiomics
-  Downloading https://files.pythonhosted.org/packages/58/46/73d6b5a6d0d2b952086a1c9c4ae339087e4678f421044847ab2ea8728adf/collageradiomics-0.0.1a39-py3-none-any.whl
-...
-(some output omitted for brevity)
-...
-Successfully installed collageradiomics-...
-user@machine:~$ 
-```
-*(Note: For some operating systems, the command is simply `pip` instead of `pip3`.)*
-
-### Windows
-1. Install **Python** using [this link](https://www.python.org/downloads/windows/).
-2. Test that **Python** is properly installed in the Powershell:
-```console
-Windows PowerShell
-Copyright (C) Microsoft Corporation. All rights reserved.
-
-Try the new cross-platform PowerShell https://aka.ms/pscore6
-
-PS C:\Users\user> python --version
-Python 3.8.2
-PS C:\Users\user> python
-Python 3.8.2 (tags/v3.8.2:7b3ab59, Feb 25 2020, 23:03:10) [MSC v.1916 64 bit (AMD64)] on win32
-Type "help", "copyright", "credits" or "license" for more information.
->>> quit()
-PS C:\Users\user>
-```
-3. Install pip by downloading this [get-pip.py file](https://bootstrap.pypa.io/get-pip.py) and running the following command:
-```console
-Windows PowerShell
-Copyright (C) Microsoft Corporation. All rights reserved.
-
-Try the new cross-platform PowerShell https://aka.ms/pscore6
-
-PS C:\Users\user> python get-pip.py
-Collecting pip
-  Downloading pip-20.1.1-py2.py3-none-any.whl (1.5 MB)
-     |████████████████████████████████| 1.5 MB 3.2 MB/s
-Collecting wheel
-  Using cached wheel-0.34.2-py2.py3-none-any.whl (26 kB)
-Installing collected packages: pip, wheel
-  Attempting uninstall: pip
-    Found existing installation: pip 20.0.2
-    Uninstalling pip-20.0.2:
-      Successfully uninstalled pip-20.0.2
-Successfully installed pip-20.1.1 wheel-0.34.2
-PS C:\Users\user> pip -V
-pip 20.1.1 from c:\users\robto\appdata\local\programs\python\python38\lib\site-packages\pip (python 3.8)
-PS C:\Users\user>
-```
-4. Install our module
-```console
-Windows PowerShell
-Copyright (C) Microsoft Corporation. All rights reserved.
-
-Try the new cross-platform PowerShell https://aka.ms/pscore6
-
-PS C:\Users\user> pip install collageradiomics --upgrade
-```
-5. Verify its installation in **Python**:
-```console
-Windows PowerShell
-Copyright (C) Microsoft Corporation. All rights reserved.
-
-Try the new cross-platform PowerShell https://aka.ms/pscore6
-
-PS C:\Users\user> python
->>> import collageradiomics
->>>
-```
-6. If you get an error like the one below, which can happen for some versions of python, call `import` again:
-```console
-Windows PowerShell
-Copyright (C) Microsoft Corporation. All rights reserved.
-
-Try the new cross-platform PowerShell https://aka.ms/pscore6
-
-PS C:\Users\user> python
->>> import collageradiomics
-Could not import submodules (exact error was: DLL load failed while importing _bbox: The specified module could not be found.).
-
-There are many reasons for this error the most common one is that you have
-either not built the packages or have built (using `python setup.py build`) or
-installed them (using `python setup.py install`) and then proceeded to test
-mahotas **without changing the current directory**.
-
-Try installing and then changing to another directory before importing mahotas.
->>> import collageradiomics
->>>
-```
-
-## Python Usage
-_[Back to **Table of Contents**](#table-of-contents)_
-
-collageradiomics can be implemented in **Python** through the `collageradiomics` pip module. It has a intuitive interface - simply create a `Collage` object and run the `execute()` function.
-
-# Other Platforms
-_[Back to **Table of Contents**](#table-of-contents)_
-
-The RadxTools COLLAGE implementation is now available through the Cancer Phenomics Toolkit (CaPTk), developed by the Center for Biomedical Image Computing and Analytics (CBICA) at the University of Pennsylvania. For more information see https://github.com/CBICA/CaPTk
-
-
-# Contact
-_[Back to **Table of Contents**](#table-of-contents)_
-
-Please report any issues or feature requests via the [Issues](https://github.com/radxtools/collageradiomics/issues) tab
-
-Additional information can be found on the [BrIC Lab](http://bric-lab.com) website.
