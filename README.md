@@ -11,7 +11,7 @@
   - [Pipe Usage](#pipe-usage)
   - [Docker Notebooks](#docker-notebooks)
   - [Docker Sandbox](#docker-sandbox)
-- [Python Usage](#python3-usage)
+- [Python Usage](#python-usage)
 
 # Science
 ## Overview
@@ -149,6 +149,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 ```
 
 # Python Usage
+_[Back to **Table of Contents**](#table-of-contents)_
 ```python
 
 ##################################################
