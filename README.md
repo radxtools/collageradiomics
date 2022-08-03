@@ -89,7 +89,8 @@ sudo apt -y install build-essential gcc gfortran python-dev libopenblas-dev libl
 pip3 install -r requirements.txt
 
 # run test script
-python3 collageradiomics/modules/test_script.py
+cd modules
+python3 test_script.py
 ```
 
 ## Docker Notebooks
