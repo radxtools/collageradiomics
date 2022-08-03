@@ -87,19 +87,6 @@ _[Back to **Table of Contents**](#table-of-contents)_
 # Installation & Usage
 _[Back to **Table of Contents**](#table-of-contents)_
 
-## Docker Jupyter Notebooks
-
-To load the example jupyter notebooks, run the following commands (with or without `sudo` depending on your environment):
-```console
-sudo docker pull radxtools/collageradiomics-pip:latest
-sudo docker run -it radxtools/collageradiomics-pip
-
-git clone https://github.com/radxtools/collageradiomics.git
-sudo docker pull radxtools/collageradiomics-examples:latest
-sudo docker run -it -p 8888:8888 -v $PWD:/root radxtools/collageradiomics-examples
-```
-Then go to http://localhost:8888 in your web browser.
-
 ## Pip Usage
 ```console
 pip3 install collageradiomics
@@ -124,6 +111,19 @@ pip3 install -r requirements.txt
 python3 collageradiomics/modules/test_script.py
 ```
 
+## Docker Notebooks
+
+### Prepare Jupyter Notebooks
+To load the example jupyter notebooks, run the following commands (with or without `sudo` depending on your environment):
+```console
+sudo docker pull radxtools/collageradiomics-pip:latest
+sudo docker run -it radxtools/collageradiomics-pip
+
+git clone https://github.com/radxtools/collageradiomics.git
+sudo docker pull radxtools/collageradiomics-examples:latest
+sudo docker run -it -p 8888:8888 -v $PWD:/root radxtools/collageradiomics-examples
+```
+
 ### Exploring The Examples
 _[Back to **Table of Contents**](#table-of-contents)_
 
@@ -137,75 +137,26 @@ _[Back to **Table of Contents**](#table-of-contents)_
 ![Jupyter Output](https://i.imgur.com/PapCcsg.png)
 5. Feel free to add your own cells and run them to get familiar with the **CoLlAGe** code.
 6. To stop the **Jupyter** notebook and exit the **Docker** image, press `Ctrl+C` twice:
-```
 
-### collageradiomics-pip Docker Image
+## Docker Sandbox
 _[Back to **Table of Contents**](#table-of-contents)_
 
 This is the most straightforward way to start playing with the code. And it does not require the `git` commands that the **Jupyter** examples require. This is simply a pre-built container that lets you start trying out the module in **Python** immediately.
 
-#### Linux
 1. Pull the latest **Docker** image:
 ```console
-user@machine:~$ sudo docker pull radxtools/collageradiomics-pip:latest
-latest: Pulling from radxtools/collageradiomics-pip
-Digest: sha256:8fc7d61dbe6ad64eeff9c69cfaa788d90c61861bff8aaf8865ed1318c5666250
-Status: Image is up to date for radxtools/collageradiomics-pip:latest
-docker.io/radxtools/collageradiomics-pip:latest
-user@machine:~/collageradiomics$
+sudo docker pull radxtools/collageradiomics-pip:latest
+sudo docker run -it -v $PWD:/root radxtools/collageradiomics-pip
 ```
-2. Run the **Docker** image:
-```console
-user@machine:~/collageradiomics$ sudo docker run -it -v $PWD:/root radxtools/collageradiomics-pip
-root@12b12d2bff59:/# 
-```
-
-#### Windows
-1. Pull the latest **Docker** image:
-```console
-Windows PowerShell
-Copyright (C) Microsoft Corporation. All rights reserved.
-
-Try the new cross-platform PowerShell https://aka.ms/pscore6
-
-PS C:\Users\user> docker pull radxtools/collageradiomics-pip:latest
-latest: Pulling from radxtools/collageradiomics-pip
-d51af753c3d3: Already exists
-fc878cd0a91c: Already exists
-6154df8ff988: Already exists
-fee5db0ff82f: Already exists
-e4255cf4d4f9: Downloading [=================>                                 ]  62.34MB/178.6MB
-14a983cf96b6: Downloading [===========================>                       ]  55.72MB/102.9MB      
-14a983cf96b6: Pull complete
-Digest: sha256:8fc7d61dbe6ad64eeff9c69cfaa788d90c61861bff8aaf8865ed1318c5666250
-Status: Downloaded newer image for radxtools/collageradiomics-pip:latest
-docker.io/radxtools/collageradiomics-pip:latest
-PS C:\Users\user>
-```
-2. Run the **Docker** image:
-```console
-Windows PowerShell
-Copyright (C) Microsoft Corporation. All rights reserved.
-
-Try the new cross-platform PowerShell https://aka.ms/pscore6
-
-PS C:\Users\user> docker pull radxtools/collageradiomics-pip:latest
-PS C:\Users\user> docker run -it radxtools/collageradiomics-pip
-root@461c5017ce0e:/#
-```
-
-#### Inside The Container
-_[Back to **Table of Contents**](#table-of-contents)_
-
 If your terminal prompt changes to `root@[random_string]:/#` then you are now working inside the standardized **Docker** sandbox container environment.
 
 1. Test the python module by making sure the following command outputs `True` to the terminal:  
 ```console
-root@12b12d2bff59:/# python -c 'import numpy as np; import collageradiomics; print(not not len(collageradiomics.__name__) and not not len(collageradiomics.Collage.from_rectangle(np.random.rand(20,20,3), 2, 2, 10, 10).execute()));'
-True
-root@12b12d2bff59:/# 
+python -c 'import numpy as np; import collageradiomics; print(not not len(collageradiomics.__name__) and not not len(collageradiomics.Collage.from_rectangle(np.random.rand(20,20,3), 2, 2, 10, 10).execute()));'
 ```
-2. Starting coding with **CoLlAGe** in **Python** [(click here to jump to code examples)](#python-usage):
+This should display `True`.
+
+To run python code with collage:
 ```console
 root@12b12d2bff59:/# python
 Python 3.8.2 (default, Apr 27 2020, 15:53:34) 
@@ -214,13 +165,6 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> import collageradiomics
 >>> collageradiomics.__name__
 'collageradiomics'
->>> 
-```
-3. Exit the **Docker** container:
-```console
->>> quit()
-root@12b12d2bff59:/# exit
-exit
 ```
 
 ## Pip
