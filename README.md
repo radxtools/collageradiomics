@@ -116,45 +116,15 @@ python3 -m venv collageenv
 source collageenv/bin/activate
 
 # install requirements
-sudo apt -y install libopenblas-dev liblapack-dev build-essential
+sudo apt -y install build-essential gcc gfortran python-dev libopenblas-dev liblapack-dev cython libjpeg-dev zlib1g-dev
+
 pip3 install -r requirements.txt
 
 # run test script
 python3 collageradiomics/modules/test_script.py
 ```
 
-
-### Windows
-```console
-docker pull radxtools/collageradiomics-pip:latest
-docker run -it -v ${PWD}:/root radxtools/collageradiomics-pip
-
-git clone https://github.com/radxtools/collageradiomics.git
-docker pull radxtools/collageradiomics-examples:latest
-docker run -it -p 8888:8888 -v ${PWD}:/root radxtools/collageradiomics-examples
-
-pip install collageradiomics
-```
-
-### collageradiomics-examples Docker Image
-_[Back to **Table of Contents**](#table-of-contents)_
-
-This **Docker** image contains a running Jupyter notebook with the **CoLlAGe** module pre-installed. From the cloned repository directory, we will start up a **Docker** image which will run a live web server and host a **Jupyter** notebook at the URL http://localhost:8888 which contains examples of using the code.
-
-_Note: Using this method requires you to pull the code from our repository. If you don't need the **Jupyter** examples and just want to start using **CoLlAGe** right away, you can skip this step and jump to the instructions for **Core** by [clicking here](#collageradiomics-pip-docker-image)._
-
-#### Linux
-_Note: This was tested on Ubuntu 19.10 and 20.04_
-
-1. Install git:
-```console
-git clone https://github.com/radxtools/collageradiomics.git
-cd collageradiomics
-sudo docker pull radxtools/collageradiomics-examples:latest
-sudo docker run -it -p 8888:8888 -v $PWD:/root radxtools/collageradiomics-examples
-```
-
-#### Exploring The Examples
+### Exploring The Examples
 _[Back to **Table of Contents**](#table-of-contents)_
 
 1. Open up a web browser to http://localhost:8888  
@@ -167,18 +137,6 @@ _[Back to **Table of Contents**](#table-of-contents)_
 ![Jupyter Output](https://i.imgur.com/PapCcsg.png)
 5. Feel free to add your own cells and run them to get familiar with the **CoLlAGe** code.
 6. To stop the **Jupyter** notebook and exit the **Docker** image, press `Ctrl+C` twice:
-```console
-[I 07:05:36.271 NotebookApp] The Jupyter Notebook is running at:
-[I 07:05:36.271 NotebookApp] http://4f033d68769d:8888/
-[I 07:05:36.271 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
-^C[I 07:05:37.628 NotebookApp] interrupted
-Serving notebooks from local directory: /root
-0 active kernels
-The Jupyter Notebook is running at:
-http://4f033d68769d:8888/
-Shutdown this notebook server (y/[n])? ^C[C 07:05:38.744 NotebookApp] received signal 2, stopping
-[I 07:05:38.745 NotebookApp] Shutting down 0 kernels
-user@machine:~/collageradiomics$ 
 ```
 
 ### collageradiomics-pip Docker Image
