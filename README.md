@@ -77,8 +77,6 @@ http://collageradiomics.rtfd.io/
 
 ## Dependencies:
 _[Back to **Table of Contents**](#table-of-contents)_
-
-We thank these generous developers that allowed us to build collageradiomics without reinventing the wheel:
 - `matplotlib`
 - `numpy`
 - `scikit-learn`
@@ -86,27 +84,33 @@ We thank these generous developers that allowed us to build collageradiomics wit
 - `mahotas`
 - `scipy`
 
-_(Note: We are using ```==``` for version numbers of our dependencies as a design choice.)_
-
 # Installation & Usage
-These instructions will help set up the **CoLlAGe** core module and examples. They assume you are working out of a terminal such as **Powershell** on Windows or **Konsole** on Linux.
-
-## Executive Summary for Experts
 _[Back to **Table of Contents**](#table-of-contents)_
 
-If you are already well-versed in **Docker** and **pip**, here is a quick list of commands for each operating system:
+## Docker Jupyter Notebooks
 
-### Linux
-```shell
+To load the example jupyter notebooks, run the following commands (with or without `sudo` depending on your environment):
+```console
 sudo docker pull radxtools/collageradiomics-pip:latest
 sudo docker run -it radxtools/collageradiomics-pip
 
 git clone https://github.com/radxtools/collageradiomics.git
 sudo docker pull radxtools/collageradiomics-examples:latest
 sudo docker run -it -p 8888:8888 -v $PWD:/root radxtools/collageradiomics-examples
+```
+Then go to http://localhost:8888 in your web browser.
 
+## Pip Usage
+```console
 pip3 install collageradiomics
 ```
+
+## Local usage
+```console
+git clone https://github.com/radxtools/collageradiomics
+python3 collageradiomics/moduels/test
+```
+
 
 ### Windows
 ```console
