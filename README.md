@@ -72,6 +72,8 @@ _[Back to **Table of Contents**](#table-of-contents)_
 ## Pip Usage
 ```console
 pip3 install --upgrade collageradiomics
+
+python3 -c 'import collageradiomics; print(collageradiomics.__name__)'
 ```
 
 ## Local usage
@@ -91,6 +93,22 @@ pip3 install -r requirements.txt
 # run test script
 cd modules
 python3 test_script.py
+```
+
+## Docker Sandbox
+_[Back to **Table of Contents**](#table-of-contents)_
+
+This is the most straightforward way to start playing with the code. And it does not require the `git` commands that the **Jupyter** examples require. This is simply a pre-built container that lets you start trying out the module in **Python** immediately.
+
+```console
+sudo docker pull radxtools/collageradiomics-pip:latest
+sudo docker run -it -v $PWD:/root radxtools/collageradiomics-pip
+```
+If your terminal prompt changes to `root@[random_string]:/#` then you are now working inside the standardized **Docker** sandbox container environment.
+
+Then you can try to import collage:
+```shell
+python3 -c 'import collageradiomics; print(collageradiomics.__name__)'
 ```
 
 ## Docker Notebooks
@@ -119,24 +137,6 @@ _[Back to **Table of Contents**](#table-of-contents)_
 ![Jupyter Output](https://i.imgur.com/PapCcsg.png)
 5. Feel free to add your own cells and run them to get familiar with the **CoLlAGe** code.
 6. To stop the **Jupyter** notebook and exit the **Docker** image, press `Ctrl+C` twice:
-
-## Docker Sandbox
-_[Back to **Table of Contents**](#table-of-contents)_
-
-This is the most straightforward way to start playing with the code. And it does not require the `git` commands that the **Jupyter** examples require. This is simply a pre-built container that lets you start trying out the module in **Python** immediately.
-
-1. Pull the latest **Docker** image:
-```console
-sudo docker pull radxtools/collageradiomics-pip:latest
-sudo docker run -it -v $PWD:/root radxtools/collageradiomics-pip
-```
-If your terminal prompt changes to `root@[random_string]:/#` then you are now working inside the standardized **Docker** sandbox container environment.
-
-1. Test the python module by making sure the following command outputs `True` to the terminal:  
-```shell
-python -c 'import numpy as np; import collageradiomics; print(not not len(collageradiomics.__name__) and not not len(collageradiomics.Collage.from_rectangle(np.random.rand(20,20,3), 2, 2, 10, 10).execute()));'
-```
-This should display `True`.
 
 To run python code with collage:
 ```console
