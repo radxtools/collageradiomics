@@ -77,7 +77,7 @@ We depend on the following libraries:
 - `mahotas`
 - `scipy`
 
-# Installation & Usage
+# Installation & Setup
 _[Back to **Table of Contents**](#table-of-contents)_
 
 ## Pip Usage
@@ -157,4 +157,80 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> import collageradiomics
 >>> collageradiomics.__name__
 'collageradiomics'
+```
+
+# Python Usage
+```python
+
+##################################################
+# imports
+import collageradiomics
+import pydicom
+import logging
+from pydicom.pixel_data_handlers.util import apply_modality_lut, apply_voi_lut
+from skimage.exposure import equalize_hist
+import numpy as np
+from sklearn.preprocessing import minmax_scale
+from random import randint
+##################################################
+
+
+##################################################
+# logging
+level = logging.INFO
+logging.basicConfig(level=level)
+logger = logging.getLogger()
+logger.setLevel(level)
+logger.info('Hello, world.')
+##################################################
+
+
+##################################################
+# loading data
+local_dcm_file = 'test.dcm'
+instance = pydicom.dcmread(local_dcm_file)
+slice_instance_uid = instance.SOPInstanceUID
+logger.debug(f'slice_instance_uid  = {slice_instance_uid}')
+##################################################
+
+
+##################################################
+# preprocessing
+logger.info('Correcting image...')
+np_array = instance.pixel_array
+corrected = apply_modality_lut(np_array, instance)
+corrected = apply_voi_lut(corrected, instance)
+logger.debug(f'np.histogram(scaled_array) = {np.histogram(corrected)}')
+scaled_array = equalize_hist(corrected)
+logger.debug(f'np.histogram(scaled_array) = {np.histogram(scaled_array)}')
+logger.info('done.')
+##################################################
+
+
+##################################################
+# rectangular selection
+width = 50
+height = 50
+min_row = randint(30,300)
+max_row = min_row + height
+min_col = randint(30,300)
+max_col = min_col + width
+
+original_shape = np_array.shape
+logger.debug(f'original_shape = {original_shape}')
+logger.info('Calculating collage features...')
+mask_array = np.zeros(original_shape, dtype='int')
+mask_array[min_row:max_row, min_col:max_col] = 1
+##################################################
+
+
+##################################################
+# run collage
+textures = collageradiomics.Collage(scaled_array, mask_array).execute()
+
+logger.debug(f'textures.shape = {textures.shape}')
+logger.debug(f'textures.dtype = {textures.dtype}')
+logger.debug(f'np.histogram(textures.flatten()) = {np.histogram(textures.flatten(), range=(np.nanmin(textures), np.nanmax(textures)))}')
+##################################################
+
 ```
