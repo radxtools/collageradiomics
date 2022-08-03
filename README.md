@@ -34,9 +34,6 @@ _[Back to **Table of Contents**](#table-of-contents)_
 
 Details on extraction of **CoLlAGe** features are included in [\[1\]](#references). After feature extraction, the subsequent distribution or different statistics such as mean, median, variance etc can be computed and used in conjunction with a machine learning classifier to distinguish similar appearing pathologies. The feasibility of CoLlAGe in distinguishing cancer from treatment confounders/benign conditions and characterizing molecular subtypes of cancers has been demonstrated in the context of multiple challenging clinical problems.
 
-## Features
-_[Back to **Table of Contents**](#table-of-contents)_
-
 Each of the 13 **CoLlAGe** correlate to one of the 13 Haralick texture features[\[2\]](#references):
 1. _AngularSecondMoment_
 2. _Contrast_
@@ -64,19 +61,15 @@ If you make use of this implementation, please cite the following paper:
 [2] R. M. Haralick, K. Shanmugam and I. Dinstein, "Textural Features for Image Classification," in IEEE Transactions on Systems, Man, and Cybernetics, vol. SMC-3, no. 6, pp. 610-621, Nov. 1973, [doi: 10.1109/TSMC.1973.4309314](https://doi.org/10.1109/TSMC.1973.4309314).
 
 # Code
+_[Back to **Table of Contents**](#table-of-contents)_
 
 ## Idempotence
-_[Back to **Table of Contents**](#table-of-contents)_
-
-Our **CoLlAGe** module includes parameter tuning information in the output. It contains the image(s) and mask(s), and the settings applied upon them. This allows multiple fully reproducible runs without having to remember or find the original parameters.
+We made the collage object idempotent Our **CoLlAGe** module includes parameter tuning information in the output. It contains the image(s) and mask(s), and the settings applied upon them. This allows multiple fully reproducible runs without having to remember or find the original parameters.
 
 ## Documentation
-_[Back to **Table of Contents**](#table-of-contents)_
-
 http://collageradiomics.rtfd.io/
 
 ## Dependencies:
-_[Back to **Table of Contents**](#table-of-contents)_
 - `matplotlib`
 - `numpy`
 - `scikit-learn`
