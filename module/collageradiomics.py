@@ -4,7 +4,7 @@ from itertools import product
 import mahotas as mt
 import numpy as np
 from scipy import linalg
-from skimage.feature.texture import greycomatrix
+from skimage.feature.texture import graycomatrix
 from skimage.util.shape import view_as_windows
 from enum import Enum, IntEnum
 
@@ -430,7 +430,7 @@ class Collage:
         cropped_img_array = img_array[min_y:max_y, min_x:max_x]
 
         # co-occurence matrix of all 8 directions and sum them
-        cooccurence_matrix = greycomatrix(cropped_img_array, [1], self.cooccurence_angles, levels=self.num_unique_angles)
+        cooccurence_matrix = graycomatrix(cropped_img_array, [1], self.cooccurence_angles, levels=self.num_unique_angles)
         cooccurence_matrix = np.sum(cooccurence_matrix, axis=3)
         cooccurence_matrix = cooccurence_matrix[:, :, 0]
 
