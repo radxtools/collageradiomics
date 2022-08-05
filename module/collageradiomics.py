@@ -4,7 +4,7 @@ from itertools import product
 import mahotas as mt
 import numpy as np
 from scipy import linalg
-from skimage.feature.texture import graycomatrix
+from skimage.feature import graycomatrix
 from skimage.util.shape import view_as_windows
 from enum import Enum, IntEnum
 
