@@ -1,5 +1,8 @@
 import setuptools
 
+with open('requirements.txt', 'r' as f:
+    requirements = fh.read()
+
 with open('README.md', 'r') as fh:
     long_description = fh.read()
 
@@ -33,13 +36,7 @@ setuptools.setup(
         'Programming Language :: Python :: 3',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
     ],
-    install_requires=[
-        'numpy',
-        'scikit-build',
-        'scikit-image',
-        'mahotas',
-        'scipy'
-    ],
+    install_requires=requirements,
     python_requires='>=3.6',
     keywords='radiomics cancerimaging medicalresearch computationalimaging',
 )
