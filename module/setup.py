@@ -1,7 +1,7 @@
 import setuptools
 
 with open('requirements.txt', 'r') as f:
-    requirements = fh.read()
+    requirements = f.read()
 
 with open('README.md', 'r') as fh:
     long_description = fh.read()
