@@ -1,6 +1,6 @@
 import setuptools
 
-with open('requirements.txt', 'r' as f:
+with open('requirements.txt', 'r') as f:
     requirements = fh.read()
 
 with open('README.md', 'r') as fh:
