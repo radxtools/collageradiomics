@@ -62,7 +62,6 @@ We depend on the following libraries:
 - `numpy`
 - `scikit-learn`
 - `scikit-build`
-- `sklearn`
 - `mahotas`
 - `scipy`
 
