@@ -1,6 +1,6 @@
 mahotas==1.4.13
 numpy>=1.21.6
-Pillow==9.2.0
+Pillow==9.3.0
 scikit-build>=0.15.0
 scikit-image>=0.19.3
 scipy>=1.7.3
