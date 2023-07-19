@@ -22,16 +22,16 @@ logger.info('Correcting image...')
 np_array = instance.pixel_array
 corrected = apply_modality_lut(np_array, instance)
 corrected = apply_voi_lut(corrected, instance)
-logger.debug(f'np.histogram(scaled_array) = {np.histogram(corrected)}')
+logger.debug(f'{np.histogram(corrected) = }')
 scaled_array = equalize_hist(corrected)
 logger.debug(f'np.histogram(scaled_array) = {np.histogram(scaled_array)}')
 logger.info('done.')
 
-width = 50
+width  = 50
 height = 50
-min_row = randint(30,300)
+min_row = randint(50,200)
 max_row = min_row + height
-min_col = randint(30,300)
+min_col = randint(50,200)
 max_col = min_col + width
 
 original_shape = np_array.shape
@@ -65,8 +65,7 @@ max_output_value = 2**texture_bit_depth-1
 
 for texture_index in range(textures.shape[2]):
     # https://stackoverflow.com/a/65964648
-    texture_slice = textures[:,:,texture_index]
-    #logger.debug(np.histogram(texture_slice, range=(np.nanmin(texture_slice), np.nanmax(texture_slice))))
+    texture_slice = textures[:,:,texture_index].copy()
     
     logger.info('Rescaling texture to full range of DICOM bit depth:')
     flattened = texture_slice.flatten()
@@ -75,7 +74,7 @@ for texture_index in range(textures.shape[2]):
     #logger.debug(np.histogram(texture_slice, range=(np.nanmin(texture_slice), np.nanmax(texture_slice))))
     logger.info('Rescaling texture to full range of DICOM bit depth done.')
     
-    logger.info('Casting to {texture_dtype} and storing in instance...')
+    logger.info(f'Casting to {texture_dtype} and storing in instance...')
     output_pixel_data = texture_slice.astype(texture_dtype)
     #logger.debug(np.histogram(output_pixel_data, range=(np.nanmin(output_pixel_data), np.nanmax(output_pixel_data))))
     #logger.debug(f'output_pixel_data.dtype = {output_pixel_data.dtype}')
