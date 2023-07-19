@@ -221,5 +221,4 @@ logger.debug(f'textures.shape = {textures.shape}')
 logger.debug(f'textures.dtype = {textures.dtype}')
 logger.debug(f'np.histogram(textures.flatten()) = {np.histogram(textures.flatten(), range=(np.nanmin(textures), np.nanmax(textures)))}')
 ##################################################
-
 ```
