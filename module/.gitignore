@@ -1,0 +1,3 @@
+# ignore all dcm files except test.dcm:
+*.dcm
+!test.dcm
