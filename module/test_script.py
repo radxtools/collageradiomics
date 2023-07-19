@@ -69,6 +69,10 @@ for texture_index in range(textures.shape[2]):
     
     logger.info('Rescaling texture to full range of DICOM bit depth:')
     flattened = texture_slice.flatten()
+    
+    logger.info('Replacing NaN values with sentinel value...')
+    flattened = np.nan_to_num(flattened, nan=np.nanmin(flattened))
+    
     scaled = minmax_scale(flattened, (min_output_value, max_output_value))
     texture_slice = scaled.reshape(texture_slice.shape)
     #logger.debug(np.histogram(texture_slice, range=(np.nanmin(texture_slice), np.nanmax(texture_slice))))
@@ -80,3 +84,8 @@ for texture_index in range(textures.shape[2]):
     #logger.debug(f'output_pixel_data.dtype = {output_pixel_data.dtype}')
     instance.PixelData = output_pixel_data
     logger.info('Storing in instance done.')
+    
+    feature_name = collageradiomics.HaralickFeature(texture_index).name
+    filename = f'collage_feature_{texture_index:02d}_{feature_name}.dcm'
+    instance.save_as(filename)
+    logger.info(f'Saved {filename = }')
