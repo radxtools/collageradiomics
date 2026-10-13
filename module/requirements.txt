@@ -5,4 +5,4 @@ scikit-build>=0.15.0
 scikit-image>=0.19.3
 scipy>=1.7.3
 pydicom>=2.3.0
-sklearn
+scikit-learn
