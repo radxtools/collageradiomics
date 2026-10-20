@@ -91,6 +91,8 @@ CI tests the minimum stack on Python 3.10, current dependencies on 3.11–3.13,
 source/wheel rebuilding, and the extension in Slicer 5.12.4. Add
 `-c constraints-test.txt` to install commands for the minimum stack, or use
 `pipenv sync --dev` for the locked Python 3.11 environment.
+Conda users can run `conda env create -f environment.yml` from the repository root;
+see [the Conda guide](packaging/conda/README.rst) for local package builds.
 
 See [CONTRIBUTING.rst](CONTRIBUTING.rst) for style, tests, and documentation builds.
 [Full documentation](https://collageradiomics.readthedocs.io/).
