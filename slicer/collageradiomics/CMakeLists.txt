@@ -19,7 +19,7 @@ include(${Slicer_USE_FILE})
 
 #-----------------------------------------------------------------------------
 # Extension modules
-add_subdirectory(CollageRadiomicsSlicer)
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/CollageRadiomicsSlicer" CollageRadiomicsSlicer)
 ## NEXT_MODULE
 
 #-----------------------------------------------------------------------------

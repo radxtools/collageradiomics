@@ -2,9 +2,9 @@ name: Slicer tests
 
 on:
   push:
-    paths: ['module/**', 'slicer/**', 'tests/run_slicer.py', '.github/workflows/slicer-tests.yml']
+    paths: ['module/**', 'slicer/**', 'CMakeLists.txt', 'packaging/catalogs/**', 'tests/run_slicer.py', '.github/workflows/slicer-tests.yml']
   pull_request:
-    paths: ['module/**', 'slicer/**', 'tests/run_slicer.py', '.github/workflows/slicer-tests.yml']
+    paths: ['module/**', 'slicer/**', 'CMakeLists.txt', 'packaging/catalogs/**', 'tests/run_slicer.py', '.github/workflows/slicer-tests.yml']
   workflow_dispatch:
 
 permissions:

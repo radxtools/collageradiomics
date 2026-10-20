@@ -1,4 +1,5 @@
 import datetime
+import inspect
 import json
 import logging
 from pathlib import Path
@@ -18,6 +19,8 @@ import slicer
 
 try:
     from collageradiomics import Collage, DifferenceVarianceInterpretation, HaralickFeature
+    if "progress_callback" not in inspect.signature(Collage).parameters:
+        raise ImportError("The Slicer extension requires collageradiomics 0.4 or newer")
 except ImportError:
     slicer.util.pip_install("collageradiomics>=0.4.0,<0.5")
     from collageradiomics import Collage, DifferenceVarianceInterpretation, HaralickFeature
