@@ -1,29 +1,66 @@
-name: Continuous Delivery
+name: Release packages
 
 on:
   push:
-    tags:
-    - 'v*'
+    paths: ['module/**', 'cli/**', 'tests/**', 'requirements-test.txt', '.github/workflows/python-publish.yml']
+  pull_request:
+    paths: ['module/**', 'cli/**', 'tests/**', 'requirements-test.txt', '.github/workflows/python-publish.yml']
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  deploy:
-
+  build:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.6'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install setuptools wheel twine
-    - name: Build and publish
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      run: |
-        cd module
-        sh setup.sh
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Validate release version
+        if: github.event_name == 'release'
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          test "$RELEASE_TAG" = "v$(cat module/VERSION)"
+      - name: Install and test
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-test.txt twine
+          python -m pip install --no-build-isolation './module[cli]'
+          python -m pip check
+          python -m pytest
+      - name: Build distributions from source archives
+        run: |
+          python -m build --outdir dist/core module
+          python -m build --outdir dist/cli cli
+          python -m twine check --strict dist/core/* dist/cli/*
+      - uses: actions/upload-artifact@v7
+        with:
+          name: python-distributions
+          path: dist/
+  publish:
+    if: github.event_name == 'release' && !github.event.release.prerelease
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/collageradiomics
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: python-distributions
+          path: dist
+      - name: Publish the core with trusted publishing
+        uses: pypa/gh-action-pypi-publish@v1.14.2
+        with:
+          packages-dir: dist/core/
+      - name: Publish the compatibility CLI with trusted publishing
+        uses: pypa/gh-action-pypi-publish@v1.14.2
+        with:
+          packages-dir: dist/cli/

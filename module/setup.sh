@@ -1,3 +1,4 @@
-#!/bin/bash
-python setup.py sdist bdist_wheel
-twine upload dist/*
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")"
+python -m build "$@"

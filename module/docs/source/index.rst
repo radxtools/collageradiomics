@@ -17,6 +17,7 @@ The source and issue tracker are at
    numerics
    contributing
    maintenance
+   releases
 
 Python API
 ----------

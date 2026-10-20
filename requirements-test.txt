@@ -1,5 +1,5 @@
 build>=1.2,<2
-pytest>=8,<9
+pytest>=9.0.3,<10
 setuptools>=68
 wheel>=0.43
 pydicom>=3,<4
