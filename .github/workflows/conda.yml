@@ -33,11 +33,13 @@ jobs:
       - uses: mamba-org/setup-micromamba@v3
         with:
           environment-name: conda-build
-          create-args: python=3.12 conda-build
+          create-args: python=3.12 conda-build rattler-build
           generate-run-shell: true
       - name: Build and test the package
         shell: micromamba-shell {0}
-        run: conda build --override-channels -c conda-forge --python 3.12 --output-folder conda-dist packaging/conda
+        run: |
+          conda build --override-channels -c conda-forge --python 3.12 --output-folder conda-dist packaging/conda
+          rattler-build build --recipe packaging/conda/conda-forge/recipe.yaml --channel conda-forge --output-dir conda-dist --log-style plain
       - uses: actions/upload-artifact@v7
         with:
           name: conda-package

@@ -18,6 +18,7 @@ The source and issue tracker are at
    contributing
    maintenance
    releases
+   backlog
 
 Python API
 ----------

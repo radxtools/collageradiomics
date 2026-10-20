@@ -95,6 +95,7 @@ Conda users can run `conda env create -f environment.yml` from the repository ro
 see [the Conda guide](packaging/conda/README.rst) for local package builds.
 
 See [CONTRIBUTING.rst](CONTRIBUTING.rst) for style, tests, and documentation builds.
+The [backlog record](BACKLOG.rst) maps all 28 issues to fixes and external follow-ups.
 [Full documentation](https://collageradiomics.readthedocs.io/).
 
 # Science
