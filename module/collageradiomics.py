@@ -7,6 +7,7 @@ from scipy import linalg
 from skimage.feature import graycomatrix
 from skimage.util.shape import view_as_windows
 from enum import Enum, IntEnum
+from _collageradiomics.validation import angles, integer, validate_arrays
 
 
 logger = logging.getLogger('collageradiomics')
@@ -286,6 +287,11 @@ class Collage:
           :param which_feature: Either an integer from 0 to 12 (inclusive) or a HaralickFeature enum value
           :type which_feature HaralickFeature
         """
+        if not hasattr(self, '_collage_output'):
+            raise RuntimeError('execute() must be called before requesting features')
+        which_feature = integer(which_feature, 'which_feature', minimum=0)
+        if which_feature >= len(HaralickFeature):
+            raise ValueError('which_feature must be between 0 and 12')
         if self.is_3D:
             return self.collage_output[:,:,:,which_feature,:]
         else:
@@ -297,7 +303,7 @@ class Collage:
                  mask_array,
                  svd_radius=5,
                  verbose_logging=False,
-                 cooccurence_angles=[x * np.pi/4 for x in range(8)],
+                 cooccurence_angles=None,
                  difference_variance_interpretation=DifferenceVarianceInterpretation.XMinusYVariance,
                  haralick_window_size=-1,
                  num_unique_angles=64,
@@ -324,32 +330,25 @@ class Collage:
 
         logger.debug('Collage Module Initialized')
 
-        # error checking
-        if haralick_window_size == -1:
+        validate_arrays(img_array, mask_array)
+        svd_radius = integer(svd_radius, 'SVD radius')
+        num_unique_angles = integer(num_unique_angles, 'num_unique_angles', minimum=2)
+        cooccurence_angles = angles(cooccurence_angles)
+        if not isinstance(difference_variance_interpretation, DifferenceVarianceInterpretation):
+            raise TypeError('difference_variance_interpretation must be a DifferenceVarianceInterpretation')
+
+        if isinstance(haralick_window_size, (int, np.integer)) and haralick_window_size == -1:
             self._haralick_window_size = svd_radius * 2 + 1
         else:
-            self._haralick_window_size = haralick_window_size
-
-        if self._haralick_window_size < 1:
-            raise Exception('Haralick windows size must be at least 1 pixel.')
-
-        if svd_radius < 1:
-            raise Exception('SVD radius must be at least 1 pixel')
-
-        if num_unique_angles < 1:
-            raise Exception('num_unique_angles must contain at least 1 bin')
-
-        if img_array.ndim < 2 or img_array.ndim > 3:
-            raise Exception('Expected a 2D or 3D image.')
-
-        if mask_array.shape != img_array.shape:
-            raise Exception('Mask must be the same shape as image.')
+            self._haralick_window_size = integer(haralick_window_size, 'haralick_window_size', minimum=3)
+        if self._haralick_window_size % 2 == 0:
+            raise ValueError('haralick_window_size must be odd')
 
         # Our minimum size for x & y is 50x50
         min_x_y_size = 50
 
         if img_array.shape[0] < min_x_y_size or img_array.shape[1] < min_x_y_size:
-            raise Exception(f'Image size ({img_array.shape[0]}x{img_array.shape[1]}) unsupported. Image must be a minimum of a 50x50 for collage to run.')
+            raise ValueError(f'Image size ({img_array.shape[0]}x{img_array.shape[1]}) unsupported. Image must be a minimum of a 50x50 for collage to run.')
 
         self._is_3D = img_array.ndim == 3
         logger.debug(f'Running 3D Collage = {self.is_3D}')
@@ -361,7 +360,7 @@ class Collage:
 
         min_3D_slices = 3
         if self._img_array.shape[0] <  self._haralick_window_size or self._img_array.shape[1] < self._haralick_window_size or (self._is_3D and self._img_array.shape[2] < min_3D_slices):
-            raise Exception(
+            raise ValueError(
                 f'Image is too small for a window size of {self._haralick_window_size} pixels.')
 
         # threshold mask

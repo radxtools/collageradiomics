@@ -22,6 +22,7 @@ setuptools.setup(
         'Github': 'https://github.com/radxtools/collageradiomics'
     },
     py_modules=['collageradiomics'],
+    packages=setuptools.find_packages(where=str(module_dir), include=['_collageradiomics*']),
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',

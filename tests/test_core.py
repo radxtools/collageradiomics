@@ -60,23 +60,22 @@ def test_3d_output_has_both_angles(image_and_mask_3d):
     [
         ({'svd_radius': 0}, 'SVD radius'),
         ({'svd_radius': -1, 'haralick_window_size': 3}, 'SVD radius'),
-        ({'haralick_window_size': 0}, 'Haralick windows size'),
+        ({'haralick_window_size': 0}, 'haralick_window_size'),
         ({'num_unique_angles': 0}, 'num_unique_angles'),
     ],
 )
 def test_invalid_parameters_are_rejected(image_and_mask_2d, options, message):
-    # Accept the current generic exception until validation gains specific types.
-    with pytest.raises(Exception, match=message):
+    with pytest.raises(ValueError, match=message):
         Collage(*image_and_mask_2d, **options)
 
 
 @pytest.mark.parametrize('shape', [(50,), (50, 52, 3, 2)])
 def test_invalid_image_dimensions_are_rejected(shape):
-    with pytest.raises(Exception, match='Expected a 2D or 3D image'):
+    with pytest.raises(ValueError, match='Expected a 2D or 3D image'):
         Collage(np.ones(shape), np.ones(shape))
 
 
 def test_mismatched_mask_shape_is_rejected(image_and_mask_2d):
     image, _ = image_and_mask_2d
-    with pytest.raises(Exception, match='Mask must be the same shape'):
+    with pytest.raises(ValueError, match='Mask must be the same shape'):
         Collage(image, np.ones((50, 51)))
