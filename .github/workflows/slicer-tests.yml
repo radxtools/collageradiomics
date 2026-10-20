@@ -1,0 +1,38 @@
+name: Slicer tests
+
+on:
+  push:
+    paths: ['module/**', 'slicer/**', 'tests/run_slicer.py', '.github/workflows/slicer-tests.yml']
+  pull_request:
+    paths: ['module/**', 'slicer/**', 'tests/run_slicer.py', '.github/workflows/slicer-tests.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  slicer:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      SLICER_SHA512: ac76c5061a8fff20d4e59732855f74360930fd4891450085bcbc6a8eb1a1f4ade9a1ca4fc633142661b714dbe8c4604306079f9546e52053faa5e6f99410cf76
+      XDG_CONFIG_HOME: ${{ runner.temp }}/slicer-config
+      XDG_CACHE_HOME: ${{ runner.temp }}/slicer-cache
+      LIBGL_ALWAYS_SOFTWARE: '1'
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install application prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libglu1-mesa libpulse-mainloop-glib0 libnss3 libasound2t64 qt5dxcb-plugin xvfb
+      - name: Download verified Slicer 5.12.4
+        run: |
+          curl --fail --location --retry 3 https://download.slicer.org/bitstream/6aa1beb7ce9de556d3010204 -o "$RUNNER_TEMP/slicer.tar.gz"
+          printf '%s  %s\n' "$SLICER_SHA512" "$RUNNER_TEMP/slicer.tar.gz" | sha512sum --check -
+          mkdir "$RUNNER_TEMP/slicer"
+          tar -xzf "$RUNNER_TEMP/slicer.tar.gz" --strip-components=1 -C "$RUNNER_TEMP/slicer"
+      - name: Install the checked-out library
+        run: '"$RUNNER_TEMP/slicer/bin/PythonSlicer" -m pip install ./module'
+      - name: Run native extension tests
+        run: |
+          xvfb-run -a "$RUNNER_TEMP/slicer/Slicer" --ignore-slicerrc --testing --no-main-window --no-splash --python-script tests/run_slicer.py
