@@ -1,0 +1,46 @@
+name: Conda
+
+on:
+  push:
+    paths: ['environment.yml', 'packaging/conda/**', 'module/**', 'tests/**', '.github/workflows/conda.yml']
+  pull_request:
+    paths: ['environment.yml', 'packaging/conda/**', 'module/**', 'tests/**', '.github/workflows/conda.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  environment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: mamba-org/setup-micromamba@v3
+        with:
+          environment-file: environment.yml
+          generate-run-shell: true
+      - name: Test the editable environment
+        shell: micromamba-shell {0}
+        run: |
+          python -m pip check
+          python -m pytest
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: mamba-org/setup-micromamba@v3
+        with:
+          environment-name: conda-build
+          create-args: python=3.12 conda-build rattler-build
+          generate-run-shell: true
+      - name: Build and test the package
+        shell: micromamba-shell {0}
+        run: |
+          conda build --override-channels -c conda-forge --python 3.12 --output-folder conda-dist packaging/conda
+          rattler-build build --recipe packaging/conda/conda-forge/recipe.yaml --channel conda-forge --output-dir conda-dist --log-style plain
+      - uses: actions/upload-artifact@v7
+        with:
+          name: conda-package
+          path: conda-dist/noarch/*.conda

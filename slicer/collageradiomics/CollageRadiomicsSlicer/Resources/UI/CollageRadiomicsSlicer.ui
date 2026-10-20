@@ -96,7 +96,7 @@
       <item row="2" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QCheckBox" name="phiCheckBox">
+         <widget class="QCheckBox" name="thetaCheckBox">
           <property name="toolTip">
            <string>Unlike 2D features, two dominant directions (θ 3D, φ 3D) are computed for 3D CoLlAGe associated with each c ∈ C, which provide complimentary information about the degree of disorder of the principal gradient orientations in (X,Y) and (X,Y,Z) directions.</string>
           </property>
@@ -109,7 +109,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="thetaCheckBox">
+         <widget class="QCheckBox" name="phiCheckBox">
           <property name="toolTip">
            <string>Unlike 2D features, two dominant directions (θ 3D, φ 3D) are computed for 3D CoLlAGe associated with each c ∈ C, which provide complimentary information about the degree of disorder of the principal gradient orientations in (X,Y) and (X,Y,Z) directions.</string>
           </property>
@@ -171,7 +171,7 @@
          <number>0</number>
         </property>
         <property name="minimum">
-         <double>2.000000000000000</double>
+         <double>1.000000000000000</double>
         </property>
         <property name="maximum">
          <double>20.000000000000000</double>
@@ -184,7 +184,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Haralick Window Size (-1 is default):</string>
+         <string>Odd Haralick Window Size (-1 is automatic):</string>
         </property>
        </widget>
       </item>
@@ -231,7 +231,7 @@
          <number>0</number>
         </property>
         <property name="minimum">
-         <double>32.000000000000000</double>
+         <double>2.000000000000000</double>
         </property>
         <property name="maximum">
          <double>256.000000000000000</double>

@@ -1,0 +1,57 @@
+name: Containers
+
+on:
+  push:
+    paths: ['docker/**', 'module/**', 'jupyter/examples/**', 'tests/container_smoke.py', '.dockerignore', '.github/workflows/docker.yml']
+  pull_request:
+    paths: ['docker/**', 'module/**', 'jupyter/examples/**', 'tests/container_smoke.py', '.dockerignore', '.github/workflows/docker.yml']
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish tested images to GitHub Container Registry
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build both targets
+        run: |
+          docker build -f docker/Dockerfile --target cli -t collage-test:cli .
+          docker build -f docker/Dockerfile --target notebook -t collage-test:notebook .
+      - name: Test the installed CLI
+        run: |
+          docker run --rm collage-test:cli --help
+          docker run --rm --entrypoint python -v "$PWD/tests/container_smoke.py:/tmp/container_smoke.py:ro" collage-test:cli /tmp/container_smoke.py
+      - name: Execute the bundled notebook
+        run: |
+          docker run --rm collage-test:notebook python -m nbconvert --to notebook --execute /opt/collage/examples/example.ipynb --output /tmp/executed.ipynb --ExecutePreprocessor.timeout=120
+  publish:
+    if: github.event_name == 'workflow_dispatch' && inputs.publish
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Authenticate to the registry
+        env:
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: printf '%s' "$REGISTRY_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+      - name: Build and publish verified targets
+        env:
+          IMAGE_BASE: ghcr.io/${{ github.repository }}
+          REVISION: ${{ github.sha }}
+        run: |
+          for target in cli notebook; do
+            docker build -f docker/Dockerfile --target "$target" -t "$IMAGE_BASE-$target:$REVISION" -t "$IMAGE_BASE-$target:latest" .
+            docker push "$IMAGE_BASE-$target:$REVISION"
+            docker push "$IMAGE_BASE-$target:latest"
+          done

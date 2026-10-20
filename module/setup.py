@@ -1,13 +1,11 @@
+from pathlib import Path
+
 import setuptools
 
-with open('requirements.txt', 'r') as f:
-    requirements = f.read()
-
-with open('README.md', 'r') as fh:
-    long_description = fh.read()
-
-with open('VERSION') as version_file:
-    version = version_file.read().strip()
+module_dir = Path(__file__).resolve().parent
+requirements = (module_dir / 'requirements.txt').read_text(encoding='utf-8').splitlines()
+long_description = (module_dir / 'README.md').read_text(encoding='utf-8')
+version = (module_dir / 'VERSION').read_text(encoding='utf-8').strip()
 
 setuptools.setup(
     name='collageradiomics',
@@ -17,13 +15,18 @@ setuptools.setup(
     description='Python implementation of COLLAGE texture features from BRIC & INVENTLAB.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/ccipd/collageradiomics',
+    url='https://github.com/radxtools/collageradiomics',
     project_urls={
-        'Docker Examples': 'https://hub.docker.com/repository/docker/ccipd/collageradiomics-examples',
-        'Docker Module': 'https://hub.docker.com/repository/docker/ccipd/collageradiomics-pip',
-        'Github': 'https://github.com/ccipd/collageradiomics'
+        'Docker Examples': 'https://github.com/radxtools/collageradiomics/tree/master/docker',
+        'Documentation': 'https://collageradiomics.readthedocs.io/',
+        'Github': 'https://github.com/radxtools/collageradiomics'
     },
-    py_modules=['collageradiomics'],
+    packages=setuptools.find_packages(where=str(module_dir), include=['collageradiomics*', '_collageradiomics*']),
+    package_data={'collageradiomics': ['py.typed'], '_collageradiomics': ['py.typed']},
+    entry_points={'console_scripts': [
+        'collageradiomics=_collageradiomics.cli:run',
+        'collageradiomicscli.py=_collageradiomics.cli:run',
+    ]},
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',
@@ -37,6 +40,13 @@ setuptools.setup(
         'Topic :: Scientific/Engineering :: Bio-Informatics',
     ],
     install_requires=requirements,
-    python_requires='>=3.6',
+    extras_require={
+        'cli': ['click>=8.1,<9', 'SimpleITK>=2.3,<3'],
+        'examples': [
+            'matplotlib>=3.8,<4', 'pydicom>=3,<4',
+            'jupyterlab>=4.3,<5', 'SimpleITK>=2.3,<3',
+        ],
+    },
+    python_requires='>=3.10',
     keywords='radiomics cancerimaging medicalresearch computationalimaging',
 )

@@ -1,0 +1,5 @@
+# Minimum supported numerical stack, tested on Python 3.10.
+mahotas==1.4.19
+numpy==1.26.4
+scipy==1.11.4
+scikit-image==0.22.0

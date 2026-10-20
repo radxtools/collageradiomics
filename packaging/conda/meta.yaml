@@ -1,0 +1,47 @@
+{% set version = "0.4.0" %}
+
+package:
+  name: collageradiomics
+  version: {{ version }}
+
+source:
+  path: ../..
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install ./module --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python >=3.11
+    - pip
+    - setuptools >=68
+    - wheel
+  run:
+    - python >=3.11
+    - numpy >=1.26,<3
+    - scipy >=1.11,<2
+    - scikit-image >=0.22,<1
+    - mahotas >=1.4.19,<2
+    - click >=8.1,<9
+    - simpleitk >=2.3,<3
+
+test:
+  imports:
+    - collageradiomics
+    - _collageradiomics
+  commands:
+    - collageradiomics --help
+
+about:
+  home: https://github.com/radxtools/collageradiomics
+  doc_url: https://collageradiomics.readthedocs.io/
+  dev_url: https://github.com/radxtools/collageradiomics
+  summary: Local gradient-orientation radiomics in Python and 3D Slicer
+  license: BSD-3-Clause
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - mohsenhariri

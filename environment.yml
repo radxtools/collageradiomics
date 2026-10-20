@@ -1,0 +1,22 @@
+name: collageradiomics
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.12
+  - pip
+  - setuptools>=68
+  - wheel>=0.43
+  - python-build>=1.2
+  - numpy>=1.26,<3
+  - scipy>=1.11,<2
+  - scikit-image>=0.22,<1
+  - mahotas>=1.4.19,<2
+  - click>=8.1,<9
+  - simpleitk>=2.3,<3
+  - pydicom>=3,<4
+  - pytest>=9.0.3,<10
+  - mypy>=1.13,<2
+  - ruff>=0.11,<1
+  - pip:
+      - -e ./module[cli]

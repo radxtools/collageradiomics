@@ -2,6 +2,8 @@
 
 # CollageRadiomics Slicer Extension
 
+Distributed under the [BSD 3-Clause license](../../LICENSE).
+
 **CoLlAGe** captures subtle anisotropic differences in disease pathologies by measuring entropy of co-occurrences of voxel-level gradient orientations on imaging computed within a local neighborhood.
 
 **CoLlAGe** is based on the hypothesis that disruption in tissue microarchitecture can be quantified on imaging by measuring the disorder in voxel-wise gradient orientations. CoLlAGe involves assigning every image voxel a ‘disorder value’ associated with the co-occurrence matrix of gradient orientations computed around every voxel.
@@ -20,7 +22,30 @@ Details on extraction of **CoLlAGe** features are included in [\[1\]](#reference
 # Slicer
 _[Back to **Table of Contents**](#table-of-contents)_
 
-The collageradiomics Slicer 3D extension allows a user to run the collage algorithm on 3D images and then visualize and save the results. This is done by providing an input volume and a mask via segmentation.
+The extension requires Slicer 5.10 or newer and collageradiomics 0.4 or newer.
+When the required core is absent, open the module and click **Install CoLlAGe**
+to install its dependencies from PyPI. Module discovery at startup does not install
+packages. For an unpublished checkout, use the PythonSlicer install command below.
+It accepts a scalar input volume and either a labelmap or visible segmentation.
+Labelmaps must match the image geometry and parent transform. Segmentations are
+exported to the input geometry before extraction. Outputs preserve image geometry
+and transforms, with separate volumes for every selected feature and angle.
+
+The SVD radius, Haralick window, bin count, variance interpretation, features, and
+angle choices are stored in the scene parameter node. Use an odd window size of
+at least 3, or -1 to derive it from the SVD radius. A progress dialog supports
+cancellation; temporary labelmaps and incomplete results are cleaned up on failure.
+
+To test a checkout with a local Slicer installation:
+
+```shell
+/path/to/Slicer/bin/PythonSlicer -m pip install ./module
+/path/to/Slicer/Slicer --ignore-slicerrc --testing --no-main-window --no-splash --python-script tests/run_slicer.py
+```
+
+On a headless Linux machine, prefix the application command with `xvfb-run -a`.
+CI downloads a checksum-pinned Slicer 5.12.4 and runs the native labelmap,
+segmentation, geometry, cancellation, and widget tests.
 
 ## Overview
 _[Back to **Table of Contents**](#table-of-contents)_

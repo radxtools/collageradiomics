@@ -15,4 +15,11 @@ module/docs/build/*
 module/docs/source/_build/*
 .idea/*
 __pycache__
+.pytest_cache/
 env_*
+.venv/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+cli/build/
+cli/dist/

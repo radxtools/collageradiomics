@@ -1,40 +1,27 @@
-Welcome to collageradiomics's documentation!
-============================================
+CoLlAGe radiomics
+=================
 
-CoLlAGe captures subtle anisotropic differences in disease pathologies by measuring entropy of co-occurrences of voxel-level gradient orientations on imaging computed within a local neighborhood.
+Co-occurrence of Local Anisotropic Gradient Orientations describes local disorder
+in image gradients. This package provides thirteen voxel-wise Haralick statistics,
+a medical-image CLI, reproducible examples, and a 3D Slicer extension.
 
-CoLlAGe is based on the hypothesis that disruption in tissue microarchitecture can be quantified on imaging by measuring the disorder in voxel-wise gradient orientations. CoLlAGe involves assigning every image voxel a ‘disorder value’ associated with the co-occurrence matrix of gradient orientations computed around every voxel.
-
-Details on extraction of CoLlAGe features are included in [1]. After feature extraction, the subsequent distribution or different statistics such as mean, median, variance etc can be computed and used in conjunction with a machine learning classifier to distinguish similar appearing pathologies. The feasibility of CoLlAGe in distinguishing cancer from treatment confounders/benign conditions and characterizing molecular subtypes of cancers has been demonstrated in the context of multiple challenging clinical problems.
-
-Helpful Links
-=============
-Instructions: `README <https://github.com/ccipd/collageradiomics/blob/master/README.md>`_
-
-RadxTools Website: `<https://radxtools.github.io>`_
-
-Original Paper: `Co-occurrence of Local Anisotropic Gradient Orientations (CoLlAGe): A new radiomics descriptor <https://www.nature.com/articles/srep37241>`_
-
-Code Documentation
-==================
-
-Notes
------
-The **attributes** below represent the public output intended to be available to consumers of this module.
-
-.. automodule:: collageradiomics
-   :members:
-   :undoc-members:
-   :inherited-members:
-   :show-inheritance:
+The scientific reference is Prasanna, Tiwari, and Madabhushi (2016),
+`Scientific Reports 6:37241 <https://doi.org/10.1038/srep37241>`_.
+The source and issue tracker are at
+`radxtools/collageradiomics <https://github.com/radxtools/collageradiomics>`_.
 
 .. toctree::
-   :maxdepth: 3
-   :caption: Contents:
+   :maxdepth: 2
 
-Indices and tables
-==================
+   usage
+   numerics
+   contributing
+   maintenance
+   releases
+   backlog
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+Python API
+----------
+
+.. automodule:: collageradiomics
+   :members: Collage, HaralickFeature, DifferenceVarianceInterpretation
