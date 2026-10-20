@@ -26,9 +26,12 @@ Keep its explicit version aligned with ``module/VERSION`` when releasing.
 
 This local recipe is not a published conda-forge feedstock. The separate v1 recipe
 in ``conda-forge/recipe.yaml`` prepares an upstream submission using an official
-commit archive and verified SHA256. It builds with ``rattler-build``; keep the
-submission in draft until the source release and maintainer confirmation are
-ready. Replace the commit archive with the release archive and its SHA256 before
-requesting acceptance. A maintainer must accept the feedstock invitation. The
+commit archive and verified SHA256. It builds with ``rattler-build``. The local
+``variants.yaml`` supplies Python 3.11 for standalone builds; submit only
+``recipe.yaml`` upstream so staged-recipes uses conda-forge's global Python pin.
+Keep the submission in draft until the source release is ready. Maintainer
+confirmation is recorded on the upstream PR. Replace the commit archive with the
+release archive and its SHA256 before requesting acceptance. A maintainer must
+accept the feedstock invitation. The
 old staged-recipes PR #14719 was closed without creating a feedstock. See issue
 #25 for the current submission status.

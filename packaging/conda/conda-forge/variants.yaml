@@ -1,0 +1,3 @@
+# Standalone build default; staged-recipes supplies its own global Python pin.
+python_min:
+  - "3.11"
