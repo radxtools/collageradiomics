@@ -42,8 +42,8 @@ class HaralickFeature(IntEnum):
 
 
 class DifferenceVarianceInterpretation(Enum):
-    """Feature 10 has two interpretations, as the variance of |x-y|
-    or as the variance of P(|x-y|).
+    """Difference variance has two interpretations, as the variance of ``|x-y|``
+    or as the variance of ``P(|x-y|)``.
     See: https://ieeexplore.ieee.org/document/4309314
 
     :param Enum: Enumeration Helper For Haralick Features
@@ -57,8 +57,8 @@ class DifferenceVarianceInterpretation(Enum):
 class Collage:
     """This is the main object in the Collage calculation system. Usage: create a Collage object and then call the :py:meth:`execute` function.
 
-    :param image_array: image to run collage upon
-    :type image_array: numpy.ndarray
+    :param img_array: image to run collage upon
+    :type img_array: numpy.ndarray
     :param mask_array: mask that correlates with the image
     :type mask_array: numpy.ndarray
     :param svd_radius: radius of svd. Defaults to 5.
@@ -67,7 +67,7 @@ class Collage:
     :type verbose_logging: bool, optional
     :param cooccurence_angles: list of angles to use in the cooccurence matrix. Defaults to [x*numpy.pi/4 for x in range(8)]
     :type cooccurence_angles: list, optional
-    :param difference_variance_interpretation: Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).].Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
+    :param difference_variance_interpretation: Difference variance has two interpretations, as the variance of ``|x-y|`` or as the variance of ``P(|x-y|)``.].Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
     :type difference_variance_interpretation: DifferenceVarianceInterpretation, optional
     :param haralick_window_size: size of rolling window for texture calculations. Defaults to -1.
     :type haralick_window_size: int, optional
@@ -83,7 +83,6 @@ class Collage:
         The original image.
 
         :getter: Returns the original image array.
-        :setter: Sets the original image array.
         :type: np.ndarray
         """
         return self._img_array
@@ -94,7 +93,6 @@ class Collage:
         Array passed into Collage.
 
         :getter: Returns the original mask array.
-        :setter: Sets the original mask array.
         :type: np.ndarray
         """
         return self._mask_array
@@ -113,7 +111,6 @@ class Collage:
         for the dominant angle calculation.
 
         :getter: Returns the SVD radius.
-        :setter: Sets the SVD radius.
         :type: int
         """
         return self._svd_radius
@@ -124,7 +121,6 @@ class Collage:
         This parameter is now ignored. Please use the python logging module.
 
         :getter: Returns True if on.
-        :setter: Turns verbose logging off or on.
         :type: bool
         """
         return self._verbose_logging
@@ -135,7 +131,6 @@ class Collage:
         Iterable of angles that will be used in the cooccurence matrix.
 
         :getter: Returns the Iterable of cooccurence angles.
-        :setter: Sets the angles to be used in the cooccurence matrix.
         :type: int
         """
         return self._cooccurence_angles
@@ -143,11 +138,10 @@ class Collage:
     @property
     def difference_variance_interpretation(self) -> DifferenceVarianceInterpretation:
         """
-        Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).].
+        Difference variance has two interpretations, as the variance of ``|x-y|`` or as the variance of ``P(|x-y|)``.].
         Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
 
         :getter: Returns requested variance interpretation.
-        :setter: Sets requested variance interpretation.
         :type: DifferenceVarianceInterpretation
         """
         return self._difference_variance_interpretation
@@ -158,7 +152,6 @@ class Collage:
         Number of pixels around each pixel to calculate a haralick texture.
 
         :getter: Returns requested number of pixels.
-        :setter: Sets requested number of pixels.
         :type: int
         """
         return self._haralick_window_size
@@ -200,7 +193,7 @@ class Collage:
         where the "2" represents the collage calculation from the primary angle (0) or secondary angle (1).
 
           :param which_feature: Either an integer from 0 to 12 (inclusive) or a HaralickFeature enum value
-          :type which_feature HaralickFeature
+          :type which_feature: HaralickFeature
         """
         if self._collage_output is None:
             raise RuntimeError("execute() must be called before requesting features")
@@ -226,8 +219,8 @@ class Collage:
     ) -> None:
         """Designated initializer for Collage
 
-        :param image_array: image to run collage upon
-        :type image_array: numpy.ndarray
+        :param img_array: image to run collage upon
+        :type img_array: numpy.ndarray
         :param mask_array: mask that correlates with the image
         :type mask_array: numpy.ndarray
         :param svd_radius: radius of svd. Defaults to 5.
@@ -236,7 +229,7 @@ class Collage:
         :type verbose_logging: bool, optional
         :param cooccurence_angles: list of angles to use in the cooccurence matrix. Defaults to [x * np.pi/4 for x in range(8)]
         :type cooccurence_angles: list, optional
-        :param difference_variance_interpretation: Feature 10 has two interpretations, as the variance of |x-y| or as the variance of P(|x-y|).].Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
+        :param difference_variance_interpretation: Difference variance has two interpretations, as the variance of ``|x-y|`` or as the variance of ``P(|x-y|)``.].Defaults to DifferenceVarianceInterpretation.XMinusYVariance.
         :type difference_variance_interpretation: DifferenceVarianceInterpretation, optional
         :param haralick_window_size: size of rolling window for texture calculations. Defaults to -1.
         :type haralick_window_size: int, optional

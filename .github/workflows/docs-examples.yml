@@ -1,0 +1,27 @@
+name: Documentation and examples
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            module/requirements.txt
+            module/setup.py
+            module/docs/requirements.txt
+      - name: Install documentation and example dependencies
+        run: python -m pip install -r module/docs/requirements.txt './module[examples]'
+      - name: Build documentation with warnings as errors
+        run: python -m sphinx -W -b html module/docs/source "$RUNNER_TEMP/docs"
+      - name: Execute the notebook without a desktop
+        run: |
+          python -m nbconvert --to notebook --execute jupyter/examples/example.ipynb --output "$RUNNER_TEMP/example.executed.ipynb" --ExecutePreprocessor.timeout=120

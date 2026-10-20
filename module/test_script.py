@@ -1,91 +1,74 @@
-import collageradiomics
-import pydicom
-import logging
-from pydicom.pixel_data_handlers.util import apply_modality_lut, apply_voi_lut
-from skimage.exposure import equalize_hist
+"""Create numeric feature maps and derived DICOM previews from the bundled sample."""
+
+import argparse
+import copy
+from pathlib import Path
+
 import numpy as np
-from sklearn.preprocessing import minmax_scale
-from random import randint
+import pydicom
+from collageradiomics import Collage, HaralickFeature
+from pydicom.pixels import apply_modality_lut, apply_voi_lut
+from pydicom.uid import ExplicitVRLittleEndian, SecondaryCaptureImageStorage, generate_uid
+from skimage.exposure import equalize_hist
 
-level = logging.INFO
-logging.basicConfig(level=level)
-logger = logging.getLogger()
-logger.setLevel(level)
-logger.info('Hello, world.')
 
-local_dcm_file = 'test.dcm'
-instance = pydicom.dcmread(local_dcm_file)
-slice_instance_uid = instance.SOPInstanceUID
-logger.debug(f'slice_instance_uid  = {slice_instance_uid}')
+def run_example(input_path: Path, output_dir: Path) -> list[Path]:
+    instance = pydicom.dcmread(input_path)
+    corrected = apply_voi_lut(apply_modality_lut(instance.pixel_array, instance), instance)
+    image = equalize_hist(corrected)
+    mask = np.zeros(image.shape, dtype=bool)
+    cy, cx = np.asarray(image.shape) // 2
+    mask[max(0, cy - 6) : cy + 6, max(0, cx - 6) : cx + 6] = True
+    output = Collage(image, mask, svd_radius=2, num_unique_angles=16).execute()
+    output_dir.mkdir(parents=True, exist_ok=True)
+    np.save(output_dir / "collage_features.npy", output)
+    files = []
+    for feature in HaralickFeature:
+        values = output[:, :, feature]
+        finite = np.isfinite(values)
+        low, high = float(values[finite].min()), float(values[finite].max())
+        # Reserve stored value zero for padding. Rescaling recovers feature units.
+        slope = (high - low) / 65534 if high > low else 1.0
+        intercept = low - slope
+        pixels = np.zeros(values.shape, dtype="<u2")
+        pixels[finite] = np.clip(np.rint((values[finite] - intercept) / slope), 1, 65535).astype(
+            "<u2"
+        )
+        derived = copy.deepcopy(instance)
+        derived.SOPClassUID = SecondaryCaptureImageStorage
+        derived.SOPInstanceUID = generate_uid()
+        derived.SeriesInstanceUID = generate_uid()
+        derived.file_meta.MediaStorageSOPClassUID = derived.SOPClassUID
+        derived.file_meta.MediaStorageSOPInstanceUID = derived.SOPInstanceUID
+        derived.file_meta.TransferSyntaxUID = ExplicitVRLittleEndian
+        derived.ImageType = ["DERIVED", "SECONDARY"]
+        derived.SeriesDescription = f"CoLlAGe {feature.name}"
+        derived.PhotometricInterpretation = "MONOCHROME2"
+        derived.SamplesPerPixel = 1
+        derived.BitsAllocated = derived.BitsStored = 16
+        derived.HighBit, derived.PixelRepresentation = 15, 0
+        derived.PixelPaddingValue = 0
+        derived.RescaleSlope, derived.RescaleIntercept = slope, intercept
+        for key in ("VOILUTSequence", "ModalityLUTSequence", "RealWorldValueMappingSequence"):
+            if key in derived:
+                del derived[key]
+        derived.WindowCenter = (low + high) / 2
+        derived.WindowWidth = max(high - low, 1.0)
+        derived.PixelData = pixels.tobytes()
+        filename = output_dir / f"collage_{int(feature):02d}_{feature.name}.dcm"
+        derived.save_as(filename, enforce_file_format=True)
+        files.append(filename)
+    return files
 
-logger.info('Correcting image...')
-np_array = instance.pixel_array
-corrected = apply_modality_lut(np_array, instance)
-corrected = apply_voi_lut(corrected, instance)
-logger.debug(f'{np.histogram(corrected) = }')
-scaled_array = equalize_hist(corrected)
-logger.debug(f'np.histogram(scaled_array) = {np.histogram(scaled_array)}')
-logger.info('done.')
 
-width  = 50
-height = 50
-min_row = randint(50,200)
-max_row = min_row + height
-min_col = randint(50,200)
-max_col = min_col + width
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--input", type=Path, default=Path(__file__).with_name("test.dcm"))
+    parser.add_argument("--output-dir", type=Path, default=Path("output_data"))
+    args = parser.parse_args()
+    for path in run_example(args.input, args.output_dir):
+        print(path)
 
-original_shape = np_array.shape
-logger.debug(f'original_shape = {original_shape}')
 
-logger.info('Calculating collage features...')
-mask_array = np.zeros(original_shape, dtype='int')
-mask_array[min_row:max_row, min_col:max_col] = 1
-textures = collageradiomics.Collage(scaled_array, mask_array).execute()
-logger.info('Collage features calculated.')
-
-logger.debug(f'textures.shape = {textures.shape}')
-logger.debug(f'textures.dtype = {textures.dtype}')
-logger.debug(f'np.histogram(textures) = {np.histogram(textures, range=(np.nanmin(textures), np.nanmax(textures)))}')
-
-logger.info('Defining DICOM bit data to store unsigned greyscale texture output:')
-# http://dicomiseasy.blogspot.com/2012/08/chapter-12-pixel-data.html
-texture_bit_depth = 16
-texture_dtype = np.uint16
-
-instance.PhotometricInterpretation = 'MONOCHROME2'
-instance.SamplesPerPixel = 1
-instance.BitsAllocated = texture_bit_depth
-instance.BitsStored = texture_bit_depth
-instance.HighBit = texture_bit_depth - 1
-instance.PixelRepresentation = 0 # unsigned
-logger.info('DICOM bit data defined.')
-
-min_output_value = 0
-max_output_value = 2**texture_bit_depth-1
-
-for texture_index in range(textures.shape[2]):
-    # https://stackoverflow.com/a/65964648
-    texture_slice = textures[:,:,texture_index].copy()
-    
-    logger.info('Rescaling texture to full range of DICOM bit depth:')
-    flattened = texture_slice.flatten()
-    
-    logger.info('Replacing NaN values with sentinel value...')
-    flattened = np.nan_to_num(flattened, nan=np.nanmin(flattened))
-    
-    scaled = minmax_scale(flattened, (min_output_value, max_output_value))
-    texture_slice = scaled.reshape(texture_slice.shape)
-    #logger.debug(np.histogram(texture_slice, range=(np.nanmin(texture_slice), np.nanmax(texture_slice))))
-    logger.info('Rescaling texture to full range of DICOM bit depth done.')
-    
-    logger.info(f'Casting to {texture_dtype} and storing in instance...')
-    output_pixel_data = texture_slice.astype(texture_dtype)
-    #logger.debug(np.histogram(output_pixel_data, range=(np.nanmin(output_pixel_data), np.nanmax(output_pixel_data))))
-    #logger.debug(f'output_pixel_data.dtype = {output_pixel_data.dtype}')
-    instance.PixelData = output_pixel_data
-    logger.info('Storing in instance done.')
-    
-    feature_name = collageradiomics.HaralickFeature(texture_index).name
-    filename = f'collage_feature_{texture_index:02d}_{feature_name}.dcm'
-    instance.save_as(filename)
-    logger.info(f'Saved {filename = }')
+if __name__ == "__main__":
+    main()

@@ -1,90 +1,64 @@
-"""
-The ISBI dataset can be found on https://theibsi.github.io/datasets
-This example computes the COLLAGE features for ibsi_1_ct_radiomics_phantom image. The path of the image and its mask should be modified based on your local dataset.
+"""Extract CoLlAGe from an aligned IBSI image/mask pair without hard-coded dataset paths."""
 
-Parameters:
-Path of the input image.
-Path of the input mask.
-Haralick window sizes.
-"""
+import argparse
 from pathlib import Path
 
-import nibabel as nib
 import numpy as np
-from scipy.stats import kurtosis, skew
-
-from collageradiomics import Collage
-
-path_image = Path(
-    "/dataset/IBSI/ibsi_1_ct_radiomics_phantom/nifti/image/phantom.nii.gz"
-)
-path_mask = Path("/dataset/IBSI/ibsi_1_ct_radiomics_phantom/nifti/mask/mask.nii.gz")
-
-image = nib.load(path_image).get_fdata()
-mask = nib.load(path_mask).get_fdata()
-
-image = np.swapaxes(image, 0, 2)
-mask = np.swapaxes(mask, 0, 2)
-
-path_result = Path("./examples")
+from _collageradiomics.io import read_arrays
+from _collageradiomics.statistics import summarize
+from collageradiomics import Collage, HaralickFeature
 
 
-def compute_collage(image, mask, haralick_windows=[3, 5, 7, 9, 11]):
-    """This method computes Collage features
-
-    Args:
-        image (path object): path of image
-        mask (path object): path of mask
-        haralick_windows (list, optional): Kernel window size. Defaults to [3, 5, 7, 9, 11].
-
-    Returns:
-        numpy array: mean, standard deviation, skewness, and kurtosis of COLLAGE features based on kernel size and orientation
-    """
-    windows_length = len(haralick_windows)
-
-    feats = np.zeros((13 * windows_length * 2, 4), dtype=np.double)
-
-    for window_idx, haralick_window_size in enumerate(haralick_windows):
-        try:
-            collage = Collage(
-                image,
-                mask,
-                svd_radius=5,
-                verbose_logging=True,
-                num_unique_angles=64,
-                haralick_window_size=haralick_window_size,
-            )
-
-            collage_feats = collage.execute()
-            np.save(
-                rf"./{path_result}/COLLAGE_RAW_W{haralick_window_size}.npy",
-                collage_feats,
-            )
-            print("saved")
-
-            for orientation in range(2):
-                for collage_idx in range(13):
-                    k = window_idx * collage_idx * orientation
-                    feat = collage_feats[:, :, :, collage_idx, orientation].flatten()
-                    feat = feat[~np.isnan(feat)]
-
-                    feats[k, 0] = feat.mean()
-                    feats[k, 1] = feat.std()
-                    feats[k, 2] = skew(feat)
-                    feats[k, 3] = kurtosis(feat)
-
-        except ValueError as err:
-            print(f"VALUE ERROR- {err}")
-
-        except Exception as err:
-            print(f"EXCEPTION- {err}")
-
-    return feats
+def compute_collage(
+    image,
+    mask,
+    haralick_windows=(3, 5, 7, 9, 11),
+    output_dir=None,
+    svd_radius=5,
+    num_unique_angles=64,
+):
+    """Return rows (window,feature,angle), with mean, population SD, skew, kurtosis."""
+    angles = 2 if image.ndim == 3 else 1
+    features = np.empty((len(haralick_windows) * len(HaralickFeature) * angles, 4))
+    if output_dir is not None:
+        output_dir = Path(output_dir)
+        output_dir.mkdir(parents=True, exist_ok=True)
+    for window_index, window in enumerate(haralick_windows):
+        output = Collage(
+            image,
+            mask,
+            svd_radius=svd_radius,
+            num_unique_angles=num_unique_angles,
+            haralick_window_size=window,
+        ).execute()
+        if output_dir is not None:
+            np.save(output_dir / f"COLLAGE_RAW_W{window}.npy", output)
+        for feature in HaralickFeature:
+            for angle in range(angles):
+                values = output[:, :, feature] if angles == 1 else output[:, :, :, feature, angle]
+                finite = values[np.isfinite(values)]
+                statistics = summarize(finite, extended=True)
+                index = (window_index * len(HaralickFeature) + int(feature)) * angles + angle
+                features[index] = [
+                    statistics["Mean"],
+                    float(np.std(finite)),
+                    statistics["Skewness"],
+                    statistics["Kurtosis"],
+                ]
+    return features
 
 
-feats = compute_collage(image, mask, haralick_windows=[3])
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("image", type=Path)
+    parser.add_argument("mask", type=Path)
+    parser.add_argument("--output-dir", type=Path, default=Path("output_data"))
+    parser.add_argument("--windows", type=int, nargs="+", default=[3, 5, 7, 9, 11])
+    args = parser.parse_args()
+    image, mask = read_arrays(args.image, args.mask)
+    values = compute_collage(image, mask, args.windows, output_dir=args.output_dir)
+    np.save(args.output_dir / "COLLAGE_STATS.npy", values)
 
-np.save(
-    rf"{path_result}/COLLAGE_STATS.npy",
-    feats,
-)
+
+if __name__ == "__main__":
+    main()

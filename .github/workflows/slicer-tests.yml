@@ -16,8 +16,6 @@ jobs:
     timeout-minutes: 20
     env:
       SLICER_SHA512: ac76c5061a8fff20d4e59732855f74360930fd4891450085bcbc6a8eb1a1f4ade9a1ca4fc633142661b714dbe8c4604306079f9546e52053faa5e6f99410cf76
-      XDG_CONFIG_HOME: ${{ runner.temp }}/slicer-config
-      XDG_CACHE_HOME: ${{ runner.temp }}/slicer-cache
       LIBGL_ALWAYS_SOFTWARE: '1'
     steps:
       - uses: actions/checkout@v7
@@ -34,5 +32,8 @@ jobs:
       - name: Install the checked-out library
         run: '"$RUNNER_TEMP/slicer/bin/PythonSlicer" -m pip install ./module'
       - name: Run native extension tests
+        env:
+          XDG_CONFIG_HOME: ${{ runner.temp }}/slicer-config
+          XDG_CACHE_HOME: ${{ runner.temp }}/slicer-cache
         run: |
           xvfb-run -a "$RUNNER_TEMP/slicer/Slicer" --ignore-slicerrc --testing --no-main-window --no-splash --python-script tests/run_slicer.py

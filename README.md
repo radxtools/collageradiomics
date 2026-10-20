@@ -1,22 +1,98 @@
-![Continuous Delivery](https://github.com/radxtools/collageradiomics/workflows/Continuous%20Delivery/badge.svg) [![Documentation Status](https://readthedocs.org/projects/collageradiomics/badge/?version=latest)](https://collageradiomics.readthedocs.io/en/latest/?badge=latest) [![doi](https://img.shields.io/badge/doi-10.1038/srep37241-brightgreen.svg)](https://doi.org/10.1038/srep37241)
+[![Tests](https://github.com/radxtools/collageradiomics/actions/workflows/tests.yml/badge.svg)](https://github.com/radxtools/collageradiomics/actions/workflows/tests.yml)
+[![Documentation](https://readthedocs.org/projects/collageradiomics/badge/?version=latest)](https://collageradiomics.readthedocs.io/)
 
 # Co-occurrence of Local Anisotropic Gradient Orientations (CoLlAGe)
 
-# Table of Contents
-- [Science](#science)
-  - [Overview](#overview)
-  - [References](#references)
-- [Code](#code)
-- [Installation & Setup](#installation--setup)
-  - [Pip Usage](#pip-usage)
-  - [Docker Notebooks](#docker-notebooks)
-  - [Docker Sandbox](#docker-sandbox)
-- [Development & Tests](#development--tests)
-- [Python Usage](#python-usage)
+CoLlAGe produces thirteen voxel-wise Haralick statistics from local gradient
+orientations in 2D or 3D images. The project includes a medical-image CLI,
+notebooks, Docker targets, and a 3D Slicer extension.
+
+**The 0.4 development version changes numerical results.** Recompute cached
+features from 0.3.x. See [numerical conventions](module/docs/source/numerics.rst).
+The public import and thirteen-channel layout remain compatible.
+
+## Install from this checkout
+
+Use Python 3.10 or newer. Commands below run from the repository root:
+
+```shell
+python3 -m venv env_collage
+source env_collage/bin/activate
+python -m pip install -e './module[cli]'
+```
+
+After publication, install with `python -m pip install 'collageradiomics[cli]'`.
+The core needs NumPy, SciPy, scikit-image, and Mahotas. Example dependencies are
+optional: `python -m pip install -r requirements.txt` installs them from this checkout.
+
+## Python usage
+
+```python
+import numpy as np
+from collageradiomics import Collage, HaralickFeature
+
+image = np.random.default_rng(42).random((32, 32))
+mask = np.zeros(image.shape, dtype=bool)
+mask[8:24, 8:24] = True
+collage = Collage(image, mask, svd_radius=2, num_unique_angles=8)
+features = collage.execute()  # (32, 32, 13)
+entropy = collage.get_single_feature_output(HaralickFeature.Entropy)
+print(entropy[mask].mean())
+```
+
+Arrays use `(height,width,depth)` in 3D and return `(H,W,D,13,2)`, with theta at
+index 0 and phi at index 1. Values outside the mask are NaN. SVD and Haralick
+windows use edge replication at image boundaries. Three-dimensional gradients
+include z; texture neighborhoods remain slice-wise.
+
+## Command line
+
+```shell
+collageradiomics -i image.nii.gz -m mask.nii.gz -o features.csv --extendstats
+collageradiomics -i cases.csv -o features.csv --verbose
+collageradiomics --help
+```
+
+Batch CSVs need `ID,Image,Mask` columns. Relative paths are resolved against the
+CSV directory. Successful cases become output rows; failures are recorded in
+`errors_features.csv` and cause a nonzero exit code. Image and mask size, spacing,
+origin, and direction must match. `--dimensions 2` accepts 2D images or single-slice
+volumes; it never discards slices. Use `--label` to select one mask label.
+
+## Examples and Slicer
+
+```shell
+python -m pip install -e './module[examples]'
+jupyter lab jupyter/examples/example.ipynb
+python module/test_script.py --output-dir output_data
+python examples/isbi.py IMAGE MASK --output-dir output_data
+```
+
+The notebook uses deterministic synthetic data and inline figures. The DICOM
+example preserves numeric arrays in `.npy` and writes derived DICOM previews.
+The [Slicer extension](slicer/collageradiomics/README.md) accepts labelmaps and
+segmentations, supports both angles, and provides cancellable progress.
+
+## Development and tests
+
+```shell
+python -m pip install -r requirements-test.txt
+python -m pip install --no-build-isolation -e './module[cli]'
+python -m pytest
+python -m mypy
+python -m ruff check module/collageradiomics module/_collageradiomics tests cli
+```
+
+CI tests the minimum stack on Python 3.10, current dependencies on 3.11–3.13,
+source/wheel rebuilding, and the extension in Slicer 5.12.4. Add
+`-c constraints-test.txt` to install commands for the minimum stack, or use
+`pipenv sync --dev` for the locked Python 3.11 environment.
+
+See [CONTRIBUTING.rst](CONTRIBUTING.rst) for style, tests, and documentation builds.
+[Full documentation](https://collageradiomics.readthedocs.io/).
 
 # Science
 ## Overview
-_[Back to **Table of Contents**](#table-of-contents)_
 
 **CoLlAGe** captures subtle anisotropic differences in disease pathologies by measuring entropy of co-occurrences of voxel-level gradient orientations on imaging computed within a local neighborhood.
 
@@ -40,7 +116,6 @@ Each of the 13 **CoLlAGe** correlate to one of the 13 Haralick texture features[
 13. _MaximalCorrelationCoefficient_
 
 ## References
-_[Back to **Table of Contents**](#table-of-contents)_
 
 <a href="http://bric-lab.com"><img align="right" height=100 src="https://static.wixstatic.com/media/a0e8e5_809a649f13254ff293405c7476004e20~mv2.png/v1/fill/w_248,h_240,al_c,usm_0.66_1.00_0.01/a0e8e5_809a649f13254ff293405c7476004e20~mv2.png"></a>
 
@@ -49,231 +124,3 @@ If you make use of this implementation, please cite the following paper:
 [1] Prasanna, P., Tiwari, P., & Madabhushi, A. (2016). "Co-occurrence of Local Anisotropic Gradient Orientations (CoLlAGe): A new radiomics descriptor. Scientific Reports", 6:37241.
 
 [2] R. M. Haralick, K. Shanmugam and I. Dinstein, "Textural Features for Image Classification," in IEEE Transactions on Systems, Man, and Cybernetics, vol. SMC-3, no. 6, pp. 610-621, Nov. 1973, [doi: 10.1109/TSMC.1973.4309314](https://doi.org/10.1109/TSMC.1973.4309314).
-
-# Code
-_[Back to **Table of Contents**](#table-of-contents)_
-
-We made the collage object idempotent Our **CoLlAGe** module includes parameter tuning information in the output. It contains the image(s) and mask(s), and the settings applied upon them. This allows multiple fully reproducible runs without having to remember or find the original parameters.
-
-Documentation can be found at
-http://collageradiomics.rtfd.io/
-
-We depend on the following libraries:
-- `matplotlib`
-- `numpy`
-- `scikit-learn`
-- `scikit-build`
-- `mahotas`
-- `scipy`
-
-# Installation & Setup
-_[Back to **Table of Contents**](#table-of-contents)_
-
-## Pip Usage
-```console
-pip3 install --upgrade collageradiomics
-
-python3 -c 'import collageradiomics; print(collageradiomics.__name__)'
-```
-
-## Command line
-
-Install the image-reading dependencies and run one image/mask pair:
-
-```shell
-python -m pip install 'collageradiomics[cli]'
-collageradiomics -i image.nii.gz -m mask.nii.gz -o features.csv
-```
-
-For batch extraction, provide a CSV with `ID,Image,Mask` columns. Relative image
-paths are resolved against the CSV directory. Each successful case becomes one
-output row; failures are recorded in `errors_features.csv` and give a nonzero exit code.
-
-```shell
-collageradiomics -i cases.csv -o features.csv --extendstats --verbose
-collageradiomics --help
-```
-
-Images and masks must have matching size, spacing, origin, and direction. Arrays
-use `(height, width, depth)` in the core. `--dimensions 2` accepts 2D images or
-single-slice volumes; it does not discard slices from a 3D volume. Constant and
-single-voxel regions have zero skewness, kurtosis, and sample variance by convention.
-
-## Local usage
-```shell
-# get the code
-git clone https://github.com/radxtools/collageradiomics
-cd collageradiomics
-
-# set up virtual environment
-python3 -m venv collageenv
-source collageenv/bin/activate
-
-# install requirements
-sudo apt -y install build-essential gcc gfortran python-dev libopenblas-dev liblapack-dev cython libjpeg-dev zlib1g-dev
-pip3 install -r requirements.txt
-
-# run test script
-cd modules
-python3 test_script.py
-```
-
-## Docker Sandbox
-_[Back to **Table of Contents**](#table-of-contents)_
-
-This is the most straightforward way to start playing with the code. And it does not require the `git` commands that the **Jupyter** examples require. This is simply a pre-built container that lets you start trying out the module in **Python** immediately.
-
-```console
-sudo docker pull radxtools/collageradiomics-pip:latest
-sudo docker run -it -v $PWD:/root radxtools/collageradiomics-pip
-```
-If your terminal prompt changes to `root@[random_string]:/#` then you are now working inside the standardized **Docker** sandbox container environment.
-
-Then you can try to import collage:
-```shell
-python3 -c 'import collageradiomics; print(collageradiomics.__name__)'
-```
-
-## Docker Notebooks
-
-### Prepare Jupyter Notebooks
-To load the example jupyter notebooks, run the following commands (with or without `sudo` depending on your environment):
-```console
-sudo docker pull radxtools/collageradiomics-pip:latest
-sudo docker run -it radxtools/collageradiomics-pip
-
-git clone https://github.com/radxtools/collageradiomics.git
-sudo docker pull radxtools/collageradiomics-examples:latest
-sudo docker run -it -p 8888:8888 -v $PWD:/root radxtools/collageradiomics-examples
-```
-
-### Exploring The Examples
-_[Back to **Table of Contents**](#table-of-contents)_
-
-1. Open up a web browser to http://localhost:8888  
-![Jupyter Home](https://i.imgur.com/0XQ8OlT.png)
-2. Navigate to the _Jupyter_ :arrow_right: _Examples_ directory.  
-![Jupyter Examples](https://i.imgur.com/NjdMlOr.png)
-3. Click on one of the example `*.ipynb` files.
-4. Run _Cell_ :arrow_right: _Run all_.  
-![Jupyter Run Cells](https://i.imgur.com/GaAaNAS.png)
-![Jupyter Output](https://i.imgur.com/PapCcsg.png)
-5. Feel free to add your own cells and run them to get familiar with the **CoLlAGe** code.
-6. To stop the **Jupyter** notebook and exit the **Docker** image, press `Ctrl+C` twice:
-
-To run python code with collage:
-```console
-root@12b12d2bff59:/# python
-Python 3.8.2 (default, Apr 27 2020, 15:53:34) 
-[GCC 9.3.0] on linux
-Type "help", "copyright", "credits" or "license" for more information.
->>> import collageradiomics
->>> collageradiomics.__name__
-'collageradiomics'
-```
-
-# Development & Tests
-
-The package supports Python 3.10 and newer. CI tests the minimum numerical
-dependencies on Python 3.10 and current dependencies on Python 3.11 through 3.13.
-From the repository root, create a virtual environment and install the package and test tools:
-
-```shell
-python3 -m venv env_test
-source env_test/bin/activate
-python -m pip install -c constraints-test.txt -r requirements-test.txt
-python -m pip install --no-build-isolation -c constraints-test.txt -e ./module
-python -m pip check
-python -m pytest
-```
-
-The suite uses deterministic synthetic images and analytical texture fixtures.
-It also builds a source distribution, rebuilds a wheel from it, and installs and
-runs that wheel outside the checkout. The source distribution includes the DICOM
-sample and its example script; these are excluded from the library wheel.
-
-Confirmed numerical bugs are recorded as strict expected failures, with their
-reasons shown by pytest. When a fix makes one pass, remove its `xfail` marker.
-CI runs the same checks for pushes and pull requests. The test constraints cover
-the minimum supported stack; omit `-c constraints-test.txt` to test current versions.
-
-To build distributions manually:
-
-```shell
-python -m build --no-isolation ./module
-```
-
-# Python Usage
-_[Back to **Table of Contents**](#table-of-contents)_
-```python
-
-##################################################
-# imports
-import collageradiomics
-import pydicom
-import logging
-from pydicom.pixel_data_handlers.util import apply_modality_lut, apply_voi_lut
-from skimage.exposure import equalize_hist
-import numpy as np
-from sklearn.preprocessing import minmax_scale
-from random import randint
-##################################################
-
-
-##################################################
-# logging
-level = logging.INFO
-logging.basicConfig(level=level)
-logger = logging.getLogger()
-logger.setLevel(level)
-logger.info('Hello, world.')
-##################################################
-
-
-##################################################
-# loading data
-local_dcm_file = 'test.dcm'
-instance = pydicom.dcmread(local_dcm_file)
-slice_instance_uid = instance.SOPInstanceUID
-logger.debug(f'slice_instance_uid  = {slice_instance_uid}')
-##################################################
-
-
-##################################################
-# preprocessing
-logger.info('Correcting image...')
-np_array = instance.pixel_array
-corrected = apply_modality_lut(np_array, instance)
-corrected = apply_voi_lut(corrected, instance)
-scaled_array = equalize_hist(corrected)
-logger.debug(f'np.histogram(scaled_array) = {np.histogram(scaled_array)}')
-logger.info('done.')
-##################################################
-
-
-##################################################
-# rectangular selection
-width = 50
-height = 50
-min_row = randint(30,300)
-max_row = min_row + height
-min_col = randint(30,300)
-max_col = min_col + width
-
-original_shape = np_array.shape
-logger.debug(f'original_shape = {original_shape}')
-logger.info('Calculating collage features...')
-mask_array = np.zeros(original_shape, dtype='int')
-mask_array[min_row:max_row, min_col:max_col] = 1
-##################################################
-
-
-##################################################
-# run collage
-textures = collageradiomics.Collage(scaled_array, mask_array).execute()
-
-logger.debug(f'textures.shape = {textures.shape}')
-logger.debug(f'textures.dtype = {textures.dtype}')
-logger.debug(f'np.histogram(textures.flatten()) = {np.histogram(textures.flatten(), range=(np.nanmin(textures), np.nanmax(textures)))}')
-##################################################
-```

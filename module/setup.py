@@ -43,8 +43,8 @@ setuptools.setup(
     extras_require={
         'cli': ['click>=8.1,<9', 'SimpleITK>=2.3,<3'],
         'examples': [
-            'matplotlib>=3.8,<4', 'pydicom>=2.4,<4', 'scikit-learn>=1.3,<2',
-            'nibabel>=5,<6', 'jupyterlab>=4.3,<5', 'SimpleITK>=2.3,<3',
+            'matplotlib>=3.8,<4', 'pydicom>=3,<4',
+            'jupyterlab>=4.3,<5', 'SimpleITK>=2.3,<3',
         ],
     },
     python_requires='>=3.10',
