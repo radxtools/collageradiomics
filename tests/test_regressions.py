@@ -57,12 +57,10 @@ def test_checkerboard_has_known_energy_contrast_and_correlation(checkerboard_fea
     assert features[HaralickFeature.Correlation] == pytest.approx(-1.0)
 
 
-@pytest.mark.xfail(reason='Entropy enum selects sum entropy in Mahotas output', raises=AssertionError)
 def test_checkerboard_joint_entropy_is_one_bit(checkerboard_features):
     assert checkerboard_features()[HaralickFeature.Entropy] == pytest.approx(1.0)
 
 
-@pytest.mark.xfail(reason='Difference-variance interpretation is not forwarded to Mahotas', raises=AssertionError)
 def test_difference_variance_interpretations_produce_different_results(checkerboard_features):
     x_minus_y = checkerboard_features(
         difference_variance_interpretation=DifferenceVarianceInterpretation.XMinusYVariance,

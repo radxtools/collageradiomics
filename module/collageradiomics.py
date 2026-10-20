@@ -1,13 +1,13 @@
 import math
 import logging
 from itertools import product
-import mahotas as mt
 import numpy as np
 from scipy import linalg
 from skimage.feature import graycomatrix
 from skimage.util.shape import view_as_windows
 from enum import Enum, IntEnum
 from _collageradiomics.validation import angles, integer, validate_arrays
+from _collageradiomics.texture import named_haralick
 
 
 logger = logging.getLogger('collageradiomics')
@@ -93,16 +93,22 @@ def _svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows, is_3d=None)
     # calculate svd
     _, _, v = linalg.svd(flattened_gradients, full_matrices=False)
 
-    # extract results from the first column (in matlab this would be the first row)
-    dominant_y = v[0,0]
-    dominant_x = v[1,0]
+    # SciPy returns Vh: the first row is the principal right singular vector.
+    # Resolve its arbitrary sign so LAPACK sign choices do not change binning.
+    principal = v[0].copy()
+    if principal[np.argmax(np.abs(principal))] < 0:
+        principal *= -1
+    dominant_x, dominant_y = principal[:2]
 
     # calculate the dominant angle for this voxel
-    dominant_angle = math.atan2(dominant_y, dominant_x)
+    dominant_angle = (
+        0.0 if math.hypot(dominant_x, dominant_y) < np.finfo(float).eps
+        else math.atan2(dominant_y, dominant_x)
+    )
 
     if is_3D:
         # also include the secondary angle
-        dominant_z = v[2,0]
+        dominant_z = principal[2]
         secondary_angle = math.atan2(dominant_z, math.sqrt(dominant_x ** 2 + dominant_y ** 2))
         return (dominant_angle, secondary_angle)
     else:
@@ -398,7 +404,10 @@ class Collage:
         ]
         matrix = graycomatrix(patch, [1], self.cooccurence_angles, levels=self.num_unique_angles)
         matrix = np.sum(matrix[:, :, 0, :], axis=2)
-        return mt.features.texture.haralick_features([matrix], return_mean=True)
+        return named_haralick(
+            matrix,
+            self.difference_variance_interpretation == DifferenceVarianceInterpretation.XMinusYVariance,
+        )
 
     def _calculate_haralick_textures(self, dominant_angles):
         """Calculate masked voxels using a halo of unmasked neighboring angles."""
