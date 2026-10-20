@@ -14,7 +14,7 @@ logger = logging.getLogger('collageradiomics')
 logger.info('Logging set up.')
 
 
-def _svd_dominant_angles(dx, dy, dz, svd_radius):
+def _svd_dominant_angles(dx, dy, dz, svd_radius, is_3d=None):
     """Calculate a new numpy image containing the dominant angles for each voxel.
 
         :param dx: 3D numpy array of the pixel gradient in the x directions
@@ -24,7 +24,7 @@ def _svd_dominant_angles(dx, dy, dz, svd_radius):
         :rtype: numpy.ndarray
     """
 
-    is_3D = dx.shape[2] > 1
+    is_3D = dx.shape[2] > 1 if is_3d is None else is_3d
 
     # create rolling windows
     svd_diameter = svd_radius * 2 + 1
@@ -49,12 +49,12 @@ def _svd_dominant_angles(dx, dy, dz, svd_radius):
     center_y_range = range(angles_shape[0])
     center_z_range = range(angles_shape[2])
     for x, y, z in product(center_x_range, center_y_range, center_z_range):
-        dominant_angles_array[y, x, z, :] = _svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows)
+        dominant_angles_array[y, x, z, :] = _svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows, is_3D)
 
     return dominant_angles_array
 
 
-def _svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows):
+def _svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows, is_3d=None):
     """Calculates the dominate angle at the coordinate within the windows.
 
         :param x: x value of coordinate
@@ -79,7 +79,7 @@ def _svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows):
     dy_patch = dy_windows[y, x, z]
     dz_patch = dz_windows[y, x, z]
 
-    is_3D = dx_windows.shape[2] > 1
+    is_3D = dx_windows.shape[2] > 1 if is_3d is None else is_3d
 
     # flatten all N gradient values in this patch into an Nxd matrix to pass into svd
     window_area = dx_patch.size
@@ -91,7 +91,7 @@ def _svd_dominant_angle(x, y, z, dx_windows, dy_windows, dz_windows):
         flattened_gradients[:, 2] = np.reshape(dz_patch, window_area, order=matrix_order)
 
     # calculate svd
-    _, _, v = linalg.svd(flattened_gradients)
+    _, _, v = linalg.svd(flattened_gradients, full_matrices=False)
 
     # extract results from the first column (in matlab this would be the first row)
     dominant_y = v[0,0]
@@ -344,12 +344,6 @@ class Collage:
         if self._haralick_window_size % 2 == 0:
             raise ValueError('haralick_window_size must be odd')
 
-        # Our minimum size for x & y is 50x50
-        min_x_y_size = 50
-
-        if img_array.shape[0] < min_x_y_size or img_array.shape[1] < min_x_y_size:
-            raise ValueError(f'Image size ({img_array.shape[0]}x{img_array.shape[1]}) unsupported. Image must be a minimum of a 50x50 for collage to run.')
-
         self._is_3D = img_array.ndim == 3
         logger.debug(f'Running 3D Collage = {self.is_3D}')
 
@@ -357,11 +351,6 @@ class Collage:
         if not self.is_3D:
             # in the case of a single 2D slice, give it a third dimension of unit length
             self._img_array = self._img_array.reshape(self._img_array.shape + (1,))
-
-        min_3D_slices = 3
-        if self._img_array.shape[0] <  self._haralick_window_size or self._img_array.shape[1] < self._haralick_window_size or (self._is_3D and self._img_array.shape[2] < min_3D_slices):
-            raise ValueError(
-                f'Image is too small for a window size of {self._haralick_window_size} pixels.')
 
         # threshold mask
         uniqueValues = np.unique(mask_array)
@@ -401,195 +390,73 @@ class Collage:
 
 
     def _calculate_haralick_feature_values(self, img_array, center_x, center_y):
-
-        """Gets the haralick texture feature values at the x, y, z coordinate.
-, pos[1]
-            :param image_array: image to calculate texture
-            :type image_array: numpy.ndarray
-            :param center_x: x center of coordinate
-            :type center_x: int
-            :param center_y: y center of coordinate
-            :type center_y: int
-            :param window_size: size of window to pull for calculation
-            :type window_size: int
-            :param num_unique_angles: number of bins
-            :type num_unique_angles: int
-            :param haralick_feature: desired haralick feature
-            :type haralick_feature: HaralickFeature
-
-            :returns: A 13x1 vector of haralick texture at the coordinate.
-            :rtype: numpy.ndarray
-        """
-        # extract subpart of image (todo: pass in result from view_as_windows)
-        window_size = self.haralick_window_size
-        min_x = int(max(0, center_x - window_size / 2 - 1))
-        min_y = int(max(0, center_y - window_size / 2 - 1))
-        max_x = int(min(img_array.shape[1] - 1, center_x + window_size / 2 + 1))
-        max_y = int(min(img_array.shape[0] - 1, center_y + window_size / 2 + 1))
-        cropped_img_array = img_array[min_y:max_y, min_x:max_x]
-
-        # co-occurence matrix of all 8 directions and sum them
-        cooccurence_matrix = graycomatrix(cropped_img_array, [1], self.cooccurence_angles, levels=self.num_unique_angles)
-        cooccurence_matrix = np.sum(cooccurence_matrix, axis=3)
-        cooccurence_matrix = cooccurence_matrix[:, :, 0]
-
-        # extract haralick using mahotas library
-        return mt.features.texture.haralick_features([cooccurence_matrix], return_mean=True)
-
+        """Calculate the thirteen named features in a centered, odd-sized window."""
+        half = self.haralick_window_size // 2
+        patch = img_array[
+            max(0, center_y - half):min(img_array.shape[0], center_y + half + 1),
+            max(0, center_x - half):min(img_array.shape[1], center_x + half + 1),
+        ]
+        matrix = graycomatrix(patch, [1], self.cooccurence_angles, levels=self.num_unique_angles)
+        matrix = np.sum(matrix[:, :, 0, :], axis=2)
+        return mt.features.texture.haralick_features([matrix], return_mean=True)
 
     def _calculate_haralick_textures(self, dominant_angles):
-        """Gets haralick texture values 
-
-            :param dominant_angles_array: An image of the dominant angles at each voxel
-            :type dominant_angles_[:,:,:,feature_index]array: numpy.ndarray
-            :param desired_haralick_feature: which feature to calculate
-            :type desired_haralick_feature: Haralick Feature
-            :param num_unique_angles: number of bins
-            :type num_unique_angles: int
-            :param haralick_window_size: size of window around pixels to calculate haralick value
-
-            :returns: An hxwxdx13 set of haralick texture.
-            :rtype: numpy.ndarray
-        """
-
-        # rescale from 0 to (num_unique_angles-1)
-        num_unique_angles = self.num_unique_angles
-        logger.debug(f'Rescaling dominant angles to {num_unique_angles} unique values.')
-        dominant_angles_max = dominant_angles.max()
-        dominant_angles_min = dominant_angles.min()
-        dominant_angles_binned = (dominant_angles - dominant_angles_min) / (dominant_angles_max - dominant_angles_min + np.finfo(float).eps) * (num_unique_angles - 1)
-        dominant_angles_binned = np.round(dominant_angles_binned).astype(int)
-        logger.debug(f'Rescaling dominant angles done.')
-
-        # prepare output
-        shape = dominant_angles_binned.shape
-        haralick_image = np.empty(shape + (13,))
-        haralick_image[:] = np.nan
-
-        # the haralick is calculated for each slice separately
-        height, width, depth = shape
-
-        logger.debug(f'dominant_angles_binned shape is {shape} mask shape is {self.mask_array.shape}')
-
-        # In 3D, we extended the dominant angles by one slice in each direction, so now we need to trim those off.
-        for z in range(1, depth - 1) if self.is_3D else range(depth):
-            for y,x in product(range(height), range(width)):
-                if self.mask_array[y,x,z]:
-                    haralick_image[y,x,z,:] = self._calculate_haralick_feature_values(dominant_angles_binned[:,:,z], x, y)
-
-        return haralick_image
-
+        """Calculate masked voxels using a halo of unmasked neighboring angles."""
+        low, high = float(dominant_angles.min()), float(dominant_angles.max())
+        if high - low <= np.finfo(float).eps:
+            binned = np.zeros(dominant_angles.shape, dtype=np.int32)
+        else:
+            scaled = (dominant_angles.astype(float) - low) / (high - low)
+            binned = np.rint(scaled * (self.num_unique_angles - 1)).astype(np.int32)
+        output = np.full(self.mask_array.shape + (13,), np.nan)
+        halo = self.haralick_window_size // 2
+        for y, x, z in np.argwhere(self.mask_array):
+            output[y, x, z] = self._calculate_haralick_feature_values(
+                binned[:, :, z], int(x) + halo, int(y) + halo,
+            )
+        return output
 
     def execute(self):
-        """Begins haralick calculation.
+        """Return feature maps at input size, with NaN only outside the mask.
 
-            :returns: An image at original size that only has the masked section filled in with collage calculations.
-            :rtype: numpy.ndarray
+        Image edges are extended by replication. SVD neighborhoods and Haralick
+        neighborhoods both include their complete halo, including for small ROIs.
+        In 3D, gradients use neighboring slices and textures remain slice-wise.
         """
-
-        svd_radius = self.svd_radius
-
-        # mask location
-        mask_min_x = int(self.mask_min_x)
-        mask_min_y = int(self.mask_min_y)
-        mask_min_z = int(self.mask_min_z)
-        mask_max_x = int(self.mask_max_x)
-        mask_max_y = int(self.mask_max_y)
-        mask_max_z = int(self.mask_max_z)
-
-        mask_width  = mask_max_x - mask_min_x
-        mask_height = mask_max_y - mask_min_y
-        mask_depth  = mask_max_z - mask_min_z
-
-        img_array = self.img_array
-
-        # extend the mask outwards a bit (up to the edge of the image) to handle the svd radius
-        cropped_min_x = max(mask_min_x - svd_radius, 0)
-        cropped_min_y = max(mask_min_y - svd_radius, 0)
-        cropped_min_z = max(mask_min_z - 1         , 0) # for 3D, we just extend 1 slice in both directions
-        cropped_max_x = min(mask_max_x + svd_radius, img_array.shape[1])
-        cropped_max_y = min(mask_max_y + svd_radius, img_array.shape[0])
-        cropped_max_z = min(mask_max_z + 1         , img_array.shape[2])
-
-        extended_below = mask_min_z > 0
-        extended_above = mask_max_z < img_array.shape[2]
-
-        cropped_image = img_array[cropped_min_y:cropped_max_y,
-                                  cropped_min_x:cropped_max_x,
-                                  cropped_min_z:cropped_max_z]
-
-        logger.debug(f'Image shape = {img_array.shape}')
-        logger.debug(f'Mask size = {mask_height}x{mask_width}x{mask_depth}')
-        logger.debug(f'Image shape (cropped and padded) = {cropped_image.shape}')
-
-        # ensure the image values range from 0-1
-        if cropped_image.max() > 1:
-            logger.debug(f'Note: Dividing image values by {cropped_image.max()} to convert to 0-1 range')
-            cropped_image = cropped_image / cropped_image.max()
-
-        # calculate x,y,z gradients
-        logger.debug('Calculating pixel gradients:')
-        dx = np.gradient(cropped_image, axis=1)
-        dy = np.gradient(cropped_image, axis=0)
-        dz = np.gradient(cropped_image, axis=2) if self.is_3D else np.zeros(dx.shape)
-        
-        if extended_below:
-            dx = dx[:,:,1:]
-            dy = dy[:,:,1:]
-            dz = dz[:,:,1:]
-        
-        if extended_above:
-            dx = dx[:,:,:-1]
-            dy = dy[:,:,:-1]
-            dz = dz[:,:,:-1]
-            
-        self.dx = dx
-        self.dy = dy
-        self.dz = dz
-        logger.debug('Calculating pixel gradients done.')
-
-        # calculate dominant angles of each patch
-        logger.debug(f'Calculating dominant gradient angles using SVD for each image patch of size {svd_radius}x{svd_radius}')
-        dominant_angles = _svd_dominant_angles(dx, dy, dz, svd_radius)
-        self.dominant_angles = dominant_angles
-        angles_shape = dominant_angles.shape
-        logger.debug('Calculating dominant gradient angles done.')
-        logger.debug(f'Dominant angles shape = {angles_shape}')
-
-        # calculate haralick features of the dominant angles
-        logger.debug('Calculating haralick features of angles:')
-        haralick_features = np.empty(angles_shape[0:3] + (13, 2 if self.is_3D else 1,))
-        for angle_index in range(angles_shape[3]):
-            logger.info(f'Calculating features for angle {angle_index}:')
-            haralick_features[:,:,:,:,angle_index] = self._calculate_haralick_textures(dominant_angles[:,:,:,angle_index])
-            logger.info(f'Calculating features for angle {angle_index} done.')
-        logger.debug('Calculating haralick features of angles done.')
-
-        # prepare an output full of "NaN's"
-        collage_output = np.empty(img_array.shape + haralick_features.shape[3:5])
-        collage_output[:] = np.nan
-
-        # if a mask covers the whole image, we'll offset the edges as nans
-        if mask_height == img_array.shape[0] and mask_width == img_array.shape[1]:
-            y_offset = int((img_array.shape[0] - dominant_angles.shape[0]) / 2)
-            mask_min_y += y_offset
-            mask_max_y -= y_offset
-            x_offset = int((img_array.shape[1] - dominant_angles.shape[1]) / 2)
-            mask_min_x += x_offset
-            mask_max_x -= x_offset
-
-        # insert the haralick output into the correct spot
-        collage_output[mask_min_y:mask_max_y,
-                       mask_min_x:mask_max_x,
-                       mask_min_z:mask_max_z,
-                       :, :] = haralick_features
-
-        # remove the singleton third dimension from the output
+        half = self.haralick_window_size // 2
+        halo = self.svd_radius + half
+        image = self.img_array.astype(np.float64, copy=False)
+        y0, y1 = int(self.mask_min_y), int(self.mask_max_y)
+        x0, x1 = int(self.mask_min_x), int(self.mask_max_x)
+        z0, z1 = int(self.mask_min_z), int(self.mask_max_z)
+        height, width, depth = y1 - y0, x1 - x0, z1 - z0
+        cy0, cy1 = max(0, y0 - halo), min(image.shape[0], y1 + halo)
+        cx0, cx1 = max(0, x0 - halo), min(image.shape[1], x1 + halo)
+        cz0, cz1 = max(0, z0 - 1), min(image.shape[2], z1 + 1)
+        patch = image[cy0:cy1, cx0:cx1, cz0:cz1]
+        patch = np.pad(patch, (
+            (max(0, halo - y0), max(0, y1 + halo - image.shape[0])),
+            (max(0, halo - x0), max(0, x1 + halo - image.shape[1])),
+            (0, 0),
+        ), mode='edge')
+        magnitude = np.max(np.abs(patch))
+        if magnitude > 1:
+            patch = patch / magnitude
+        z_slice = slice(z0 - cz0, z0 - cz0 + depth)
+        dx = np.gradient(patch, axis=1)[:, :, z_slice]
+        dy = np.gradient(patch, axis=0)[:, :, z_slice]
+        dz = (np.gradient(patch, axis=2) if patch.shape[2] > 1 else np.zeros_like(patch))[:, :, z_slice]
+        self.dx, self.dy, self.dz = dx, dy, dz
+        dominant = _svd_dominant_angles(dx, dy, dz, self.svd_radius, is_3d=self.is_3D)
+        self.dominant_angles = dominant[half:half + height, half:half + width]
+        num_angles = 2 if self.is_3D else 1
+        features = np.empty((height, width, depth, 13, num_angles))
+        for angle in range(num_angles):
+            logger.info('Calculating features for angle %s', angle)
+            features[:, :, :, :, angle] = self._calculate_haralick_textures(dominant[:, :, :, angle])
+        output = np.full(image.shape + (13, num_angles), np.nan)
+        output[y0:y1, x0:x1, z0:z1] = features
         if not self.is_3D:
-            collage_output = np.squeeze(collage_output, 4)
-            collage_output = np.squeeze(collage_output, 2)
-
-        # output
-        self.collage_output = collage_output
-        logger.debug(f'Output shape = {collage_output.shape}')
-        return collage_output
+            output = output[:, :, 0, :, 0]
+        self.collage_output = output
+        return output

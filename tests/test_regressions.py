@@ -4,7 +4,6 @@ import pytest
 from collageradiomics import Collage, DifferenceVarianceInterpretation, HaralickFeature
 
 
-@pytest.mark.xfail(reason='Issue #121: clipped SVD windows misalign edge masks', raises=ValueError)
 @pytest.mark.parametrize('edge', ['left', 'right', 'top', 'bottom'])
 def test_masks_touching_image_edges(image_and_mask_2d, edge):
     image, mask = image_and_mask_2d
@@ -23,7 +22,6 @@ def test_masks_touching_image_edges(image_and_mask_2d, edge):
     assert np.isnan(output[mask == 0]).all()
 
 
-@pytest.mark.xfail(reason='Issue #97: first and last masked slices are skipped', raises=AssertionError)
 @pytest.mark.parametrize('depth', [2, 3])
 def test_every_masked_3d_slice_is_calculated(image_and_mask_3d, depth):
     image, mask = image_and_mask_3d
