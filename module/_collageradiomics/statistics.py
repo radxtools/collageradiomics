@@ -5,7 +5,6 @@ from typing import Any
 import numpy as np
 from collageradiomics import HaralickFeature
 from numpy.typing import NDArray
-from scipy import stats
 
 
 def summarize(values: NDArray[Any], extended: bool = False) -> dict[str, float]:
@@ -13,12 +12,21 @@ def summarize(values: NDArray[Any], extended: bool = False) -> dict[str, float]:
     finite = finite[np.isfinite(finite)]
     if not finite.size:
         raise ValueError("feature contains no finite values")
-    constant = bool(np.all(finite == finite[0]))
+    centered = finite - np.mean(finite)
+    scale = float(np.max(np.abs(centered)))
+    # Normalize before calculating moments to avoid cancellation warnings and
+    # underflow for nearly constant maps. These are population (biased) moments.
+    skewness, kurtosis = 0.0, 0.0
+    if scale > 0:
+        normalized = centered / scale
+        second = float(np.mean(normalized**2))
+        skewness = float(np.mean(normalized**3)) / second**1.5
+        kurtosis = float(np.mean(normalized**4)) / second**2 - 3
     result = {"Median": float(np.median(finite))}
     if extended:
         result["IQR"] = float(np.percentile(finite, 75) - np.percentile(finite, 25))
-    result["Skewness"] = 0.0 if constant else float(stats.skew(finite))
-    result["Kurtosis"] = 0.0 if constant else float(stats.kurtosis(finite))
+    result["Skewness"] = skewness
+    result["Kurtosis"] = kurtosis
     if extended:
         result["Mean"] = float(np.mean(finite))
     result["Variance"] = float(np.var(finite, ddof=1)) if finite.size > 1 else 0.0

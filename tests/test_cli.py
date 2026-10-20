@@ -165,3 +165,22 @@ def test_constant_and_single_voxel_statistics_are_finite():
         "Mean": 2,
         "Variance": 0,
     }
+
+
+def test_reference_summary_moments():
+    result = summarize(np.array([0.0, 1.0, 2.0]), True)
+    assert result == pytest.approx(
+        {
+            "Median": 1,
+            "IQR": 1,
+            "Mean": 1,
+            "Variance": 1,
+            "Skewness": 0,
+            "Kurtosis": -1.5,
+        }
+    )
+
+
+def test_nearly_constant_statistics_remain_finite():
+    result = summarize(np.array([1.0, 1.0 + 1e-15, 1.0 - 1e-15]), True)
+    assert np.isfinite(list(result.values())).all()
