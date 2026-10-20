@@ -10,6 +10,9 @@ source:
 build:
   number: 0
   noarch: python
+  entry_points:
+    - collageradiomics = _collageradiomics.cli:run
+    - collageradiomicscli.py = _collageradiomics.cli:run
   script: {{ PYTHON }} -m pip install ./module --no-deps --no-build-isolation -vv
 
 requirements:
