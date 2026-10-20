@@ -23,6 +23,10 @@ setuptools.setup(
     },
     py_modules=['collageradiomics'],
     packages=setuptools.find_packages(where=str(module_dir), include=['_collageradiomics*']),
+    entry_points={'console_scripts': [
+        'collageradiomics=_collageradiomics.cli:run',
+        'collageradiomicscli.py=_collageradiomics.cli:run',
+    ]},
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',

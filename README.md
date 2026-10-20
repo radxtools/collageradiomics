@@ -76,6 +76,29 @@ pip3 install --upgrade collageradiomics
 python3 -c 'import collageradiomics; print(collageradiomics.__name__)'
 ```
 
+## Command line
+
+Install the image-reading dependencies and run one image/mask pair:
+
+```shell
+python -m pip install 'collageradiomics[cli]'
+collageradiomics -i image.nii.gz -m mask.nii.gz -o features.csv
+```
+
+For batch extraction, provide a CSV with `ID,Image,Mask` columns. Relative image
+paths are resolved against the CSV directory. Each successful case becomes one
+output row; failures are recorded in `errors_features.csv` and give a nonzero exit code.
+
+```shell
+collageradiomics -i cases.csv -o features.csv --extendstats --verbose
+collageradiomics --help
+```
+
+Images and masks must have matching size, spacing, origin, and direction. Arrays
+use `(height, width, depth)` in the core. `--dimensions 2` accepts 2D images or
+single-slice volumes; it does not discard slices from a 3D volume. Constant and
+single-voxel regions have zero skewness, kurtosis, and sample variance by convention.
+
 ## Local usage
 ```shell
 # get the code
