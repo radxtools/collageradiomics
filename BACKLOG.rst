@@ -2,7 +2,10 @@ Backlog resolution
 ===================
 
 This record covers the original 28 issues and three dependency PRs. Implementation
-and decisions are in `PR #129 <https://github.com/radxtools/collageradiomics/pull/129>`_.
+and decisions are in merged
+`PR #129 <https://github.com/radxtools/collageradiomics/pull/129>`_, with portable
+Conda console entry points in
+`PR #130 <https://github.com/radxtools/collageradiomics/pull/130>`_.
 The code work is complete; four issues retain external completion steps below.
 Version 0.4 changes numerical results: recompute cached 0.3.x features and read the
 numerical migration guide. No clinical validation is implied by these tests.
@@ -112,30 +115,39 @@ acceptance or account ownership.
      - environment.yml and a native-tested local Conda recipe support checkout
        development and local packages. A separate conda-forge v1 recipe uses an
        official commit archive and verified SHA256, builds with rattler-build, and
-       passes installed-package tests. `Staged-recipes PR #35264
+       passes installed-package tests, including Linux and Windows builds.
+       Explicit entry-point records regenerate the noarch console launchers on
+       each platform. `Staged-recipes PR #35264
        <https://github.com/conda-forge/staged-recipes/pull/35264>`_ remains in draft
        for release-source substitution, maintainer confirmation, and acceptance.
    * - #73
      - `MRHub PR #119 <https://github.com/ISMRM/mrhub/pull/119>`_ adds a validated
-       entry and original logo. MRHub maintainers must accept the listing.
+       entry and original logo and is ready for review. MRHub maintainers must
+       accept the listing.
    * - #78
      - The release guide specifies PyPI ownership, trusted publishers for both
        packages, and Read the Docs roles. A service owner must verify/add the
        maintainers and configure those accounts. Legacy GitHub secret names do
        not establish service ownership or working publication credentials.
+       A draft 0.4.0 release with validated core/CLI artifacts and SHA256SUMS is
+       prepared in `GitHub releases
+       <https://github.com/radxtools/collageradiomics/releases>`_ for owner review;
+       no package publication has been attempted.
    * - #83
      - `Slicer index PR #2424 <https://github.com/Slicer/ExtensionsIndex/pull/2424>`_
        supplies catalog metadata. The extension retries dependency imports after
        an explicit Install action and performs no package installation at startup.
-       The source changes must merge, core 0.4 must reach PyPI, and Slicer
-       maintainers must accept/build the catalog entry.
+       The source changes are merged and the complete remote-source catalog
+       validator passes. Core 0.4 must reach PyPI, and Slicer maintainers must
+       accept/build the catalog entry.
 
 Dependency PR disposition
 -------------------------
 
-PRs #123 (SciPy 1.10.0), #125 (Pygments 2.15.0), and #126 (Tornado 6.3.3) are
-superseded by the coordinated refresh in #129. The final Python 3.11 lock uses
+PRs #123 (SciPy 1.10.0), #125 (Pygments 2.15.0), and #126 (Tornado 6.3.3) were
+closed as superseded after the coordinated refresh in #129 merged. The final
+Python 3.11 lock uses
 SciPy 1.17.1, Pygments 2.21.0, and Tornado 6.5.10. Applying the old lockfile diffs
-would conflict and restore unrelated outdated versions. Close them after #129
-merges. The refreshed lock passes pip-audit with no known vulnerabilities as of
+would conflict and restore unrelated outdated versions. The refreshed lock
+passes pip-audit with no known vulnerabilities as of
 2026-10-20, including a fixed pytest version.
