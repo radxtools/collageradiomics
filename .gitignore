@@ -15,4 +15,5 @@ module/docs/build/*
 module/docs/source/_build/*
 .idea/*
 __pycache__
+.pytest_cache/
 env_*

@@ -1,13 +1,11 @@
+from pathlib import Path
+
 import setuptools
 
-with open('requirements.txt', 'r') as f:
-    requirements = f.read()
-
-with open('README.md', 'r') as fh:
-    long_description = fh.read()
-
-with open('VERSION') as version_file:
-    version = version_file.read().strip()
+module_dir = Path(__file__).resolve().parent
+requirements = (module_dir / 'requirements.txt').read_text(encoding='utf-8').splitlines()
+long_description = (module_dir / 'README.md').read_text(encoding='utf-8')
+version = (module_dir / 'VERSION').read_text(encoding='utf-8').strip()
 
 setuptools.setup(
     name='collageradiomics',

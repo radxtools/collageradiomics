@@ -1,0 +1,5 @@
+# Baseline for testing the existing runtime dependencies on Python 3.10 and 3.11.
+# Runtime dependency modernization is a separate change.
+numpy==1.26.4
+scipy==1.11.4
+scikit-image==0.22.0

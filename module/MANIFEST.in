@@ -1,1 +1,4 @@
 include VERSION
+include requirements.txt
+include test.dcm
+include test_script.py

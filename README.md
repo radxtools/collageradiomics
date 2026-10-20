@@ -11,6 +11,7 @@
   - [Pip Usage](#pip-usage)
   - [Docker Notebooks](#docker-notebooks)
   - [Docker Sandbox](#docker-sandbox)
+- [Development & Tests](#development--tests)
 - [Python Usage](#python-usage)
 
 # Science
@@ -146,6 +147,37 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> import collageradiomics
 >>> collageradiomics.__name__
 'collageradiomics'
+```
+
+# Development & Tests
+
+The test baseline uses Python 3.10 or 3.11 with the existing package dependencies.
+From the repository root, create a virtual environment and install the package and test tools:
+
+```shell
+python3 -m venv env_test
+source env_test/bin/activate
+python -m pip install -c constraints-test.txt -r requirements-test.txt
+python -m pip install --no-build-isolation -c constraints-test.txt -e ./module
+python -m pip check
+python -m pytest
+```
+
+The suite uses deterministic synthetic images and analytical texture fixtures.
+It also builds a source distribution, rebuilds a wheel from it, and installs and
+runs that wheel outside the checkout. The source distribution includes the DICOM
+sample and its example script; these are excluded from the library wheel.
+
+Confirmed numerical bugs are recorded as strict expected failures, with their
+reasons shown by pytest. When a fix makes one pass, remove its `xfail` marker.
+CI runs the same checks for pushes and pull requests. The test constraints keep
+the current dependency stack reproducible while dependency upgrades are handled
+separately.
+
+To build distributions manually:
+
+```shell
+python -m build --no-isolation ./module
 ```
 
 # Python Usage
