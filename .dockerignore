@@ -1,0 +1,17 @@
+.git
+.agents
+.codex
+.aws
+.local
+.env
+**/.env
+.venv
+env_*
+.pytest_cache
+.mypy_cache
+.ruff_cache
+**/__pycache__
+**/*.egg-info
+**/build
+**/dist
+output_data

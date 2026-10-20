@@ -75,6 +75,10 @@ segmentations, supports both angles, and provides cancellable progress.
 
 ## Development and tests
 
+For containerized extraction or notebooks, see [docker/README.rst](docker/README.rst).
+Both targets build the checkout and include the CLI; obsolete personal base images
+and the pinned 0.2.6 Docker hierarchy have been retired.
+
 ```shell
 python -m pip install -r requirements-test.txt
 python -m pip install --no-build-isolation -e './module[cli]'
