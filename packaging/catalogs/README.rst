@@ -20,8 +20,9 @@ to the repository root. The root CMake entry point delegates to the extension
 sources; ``build_subdirectory`` describes the build output, not a source subtree.
 The extension can still be configured directly from ``slicer/collageradiomics``.
 
-The extension retries its import after installing the required core and upgrades
-an older core missing the progress API. Its native tests run in Slicer 5.12.4.
+The extension imports the core on demand. If it is absent or too old, the module
+shows an Install button and retries its import after the user installs it.
+Discovery at Slicer startup does not install packages. Native tests run in Slicer 5.12.4.
 Submit the JSON file to ``Slicer/ExtensionsIndex`` after merging the source changes.
 Keep the submission in draft until collageradiomics 0.4 is available from PyPI;
 fresh Slicer installations need that dependency. Catalog acceptance is tracked

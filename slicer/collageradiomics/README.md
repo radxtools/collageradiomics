@@ -21,6 +21,9 @@ Details on extraction of **CoLlAGe** features are included in [\[1\]](#reference
 _[Back to **Table of Contents**](#table-of-contents)_
 
 The extension requires Slicer 5.10 or newer and collageradiomics 0.4 or newer.
+When the required core is absent, open the module and click **Install CoLlAGe**
+to install its dependencies from PyPI. Module discovery at startup does not install
+packages. For an unpublished checkout, use the PythonSlicer install command below.
 It accepts a scalar input volume and either a labelmap or visible segmentation.
 Labelmaps must match the image geometry and parent transform. Segmentations are
 exported to the input geometry before extraction. Outputs preserve image geometry

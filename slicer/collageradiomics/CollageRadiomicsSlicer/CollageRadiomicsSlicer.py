@@ -1,11 +1,15 @@
 import datetime
+import importlib
+import importlib.util
 import inspect
 import json
 import logging
+import sys
 from pathlib import Path
 
 import ctk
 import numpy as np
+import qt
 import vtk
 from slicer.ScriptedLoadableModule import (
     ScriptedLoadableModule,
@@ -17,13 +21,13 @@ from slicer.util import VTKObservationMixin
 
 import slicer
 
-try:
-    from collageradiomics import Collage, DifferenceVarianceInterpretation, HaralickFeature
-    if "progress_callback" not in inspect.signature(Collage).parameters:
+
+def load_core():
+    """Import on demand; never install packages while Slicer discovers modules."""
+    core = importlib.import_module("collageradiomics")
+    if "progress_callback" not in inspect.signature(core.Collage).parameters:
         raise ImportError("The Slicer extension requires collageradiomics 0.4 or newer")
-except ImportError:
-    slicer.util.pip_install("collageradiomics>=0.4.0,<0.5")
-    from collageradiomics import Collage, DifferenceVarianceInterpretation, HaralickFeature
+    return core
 
 
 class CollageCancelled(RuntimeError):
@@ -69,6 +73,7 @@ class CollageRadiomicsSlicerWidget(ScriptedLoadableModuleWidget, VTKObservationM
         Called when the user opens the module the first time and the widget is initialized.
         """
         self.logic = None
+        self.core = None
         self._parameterNode = None
         self._updatingGUI = False
         VTKObservationMixin.__init__(self)
@@ -82,6 +87,44 @@ class CollageRadiomicsSlicerWidget(ScriptedLoadableModuleWidget, VTKObservationM
         Called when the user opens the module the first time and the widget is initialized.
         """
         ScriptedLoadableModuleWidget.setup(self)
+        try:
+            self.core = load_core()
+        except ImportError:
+            self.dependenciesWidget = qt.QWidget()
+            layout = qt.QVBoxLayout(self.dependenciesWidget)
+            message = qt.QLabel(
+                "CoLlAGe 0.4 is required. Install it and its numerical dependencies "
+                "from PyPI into Slicer's Python environment. An internet connection "
+                "is required."
+            )
+            message.wordWrap = True
+            layout.addWidget(message)
+            self.installButton = qt.QPushButton("Install CoLlAGe")
+            self.installButton.connect("clicked(bool)", self.onInstallCore)
+            layout.addWidget(self.installButton)
+            self.layout.addWidget(self.dependenciesWidget)
+            return
+        self.setupExtraction()
+
+    def onInstallCore(self):
+        self.installButton.enabled = False
+        try:
+            with slicer.util.tryWithErrorDisplay("Unable to install CoLlAGe", waitCursor=True):
+                slicer.util.pip_install("collageradiomics>=0.4.0,<0.5")
+                importlib.invalidate_caches()
+                previous = sys.modules.get("collageradiomics")
+                if (
+                    previous is not None
+                    and "progress_callback" not in inspect.signature(previous.Collage).parameters
+                ):
+                    importlib.reload(previous)
+                self.core = load_core()
+                self.setupExtraction()
+                self.dependenciesWidget.hide()
+        finally:
+            self.installButton.enabled = True
+
+    def setupExtraction(self):
 
         uiWidget = slicer.util.loadUI(self.resourcePath("UI/CollageRadiomicsSlicer.ui"))
         self.layout.addWidget(uiWidget)
@@ -94,7 +137,7 @@ class CollageRadiomicsSlicerWidget(ScriptedLoadableModuleWidget, VTKObservationM
 
         self.individualFeatures = {}
 
-        for i, feature in enumerate(HaralickFeature):
+        for i, feature in enumerate(self.core.HaralickFeature):
             checkBox = ctk.ctkCheckBox()
             checkBox.text = feature.name
             self.individualFeatures[feature] = checkBox
@@ -107,8 +150,8 @@ class CollageRadiomicsSlicerWidget(ScriptedLoadableModuleWidget, VTKObservationM
         self.allFeatures.text = "All"
         self.allFeatures.setChecked(True)
         self.allFeatures.connect("clicked(bool)", self.onAllFeature)
-        row = len(HaralickFeature) // 2
-        column = len(HaralickFeature) % 2
+        row = len(self.core.HaralickFeature) // 2
+        column = len(self.core.HaralickFeature) % 2
         advancedFormLayout.addWidget(self.allFeatures, row, column)
 
         self.ui.inputMaskSelector.nodeTypes = [
@@ -126,7 +169,7 @@ class CollageRadiomicsSlicerWidget(ScriptedLoadableModuleWidget, VTKObservationM
             "Pick the regions for feature calculation - defined by a segmentation or labelmap volume node."
         )
 
-        for interpretation in DifferenceVarianceInterpretation:
+        for interpretation in self.core.DifferenceVarianceInterpretation:
             self.ui.differenceVarianceComboBox.addItem(interpretation.name)
 
         self.ui.phiCheckBox.connect("clicked(bool)", self.onPhi)
@@ -308,7 +351,7 @@ class CollageRadiomicsSlicerWidget(ScriptedLoadableModuleWidget, VTKObservationM
                 svd_radius=int(self.ui.svdSlider.value),
                 window_size=int(self.ui.windowSlider.value),
                 grey_levels=int(self.ui.graylevelsSlider.value),
-                difference_variance_interpretation=DifferenceVarianceInterpretation(
+                difference_variance_interpretation=self.core.DifferenceVarianceInterpretation(
                     self.ui.differenceVarianceComboBox.currentIndex
                 ),
                 progress_callback=report,
@@ -363,18 +406,25 @@ class CollageRadiomicsSlicerLogic(ScriptedLoadableModuleLogic):
         showResult=True,
         svd_radius=5,
         verbose_logging=False,
-        features=(HaralickFeature.Contrast,),
+        features=None,
         window_size=-1,
         grey_levels=64,
-        difference_variance_interpretation=DifferenceVarianceInterpretation.XMinusYVariance,
+        difference_variance_interpretation=None,
         progress_callback=None,
     ):
+        core = load_core()
+        if features is None:
+            features = (core.HaralickFeature.Contrast,)
+        if difference_variance_interpretation is None:
+            difference_variance_interpretation = (
+                core.DifferenceVarianceInterpretation.XMinusYVariance
+            )
         if inputVolume is None or mask is None:
             raise ValueError("An input image and mask are required")
         if not inputVolume.IsA("vtkMRMLScalarVolumeNode") or inputVolume.GetImageData() is None:
             raise TypeError("Input must be a scalar volume with image data")
         dimensions = tuple(dict.fromkeys(dimensions))
-        features = tuple(HaralickFeature(feature) for feature in features)
+        features = tuple(core.HaralickFeature(feature) for feature in features)
         if not dimensions or any(d not in (0, 1) for d in dimensions) or not features:
             raise ValueError("Select at least one valid angle and feature")
         temporary = None
@@ -402,7 +452,7 @@ class CollageRadiomicsSlicerLogic(ScriptedLoadableModuleLogic):
             maskArray = np.moveaxis(slicer.util.arrayFromVolume(maskVolume), 0, -1).copy()
             if invert:
                 maskArray = maskArray == 0
-            collage = Collage(
+            collage = core.Collage(
                 inputArray,
                 maskArray,
                 svd_radius=svd_radius,
@@ -449,6 +499,7 @@ class CollageRadiomicsSlicerLogic(ScriptedLoadableModuleLogic):
 
 class CollageRadiomicsSlicerTest(ScriptedLoadableModuleTest):
     def setUp(self):
+        self.core = load_core()
         slicer.mrmlScene.Clear(0)
         self.logic = CollageRadiomicsSlicerLogic()
         self.image = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLScalarVolumeNode", "testImage")
@@ -469,6 +520,9 @@ class CollageRadiomicsSlicerTest(ScriptedLoadableModuleTest):
             "test_geometry_rejected",
             "test_cancellation_cleanup",
             "test_widget_parameters",
+            "test_startup_without_core",
+            "test_explicit_install",
+            "test_old_core_rejected",
         ):
             self.setUp()
             getattr(self, name)()
@@ -484,7 +538,7 @@ class CollageRadiomicsSlicerTest(ScriptedLoadableModuleTest):
             showResult=False,
             svd_radius=1,
             grey_levels=8,
-            features=(HaralickFeature.Contrast, HaralickFeature.Entropy),
+            features=(self.core.HaralickFeature.Contrast, self.core.HaralickFeature.Entropy),
         )
         self.assertEqual(len(outputs), 4)
         original = slicer.util.arrayFromVolume(self.mask) != 0
@@ -564,9 +618,47 @@ class CollageRadiomicsSlicerTest(ScriptedLoadableModuleTest):
             self.assertEqual(captured["dimensions"], [0, 1])
             self.assertEqual(
                 captured["difference_variance_interpretation"],
-                DifferenceVarianceInterpretation.ProbabilityXMinusYVariance,
+                self.core.DifferenceVarianceInterpretation.ProbabilityXMinusYVariance,
             )
             self.assertEqual(widget._parameterNode.GetParameter("SVDRadius"), "1")
         finally:
             widget.cleanup()
             widget.parent.deleteLater()
+
+    def test_startup_without_core(self):
+        from unittest.mock import patch
+
+        with (
+            patch.dict(sys.modules, {"collageradiomics": None}),
+            patch.object(slicer.util, "pip_install") as install,
+        ):
+            spec = importlib.util.spec_from_file_location("CollageWithoutCore", __file__)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            install.assert_not_called()
+
+    def test_explicit_install(self):
+        from unittest.mock import patch
+
+        with (
+            patch(__name__ + ".load_core", side_effect=[ImportError("missing"), self.core]),
+            patch.object(slicer.util, "pip_install") as install,
+        ):
+            widget = CollageRadiomicsSlicerWidget()
+            try:
+                install.assert_not_called()
+                self.assertIsNone(widget.core)
+                widget.onInstallCore()
+                install.assert_called_once_with("collageradiomics>=0.4.0,<0.5")
+                self.assertIsNotNone(widget.ui)
+            finally:
+                widget.cleanup()
+                widget.parent.deleteLater()
+
+    def test_old_core_rejected(self):
+        from types import SimpleNamespace
+        from unittest.mock import patch
+
+        with patch.dict(sys.modules, {"collageradiomics": SimpleNamespace(Collage=lambda: None)}):
+            with self.assertRaisesRegex(ImportError, "0.4"):
+                load_core()
