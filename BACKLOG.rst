@@ -119,7 +119,8 @@ acceptance or account ownership.
        Explicit entry-point records regenerate the noarch console launchers on
        each platform. `Staged-recipes PR #35264
        <https://github.com/conda-forge/staged-recipes/pull/35264>`_ remains in draft
-       for release-source substitution, maintainer confirmation, and acceptance.
+       for release-source substitution and acceptance. Feedstock maintenance is
+       confirmed by mohsenhariri on the upstream PR.
    * - #73
      - `MRHub PR #119 <https://github.com/ISMRM/mrhub/pull/119>`_ adds a validated
        entry and original logo and is ready for review. MRHub maintainers must
