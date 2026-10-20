@@ -76,7 +76,11 @@ def test_wheel_metadata_matches_declared_version_and_requirements(distributions)
         for line in (REPOSITORY / 'module' / 'requirements.txt').read_text().splitlines()
         if line.strip() and not line.lstrip().startswith('#')
     }
-    assert {str(Requirement(line)) for line in metadata.get_all('Requires-Dist')} == expected
+    runtime = {
+        str(Requirement(line)) for line in metadata.get_all('Requires-Dist')
+        if Requirement(line).marker is None
+    }
+    assert runtime == expected
 
 
 def test_built_wheel_installs_and_runs_outside_checkout(distributions, tmp_path):

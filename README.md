@@ -151,7 +151,8 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 # Development & Tests
 
-The test baseline uses Python 3.10 or 3.11 with the existing package dependencies.
+The package supports Python 3.10 and newer. CI tests the minimum numerical
+dependencies on Python 3.10 and current dependencies on Python 3.11 through 3.13.
 From the repository root, create a virtual environment and install the package and test tools:
 
 ```shell
@@ -170,9 +171,8 @@ sample and its example script; these are excluded from the library wheel.
 
 Confirmed numerical bugs are recorded as strict expected failures, with their
 reasons shown by pytest. When a fix makes one pass, remove its `xfail` marker.
-CI runs the same checks for pushes and pull requests. The test constraints keep
-the current dependency stack reproducible while dependency upgrades are handled
-separately.
+CI runs the same checks for pushes and pull requests. The test constraints cover
+the minimum supported stack; omit `-c constraints-test.txt` to test current versions.
 
 To build distributions manually:
 

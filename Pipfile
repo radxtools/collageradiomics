@@ -4,15 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-numpy = "*"
-scikit-build = "*"
-scikit-image = "*"
-mahotas = "*"
-scipy = "*"
-jupyter = "*"
-SimpleITK = "*"
+collageradiomics = {path = "./module", editable = true, extras = ["examples", "cli"]}
 
 [dev-packages]
+pytest = ">=8,<9"
+build = ">=1.2,<2"
+mypy = ">=1.13,<2"
+ruff = ">=0.11,<1"
 
 [requires]
-python_version = "3.8"
+python_version = "3.11"

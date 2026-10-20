@@ -15,11 +15,11 @@ setuptools.setup(
     description='Python implementation of COLLAGE texture features from BRIC & INVENTLAB.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/ccipd/collageradiomics',
+    url='https://github.com/radxtools/collageradiomics',
     project_urls={
-        'Docker Examples': 'https://hub.docker.com/repository/docker/ccipd/collageradiomics-examples',
-        'Docker Module': 'https://hub.docker.com/repository/docker/ccipd/collageradiomics-pip',
-        'Github': 'https://github.com/ccipd/collageradiomics'
+        'Docker Examples': 'https://github.com/radxtools/collageradiomics/tree/master/docker',
+        'Documentation': 'https://collageradiomics.readthedocs.io/',
+        'Github': 'https://github.com/radxtools/collageradiomics'
     },
     py_modules=['collageradiomics'],
     classifiers=[
@@ -35,6 +35,13 @@ setuptools.setup(
         'Topic :: Scientific/Engineering :: Bio-Informatics',
     ],
     install_requires=requirements,
-    python_requires='>=3.6',
+    extras_require={
+        'cli': ['click>=8.1,<9', 'SimpleITK>=2.3,<3'],
+        'examples': [
+            'matplotlib>=3.8,<4', 'pydicom>=2.4,<4', 'scikit-learn>=1.3,<2',
+            'nibabel>=5,<6', 'jupyterlab>=4.3,<5', 'SimpleITK>=2.3,<3',
+        ],
+    },
+    python_requires='>=3.10',
     keywords='radiomics cancerimaging medicalresearch computationalimaging',
 )
