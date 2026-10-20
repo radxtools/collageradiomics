@@ -42,3 +42,9 @@ jobs:
           python -m pip check
       - name: Run core and distribution tests
         run: python -m pytest
+      - name: Check types and style
+        if: matrix.python-version == '3.11'
+        run: |
+          python -m mypy
+          python -m ruff check module/collageradiomics module/_collageradiomics tests cli
+          python -m ruff format --check module/collageradiomics module/_collageradiomics tests cli

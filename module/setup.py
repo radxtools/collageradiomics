@@ -21,8 +21,8 @@ setuptools.setup(
         'Documentation': 'https://collageradiomics.readthedocs.io/',
         'Github': 'https://github.com/radxtools/collageradiomics'
     },
-    py_modules=['collageradiomics'],
-    packages=setuptools.find_packages(where=str(module_dir), include=['_collageradiomics*']),
+    packages=setuptools.find_packages(where=str(module_dir), include=['collageradiomics*', '_collageradiomics*']),
+    package_data={'collageradiomics': ['py.typed'], '_collageradiomics': ['py.typed']},
     entry_points={'console_scripts': [
         'collageradiomics=_collageradiomics.cli:run',
         'collageradiomicscli.py=_collageradiomics.cli:run',

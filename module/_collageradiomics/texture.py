@@ -29,7 +29,9 @@ def maximal_correlation(matrix: NDArray[Any]) -> float:
 
 def named_haralick(matrix: NDArray[Any], x_minus_y_variance: bool) -> NDArray[np.float64]:
     raw = mahotas.features.texture.haralick_features(
-        [matrix], return_mean=True, use_x_minus_y_variance=x_minus_y_variance,
+        [matrix],
+        return_mean=True,
+        use_x_minus_y_variance=x_minus_y_variance,
     )
     # Mahotas includes inverse difference moment at index 4. CoLlAGe's public
     # list omits it and includes maximal correlation as the thirteenth feature.

@@ -1,18 +1,17 @@
 import numpy as np
 import pytest
-
 from collageradiomics import Collage, DifferenceVarianceInterpretation, HaralickFeature
 
 
-@pytest.mark.parametrize('edge', ['left', 'right', 'top', 'bottom'])
+@pytest.mark.parametrize("edge", ["left", "right", "top", "bottom"])
 def test_masks_touching_image_edges(image_and_mask_2d, edge):
     image, mask = image_and_mask_2d
     mask[:] = 0
     regions = {
-        'left': (slice(20, 26), slice(0, 6)),
-        'right': (slice(20, 26), slice(-6, None)),
-        'top': (slice(0, 6), slice(21, 27)),
-        'bottom': (slice(-6, None), slice(21, 27)),
+        "left": (slice(20, 26), slice(0, 6)),
+        "right": (slice(20, 26), slice(-6, None)),
+        "top": (slice(0, 6), slice(21, 27)),
+        "bottom": (slice(-6, None), slice(21, 27)),
     }
     mask[regions[edge]] = 1
     output = Collage(image, mask, svd_radius=2, num_unique_angles=8).execute()
@@ -22,11 +21,11 @@ def test_masks_touching_image_edges(image_and_mask_2d, edge):
     assert np.isnan(output[mask == 0]).all()
 
 
-@pytest.mark.parametrize('depth', [2, 3])
+@pytest.mark.parametrize("depth", [2, 3])
 def test_every_masked_3d_slice_is_calculated(image_and_mask_3d, depth):
     image, mask = image_and_mask_3d
     mask[:] = 0
-    mask[20:26, 21:27, 2:2 + depth] = 1
+    mask[20:26, 21:27, 2 : 2 + depth] = 1
     output = Collage(image, mask, svd_radius=1, num_unique_angles=8).execute()
     assert np.isfinite(output[mask != 0]).all()
 

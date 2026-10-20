@@ -2,9 +2,8 @@ import math
 
 import numpy as np
 import pytest
-
-from collageradiomics import _svd_dominant_angles
 from _collageradiomics.texture import maximal_correlation, named_haralick
+from collageradiomics import _svd_dominant_angles
 
 
 def test_binary_checkerboard_reference_features():
@@ -35,8 +34,10 @@ def test_maximal_correlation_handles_empty_and_nonsymmetric_marginals():
     assert maximal_correlation(independent) == pytest.approx(0, abs=1e-12)
 
 
-@pytest.mark.parametrize('gradient', [(0, 0, 0), (0, 0, 1), (1, 0, 0), (0, 1, 0), (1, 1, 0), (1, 2, 3)])
-@pytest.mark.parametrize('sign', [1, -1])
+@pytest.mark.parametrize(
+    "gradient", [(0, 0, 0), (0, 0, 1), (1, 0, 0), (0, 1, 0), (1, 1, 0), (1, 2, 3)]
+)
+@pytest.mark.parametrize("sign", [1, -1])
 def test_principal_gradient_orientation(gradient, sign):
     gx, gy, gz = gradient
     fields = [np.full((5, 5, 3), sign * g, dtype=float) for g in gradient]

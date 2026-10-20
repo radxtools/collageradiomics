@@ -1,10 +1,9 @@
 import numpy as np
 import pytest
-
 from collageradiomics import Collage
 
 
-@pytest.mark.parametrize('shape', [(1, 1), (2, 3), (7, 9), (5, 6, 1), (5, 6, 2), (7, 9, 4)])
+@pytest.mark.parametrize("shape", [(1, 1), (2, 3), (7, 9), (5, 6, 1), (5, 6, 2), (7, 9, 4)])
 def test_full_masks_and_small_images(shape):
     image = np.ones(shape, dtype=np.uint16)
     mask = np.ones(shape, dtype=bool)
@@ -13,7 +12,7 @@ def test_full_masks_and_small_images(shape):
     assert np.isfinite(output).all()
 
 
-@pytest.mark.parametrize('corner', [(0, 0), (0, -1), (-1, 0), (-1, -1)])
+@pytest.mark.parametrize("corner", [(0, 0), (0, -1), (-1, 0), (-1, -1)])
 def test_single_voxel_corner_masks(corner):
     image = np.random.default_rng(44).random((7, 9))
     mask = np.zeros_like(image, dtype=bool)
@@ -23,7 +22,7 @@ def test_single_voxel_corner_masks(corner):
     assert np.isnan(output[~mask]).all()
 
 
-@pytest.mark.parametrize('slices', [slice(0, 1), slice(0, 2), slice(-2, None), slice(-1, None)])
+@pytest.mark.parametrize("slices", [slice(0, 1), slice(0, 2), slice(-2, None), slice(-1, None)])
 def test_3d_masks_at_volume_ends(slices):
     image = np.random.default_rng(45).random((7, 9, 5))
     mask = np.zeros_like(image, dtype=bool)
