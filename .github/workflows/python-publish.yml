@@ -57,10 +57,10 @@ jobs:
           name: python-distributions
           path: dist
       - name: Publish the core with trusted publishing
-        uses: pypa/gh-action-pypi-publish@v1.14.2
+        uses: pypa/gh-action-pypi-publish@v1.14.3
         with:
           packages-dir: dist/core/
       - name: Publish the compatibility CLI with trusted publishing
-        uses: pypa/gh-action-pypi-publish@v1.14.2
+        uses: pypa/gh-action-pypi-publish@v1.14.3
         with:
           packages-dir: dist/cli/
